@@ -27,19 +27,33 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
- * Standalone application context, accepting annotated classes as input - in particular
- * {@link Configuration @Configuration}-annotated classes, but also plain
- * {@link org.springframework.stereotype.Component @Component} types and JSR-330 compliant
- * classes using {@code javax.inject} annotations. Allows for registering classes one by
- * one using {@link #register(Class...)} as well as for classpath scanning using
- * {@link #scan(String...)}.
+ * Spring中出来注解Bean定义的类有两个：
+ * {@link AnnotationConfigApplicationContext}和
+ * {@link org.springframework.web.context.support.AnnotationConfigWebApplicationContext}。
+ * AnnotationConfigWebApplicationContext
+ * 是AnnotationConfigApplicationContext的web版本
+ * 两者的用法以及对注解的处理方式几乎没有什么差别
+ * 通过分析这个类我们知道注册一个bean到spring容器有两种办法
+ * 一、直接将注解Bean注册到容器中：（参考）public void register(Class<?>... annotatedClasses)
+ * 但是直接把一个注解的bean注册到容器当中也分为两种方法
+ * 1、在初始化容器时注册并且解析
+ * 2、也可以在容器创建之后手动调用注册方法向容器注册，然后通过手动刷新容器，使得容器对注册的注解Bean进行处理。
+ * 思考：为什么@profile要使用这类的第2种方法
  *
- * <p>In case of multiple {@code @Configuration} classes, @{@link Bean} methods defined in
- * later classes will override those defined in earlier classes. This can be leveraged to
- * deliberately override certain bean definitions via an extra {@code @Configuration}
- * class.
+ * 二、通过扫描指定的包及其子包下的所有类
+ * 扫描其实同上，也是两种方法，初始化的时候扫描，和初始化之后再扫描
  *
- * <p>See @{@link Configuration}'s javadoc for usage examples.
+ * 独立的应用程序上下文，接受带注释的类作为输入 ——
+ * 特别是{@link Configuration @Configuration}-注解类，也可以是普通的
+ * {@link org.springframework.stereotype.Component @Component}
+ * 类型和使用{@code javax.inject}注解的JSR-330兼容类。
+ * 一种是使用{@link #register(Class...)}逐个注册类，
+ * 另一种是使用{@link #scan(String...)}进行类路径扫描。
+ *
+ * <p>同时配置多个{@code @Configuration}类，后面类中定义的@{@link Bean}方法将覆盖前面类中定义的方法。
+ * 可以利用这一点，通过额外的{@code @Configuration}类故意覆盖某些bean定义。
+ *
+ * <p>查看@{@link Configuration}的javadoc获取使用示例。
  *
  * @author Juergen Hoeller
  * @author Chris Beams
@@ -52,6 +66,10 @@ import org.springframework.util.Assert;
  */
 public class AnnotationConfigApplicationContext extends GenericApplicationContext implements AnnotationConfigRegistry {
 
+	/**
+	 * 在构造方法中实例化的
+	 * 用于读取被加了注解的Bean
+	 */
 	private final AnnotatedBeanDefinitionReader reader;
 
 	private final ClassPathBeanDefinitionScanner scanner;

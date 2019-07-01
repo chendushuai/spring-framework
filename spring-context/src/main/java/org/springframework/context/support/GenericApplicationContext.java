@@ -40,26 +40,24 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
- * Generic ApplicationContext implementation that holds a single internal
+ * 通用的ApplicationContext实现，它包含一个单例的内部
  * {@link org.springframework.beans.factory.support.DefaultListableBeanFactory}
- * instance and does not assume a specific bean definition format. Implements
- * the {@link org.springframework.beans.factory.support.BeanDefinitionRegistry}
- * interface in order to allow for applying any bean definition readers to it.
- *
- * <p>Typical usage is to register a variety of bean definitions via the
+ * 实例，并且不采用特定的bean定义格式。实现
  * {@link org.springframework.beans.factory.support.BeanDefinitionRegistry}
- * interface and then call {@link #refresh()} to initialize those beans
- * with application context semantics (handling
- * {@link org.springframework.context.ApplicationContextAware}, auto-detecting
- * {@link org.springframework.beans.factory.config.BeanFactoryPostProcessor BeanFactoryPostProcessors},
- * etc).
+ * 接口，以便允许对其应用任何bean定义读取器。
  *
- * <p>In contrast to other ApplicationContext implementations that create a new
- * internal BeanFactory instance for each refresh, the internal BeanFactory of
- * this context is available right from the start, to be able to register bean
- * definitions on it. {@link #refresh()} may only be called once.
+ * <p>典型的用法是通过
+ * {@link org.springframework.beans.factory.support.BeanDefinitionRegistry}
+ * 接口注册各种bean定义，然后调用{@link #refresh()}用应用程序上下文语义初始化这些bean
+ * (处理{@link org.springframework.context.ApplicationContextAware}，自动检测
+ * {@link org.springframework.beans.factory.config.BeanFactoryPostProcessor BeanFactoryPostProcessors}
+ * 等等)。
  *
- * <p>Usage example:
+ * <p>与其他为每次刷新创建新的内部BeanFactory实例的ApplicationContext实现不同，
+ * 此上下文的内部BeanFactory从一开始就可用，以便能够在其上注册bean定义。
+ * {@link #refresh()}只能调用一次。
+ *
+ * <p>使用示例:
  *
  * <pre class="code">
  * GenericApplicationContext ctx = new GenericApplicationContext();
@@ -72,16 +70,14 @@ import org.springframework.util.Assert;
  * MyBean myBean = (MyBean) ctx.getBean("myBean");
  * ...</pre>
  *
- * For the typical case of XML bean definitions, simply use
- * {@link ClassPathXmlApplicationContext} or {@link FileSystemXmlApplicationContext},
- * which are easier to set up - but less flexible, since you can just use standard
- * resource locations for XML bean definitions, rather than mixing arbitrary bean
- * definition formats. The equivalent in a web environment is
- * {@link org.springframework.web.context.support.XmlWebApplicationContext}.
+ * 对于XML bean定义的典型案例，简单地使用{@link ClassPathXmlApplicationContext}或
+ * {@link FileSystemXmlApplicationContext}，这更容易建立，但不灵活，
+ * 因为您可以使用标准的XML bean定义的资源的位置，而不是混合任意bean定义格式。
+ * web环境中的对应项是
+ * {@link org.springframework.web.context.support.XmlWebApplicationContext}。
  *
- * <p>For custom application context implementations that are supposed to read
- * special bean definition formats in a refreshable manner, consider deriving
- * from the {@link AbstractRefreshableApplicationContext} base class.
+ * <p>对于应该以可刷新的方式读取特殊bean定义格式的自定义应用程序上下文实现，
+ * 请考虑从{@link AbstractRefreshableApplicationContext}基类派生。
  *
  * @author Juergen Hoeller
  * @author Chris Beams
