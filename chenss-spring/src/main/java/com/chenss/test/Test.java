@@ -17,7 +17,9 @@ public class Test {
 		annotationConfigApplicationContext.refresh();
 		//annotationConfigApplicationContext.start();
 		UserDao userDao = (UserDao) annotationConfigApplicationContext.getBean("userDao");
+		UserDao userDao1 = (UserDao) annotationConfigApplicationContext.getBean("userDao");
 		System.out.println(userDao);
+		System.out.println(userDao1);
 //
 //		annotationConfigApplicationContext.scan("");
 	}
