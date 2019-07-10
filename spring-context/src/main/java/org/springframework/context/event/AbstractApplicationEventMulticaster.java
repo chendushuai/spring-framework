@@ -104,6 +104,7 @@ public abstract class AbstractApplicationEventMulticaster
 	@Override
 	public void addApplicationListener(ApplicationListener<?> listener) {
 		synchronized (this.retrievalMutex) {
+			// 如果已经注册，显式删除代理的目标，以避免对同一侦听器进行两次调用。
 			// Explicitly remove target for a proxy, if registered already,
 			// in order to avoid double invocations of the same listener.
 			Object singletonTarget = AopProxyUtils.getSingletonTarget(listener);
