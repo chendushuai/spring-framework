@@ -554,7 +554,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				// 检查并注册监听器
 				registerListeners();
 
-				// Instantiate all remaining (non-lazy-init) singletons.
+				// 实例化所有剩余的(非懒加载)单例。
 				finishBeanFactoryInitialization(beanFactory);
 
 				// Last step: publish corresponding event.
@@ -844,14 +844,13 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			getApplicationEventMulticaster().addApplicationListener(listener);
 		}
 
-		// Do not initialize FactoryBeans here: We need to leave all regular beans
-		// uninitialized to let post-processors apply to them!
+		// 不要在这里初始化factorybean:我们需要不初始化所有常规bean，让后处理程序应用于它们!
 		String[] listenerBeanNames = getBeanNamesForType(ApplicationListener.class, true, false);
 		for (String listenerBeanName : listenerBeanNames) {
 			getApplicationEventMulticaster().addApplicationListenerBean(listenerBeanName);
 		}
 
-		// Publish early application events now that we finally have a multicaster...
+		// 发布早期的应用程序事件，现在我们终于有一个多播…
 		Set<ApplicationEvent> earlyEventsToProcess = this.earlyApplicationEvents;
 		this.earlyApplicationEvents = null;
 		if (earlyEventsToProcess != null) {
@@ -862,20 +861,18 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
-	 * Finish the initialization of this context's bean factory,
-	 * initializing all remaining singleton beans.
+	 * 完成此上下文的bean工厂的初始化，初始化所有剩余的单例bean。
 	 */
 	protected void finishBeanFactoryInitialization(ConfigurableListableBeanFactory beanFactory) {
-		// Initialize conversion service for this context.
+		// 初始化此上下文的转换服务
 		if (beanFactory.containsBean(CONVERSION_SERVICE_BEAN_NAME) &&
 				beanFactory.isTypeMatch(CONVERSION_SERVICE_BEAN_NAME, ConversionService.class)) {
 			beanFactory.setConversionService(
 					beanFactory.getBean(CONVERSION_SERVICE_BEAN_NAME, ConversionService.class));
 		}
 
-		// Register a default embedded value resolver if no bean post-processor
-		// (such as a PropertyPlaceholderConfigurer bean) registered any before:
-		// at this point, primarily for resolution in annotation attribute values.
+		// 如果之前没有任何bean后处理器(例如PropertyPlaceholderConfigurer bean)注册，则注册一个默认的嵌入式值解析器：
+		// 此时，主要用于在注解属性值解析。
 		if (!beanFactory.hasEmbeddedValueResolver()) {
 			beanFactory.addEmbeddedValueResolver(strVal -> getEnvironment().resolvePlaceholders(strVal));
 		}
@@ -893,6 +890,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		beanFactory.freezeConfiguration();
 
 		// Instantiate all remaining (non-lazy-init) singletons.
+		// 实例化所有的单例对象
 		beanFactory.preInstantiateSingletons();
 	}
 

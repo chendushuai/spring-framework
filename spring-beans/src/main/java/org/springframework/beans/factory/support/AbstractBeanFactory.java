@@ -77,27 +77,22 @@ import org.springframework.util.StringUtils;
 import org.springframework.util.StringValueResolver;
 
 /**
- * Abstract base class for {@link org.springframework.beans.factory.BeanFactory}
- * implementations, providing the full capabilities of the
- * {@link org.springframework.beans.factory.config.ConfigurableBeanFactory} SPI.
- * Does <i>not</i> assume a listable bean factory: can therefore also be used
- * as base class for bean factory implementations which obtain bean definitions
- * from some backend resource (where bean definition access is an expensive operation).
+ * {@link org.springframework.beans.factory.BeanFactory}实现的抽象基类。
+ * 提供了{@link org.springframework.beans.factory.config.ConfigurableBeanFactory}
+ * SPI的所有功能。<i>not</i>是否假设有一个可列出的bean工厂：因此也可以用作bean工厂实现的基类，
+ * 这些bean工厂实现从一些后端资源(其中bean定义访问是一个昂贵的操作)获取bean定义。
  *
- * <p>This class provides a singleton cache (through its base class
- * {@link org.springframework.beans.factory.support.DefaultSingletonBeanRegistry},
- * singleton/prototype determination, {@link org.springframework.beans.factory.FactoryBean}
- * handling, aliases, bean definition merging for child bean definitions,
- * and bean destruction ({@link org.springframework.beans.factory.DisposableBean}
- * interface, custom destroy methods). Furthermore, it can manage a bean factory
- * hierarchy (delegating to the parent in case of an unknown bean), through implementing
- * the {@link org.springframework.beans.factory.HierarchicalBeanFactory} interface.
+ * <p>这个类提供了一个单例缓存(通过它的基类
+ * {@link org.springframework.beans.factory.support.DefaultSingletonBeanRegistry})，
+ * 单例/原型确定，{@link org.springframework.beans.factory.FactoryBean}处理、别名、
+ * 子bean定义的bean定义合并和bean销毁（{@link org.springframework.beans.factory.DisposableBean}
+ * 接口，自定义销毁方法)。此外，它还可以通过实现
+ * {@link org.springframework.beans.factory.HierarchicalBeanFactory}来管理bean工厂层次结构
+ * (在未知bean的情况下委托给父类)。
  *
- * <p>The main template methods to be implemented by subclasses are
- * {@link #getBeanDefinition} and {@link #createBean}, retrieving a bean definition
- * for a given bean name and creating a bean instance for a given bean definition,
- * respectively. Default implementations of those operations can be found in
- * {@link DefaultListableBeanFactory} and {@link AbstractAutowireCapableBeanFactory}.
+ * <p>子类要实现的主要模板方法是{@link #getBeanDefinition}和{@link #createBean}，
+ * 分别检索给定bean名称的bean定义和为给定bean定义创建bean实例。这些操作的默认实现可以在
+ * {@link DefaultListableBeanFactory}和{@link AbstractAutowireCapableBeanFactory}中找到。
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
@@ -111,78 +106,78 @@ import org.springframework.util.StringValueResolver;
  */
 public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport implements ConfigurableBeanFactory {
 
-	/** Parent bean factory, for bean inheritance support. */
+	/** 父级bean工厂，用于bean继承支持 */
 	@Nullable
 	private BeanFactory parentBeanFactory;
 
-	/** ClassLoader to resolve bean class names with, if necessary. */
+	/** 在需要的情况下，ClassLoader用于解析bean类名，获取的是默认类加载器 */
 	@Nullable
 	private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
-	/** ClassLoader to temporarily resolve bean class names with, if necessary. */
+	/** 在需要的情况下，ClassLoader用于临时解析bean类名。 */
 	@Nullable
 	private ClassLoader tempClassLoader;
 
-	/** Whether to cache bean metadata or rather reobtain it for every access. */
+	/** 是缓存bean元数据，还是为每次访问重新获取它。 */
 	private boolean cacheBeanMetadata = true;
 
-	/** Resolution strategy for expressions in bean definition values. */
+	/** bean定义值中的表达式的解析策略。 */
 	@Nullable
 	private BeanExpressionResolver beanExpressionResolver;
 
-	/** Spring ConversionService to use instead of PropertyEditors. */
+	/** 使用Spring ConversionService代替PropertyEditors。 */
 	@Nullable
 	private ConversionService conversionService;
 
-	/** Custom PropertyEditorRegistrars to apply to the beans of this factory. */
+	/** 自定义PropertyEditorRegistrars去申请这个工厂的Bean */
 	private final Set<PropertyEditorRegistrar> propertyEditorRegistrars = new LinkedHashSet<>(4);
 
-	/** Custom PropertyEditors to apply to the beans of this factory. */
+	/** 自定义PropertyEditors去申请这个工厂的Bean */
 	private final Map<Class<?>, Class<? extends PropertyEditor>> customEditors = new HashMap<>(4);
 
-	/** A custom TypeConverter to use, overriding the default PropertyEditor mechanism. */
+	/** 要使用的自定义TypeConverter，覆盖默认的PropertyEditor机制。 */
 	@Nullable
 	private TypeConverter typeConverter;
 
-	/** String resolvers to apply e.g. to annotation attribute values. */
+	/** 应用于注解属性值的字符串解析器。 */
 	private final List<StringValueResolver> embeddedValueResolvers = new CopyOnWriteArrayList<>();
 
-	/** BeanPostProcessors to apply in createBean. */
+	/** 在createBean中应用BeanPostProcessor。 */
 	private final List<BeanPostProcessor> beanPostProcessors = new CopyOnWriteArrayList<>();
 
-	/** Indicates whether any InstantiationAwareBeanPostProcessors have been registered. */
+	/** 指示是否注册了任何InstantiationAwareBeanPostProcessors。 */
 	private volatile boolean hasInstantiationAwareBeanPostProcessors;
 
-	/** Indicates whether any DestructionAwareBeanPostProcessors have been registered. */
+	/** 指示是否注册了任何DestructionAwareBeanPostProcessors。 */
 	private volatile boolean hasDestructionAwareBeanPostProcessors;
 
-	/** Map from scope identifier String to corresponding Scope. */
+	/** 从范围标识符字符串映射到相应的范围。 */
 	private final Map<String, Scope> scopes = new LinkedHashMap<>(8);
 
-	/** Security context used when running with a SecurityManager. */
+	/** 使用SecurityManager运行时使用的安全上下文。 */
 	@Nullable
 	private SecurityContextProvider securityContextProvider;
 
-	/** Map from bean name to merged RootBeanDefinition. */
+	/** 从bean名称映射到合并的RootBeanDefinition。 */
 	private final Map<String, RootBeanDefinition> mergedBeanDefinitions = new ConcurrentHashMap<>(256);
 
-	/** Names of beans that have already been created at least once. */
+	/** 至少已经创建过一次的bean的名称。*/
 	private final Set<String> alreadyCreated = Collections.newSetFromMap(new ConcurrentHashMap<>(256));
 
-	/** Names of beans that are currently in creation. */
+	/** 当前正在创建的bean的名称。 */
 	private final ThreadLocal<Object> prototypesCurrentlyInCreation =
 			new NamedThreadLocal<>("Prototype beans currently in creation");
 
 
 	/**
-	 * Create a new AbstractBeanFactory.
+	 * 创建一个新的AbstractBeanFactory.
 	 */
 	public AbstractBeanFactory() {
 	}
 
 	/**
-	 * Create a new AbstractBeanFactory with the given parent.
-	 * @param parentBeanFactory parent bean factory, or {@code null} if none
+	 * 使用给定的父级创建一个新的AbstractBeanFactory
+	 * @param parentBeanFactory 父级bean工厂 或 如果为none，返回{@code null}
 	 * @see #getBean
 	 */
 	public AbstractBeanFactory(@Nullable BeanFactory parentBeanFactory) {
@@ -191,7 +186,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 
 	//---------------------------------------------------------------------
-	// Implementation of BeanFactory interface
+	// BeanFactory接口的方法实现
 	//---------------------------------------------------------------------
 
 	@Override
@@ -210,13 +205,12 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	}
 
 	/**
-	 * Return an instance, which may be shared or independent, of the specified bean.
-	 * @param name the name of the bean to retrieve
-	 * @param requiredType the required type of the bean to retrieve
-	 * @param args arguments to use when creating a bean instance using explicit arguments
-	 * (only applied when creating a new instance as opposed to retrieving an existing one)
-	 * @return an instance of the bean
-	 * @throws BeansException if the bean could not be created
+	 * 返回指定bean的一个实例，该实例可以是共享的，也可以是独立的。
+	 * @param name 要检索的bean的名称
+	 * @param requiredType 要检索的bean的所需类型
+	 * @param args 使用显式参数创建bean实例时要使用的参数(仅在创建新实例时应用，而不是检索现有实例时使用)
+	 * @return bean的一个实例
+	 * @throws BeansException 如果bean创建不了
 	 */
 	public <T> T getBean(String name, @Nullable Class<T> requiredType, @Nullable Object... args)
 			throws BeansException {
@@ -225,15 +219,13 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	}
 
 	/**
-	 * Return an instance, which may be shared or independent, of the specified bean.
-	 * @param name the name of the bean to retrieve
-	 * @param requiredType the required type of the bean to retrieve
-	 * @param args arguments to use when creating a bean instance using explicit arguments
-	 * (only applied when creating a new instance as opposed to retrieving an existing one)
-	 * @param typeCheckOnly whether the instance is obtained for a type check,
-	 * not for actual use
-	 * @return an instance of the bean
-	 * @throws BeansException if the bean could not be created
+	 * 返回指定bean的一个实例，该实例可以是共享的，也可以是独立的。
+	 * @param name 要检索的bean的名称
+	 * @param requiredType 要检索的bean的所需类型
+	 * @param args 使用显式参数创建bean实例时要使用的参数(仅在创建新实例时应用，而不是检索现有实例时使用)
+	 * @param typeCheckOnly 是否获取实例用于类型检查，而不是实际使用
+	 * @return bean的一个实例
+	 * @throws BeansException 如果bean创建不了
 	 */
 	@SuppressWarnings("unchecked")
 	protected <T> T doGetBean(final String name, @Nullable final Class<T> requiredType,
@@ -242,7 +234,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		final String beanName = transformedBeanName(name);
 		Object bean;
 
-		// Eagerly check singleton cache for manually registered singletons.
+		// 首先地检查单例缓存中手动注册的单例。
 		Object sharedInstance = getSingleton(beanName);
 		if (sharedInstance != null && args == null) {
 			if (logger.isTraceEnabled()) {
@@ -258,8 +250,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		}
 
 		else {
-			// Fail if we're already creating this bean instance:
-			// We're assumably within a circular reference.
+			// 如果我们已经创建了这个bean实例，则会失败:假设我们是在一个循环引用中。
 			if (isPrototypeCurrentlyInCreation(beanName)) {
 				throw new BeanCurrentlyInCreationException(beanName);
 			}
@@ -1120,14 +1111,13 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 
 	//---------------------------------------------------------------------
-	// Implementation methods
+	// 实现方法
 	//---------------------------------------------------------------------
 
 	/**
-	 * Return the bean name, stripping out the factory dereference prefix if necessary,
-	 * and resolving aliases to canonical names.
-	 * @param name the user-specified name
-	 * @return the transformed bean name
+	 * 返回bean名称，在必要时去掉工厂的取消引用前缀，并将别名解析为规范名称。
+	 * @param name 指定的名称
+	 * @return 转换后的bean名称
 	 */
 	protected String transformedBeanName(String name) {
 		return canonicalName(BeanFactoryUtils.transformedBeanName(name));

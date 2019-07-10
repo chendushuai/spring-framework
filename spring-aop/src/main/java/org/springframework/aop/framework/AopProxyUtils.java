@@ -32,11 +32,9 @@ import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
 /**
- * Utility methods for AOP proxy factories.
- * Mainly for internal use within the AOP framework.
+ * AOP代理工厂的实用方法。主要用于AOP框架的内部使用。
  *
- * <p>See {@link org.springframework.aop.support.AopUtils} for a collection of
- * generic AOP utility methods which do not depend on AOP framework internals.
+ * <p>查看{@link org.springframework.aop.support.AopUtils}去了解用于一组不依赖于AOP框架内部的通用AOP实用程序方法的集合。
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
