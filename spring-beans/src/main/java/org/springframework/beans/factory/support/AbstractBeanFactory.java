@@ -1004,9 +1004,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		if (beanInstance != null) {
 			return (beanInstance instanceof FactoryBean);
 		}
-		// No singleton instance found -> check bean definition.
+		// 没有单例实现 -> 检查bean定义
 		if (!containsBeanDefinition(beanName) && getParentBeanFactory() instanceof ConfigurableBeanFactory) {
-			// No bean definition found in this factory -> delegate to parent.
+			// 在这个工厂中没有找到这个bean定义 -> 委托给父级
 			return ((ConfigurableBeanFactory) getParentBeanFactory()).isFactoryBean(name);
 		}
 		return isFactoryBean(beanName, getMergedLocalBeanDefinition(beanName));
@@ -1257,8 +1257,10 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					// 子bean定义:需要与父bean合并。
 					BeanDefinition pbd;
 					try {
+						// 解析父bean别名
 						String parentBeanName = transformedBeanName(bd.getParentName());
 						if (!beanName.equals(parentBeanName)) {
+							// 递归调用，先合并上级，然后合并本级
 							pbd = getMergedBeanDefinition(parentBeanName);
 						}
 						else {
@@ -1277,26 +1279,26 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 						throw new BeanDefinitionStoreException(bd.getResourceDescription(), beanName,
 								"Could not resolve parent bean definition '" + bd.getParentName() + "'", ex);
 					}
-					// Deep copy with overridden values.
+					// 具有覆盖值的深度复制。
 					mbd = new RootBeanDefinition(pbd);
+					// 使用子bean中指定的值覆盖父中指定的值
 					mbd.overrideFrom(bd);
 				}
 
-				// Set default singleton scope, if not configured before.
+				// 如果之前没有配置，则这是为单例范围
 				if (!StringUtils.hasLength(mbd.getScope())) {
 					mbd.setScope(RootBeanDefinition.SCOPE_SINGLETON);
 				}
 
-				// A bean contained in a non-singleton bean cannot be a singleton itself.
-				// Let's correct this on the fly here, since this might be the result of
-				// parent-child merging for the outer bean, in which case the original inner bean
-				// definition will not have inherited the merged outer bean's singleton status.
+				/**
+				 * 非单例bean中包含的bean本身不能是单例bean。让我们在这里立即纠正这个错误，因为这可能是外部bean的父-子合并的结果，
+				 * 在这种情况下，原始的内部bean定义将不会继承合并的外部bean的单例状态。
+				 */
 				if (containingBd != null && !containingBd.isSingleton() && mbd.isSingleton()) {
 					mbd.setScope(containingBd.getScope());
 				}
 
-				// Cache the merged bean definition for the time being
-				// (it might still get re-merged later on in order to pick up metadata changes)
+				// 暂时缓存合并的bean定义(为了获取元数据的更改，以后可能还会重新合并它)
 				if (containingBd == null && isCacheBeanMetadata()) {
 					this.mergedBeanDefinitions.put(beanName, mbd);
 				}

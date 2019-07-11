@@ -279,19 +279,16 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 
 
 	/**
-	 * Override settings in this bean definition (presumably a copied parent
-	 * from a parent-child inheritance relationship) from the given bean
-	 * definition (presumably the child).
+	 * 覆盖此bean定义(假设是从父-子继承关系复制的父)中给定bean定义(假设是子)中的设置。
+	 * 用子定义中的设置覆盖父定义中的设置
 	 * <ul>
-	 * <li>Will override beanClass if specified in the given bean definition.
-	 * <li>Will always take {@code abstract}, {@code scope},
-	 * {@code lazyInit}, {@code autowireMode}, {@code dependencyCheck},
-	 * and {@code dependsOn} from the given bean definition.
-	 * <li>Will add {@code constructorArgumentValues}, {@code propertyValues},
-	 * {@code methodOverrides} from the given bean definition to existing ones.
-	 * <li>Will override {@code factoryBeanName}, {@code factoryMethodName},
-	 * {@code initMethodName}, and {@code destroyMethodName} if specified
-	 * in the given bean definition.
+	 * <li>如果在给定的bean定义中指定，则将覆盖beanClass。
+	 * <li>将始终从给定的bean定义中获取{@code abstract}、{@code scope}、
+	 * {@code lazyInit}、{@code autowireMode}、{@code dependencyCheck}和{@code dependsOn}。
+	 * <li>将从给定bean定义添加{@code constructorArgumentValues}、{@code propertyValues}、
+	 * {@code methodOverrides}到现有bean定义。
+	 * <li>如果在给定bean定义中指定，则将覆盖{@code factoryBeanName}、{@code factoryMethodName}、
+	 * {@code initMethodName}和{@code destroyMethodName}。
 	 * </ul>
 	 */
 	public void overrideFrom(BeanDefinition other) {

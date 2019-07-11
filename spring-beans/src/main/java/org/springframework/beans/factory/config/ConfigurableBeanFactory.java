@@ -327,11 +327,11 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
 	BeanDefinition getMergedBeanDefinition(String beanName) throws NoSuchBeanDefinitionException;
 
 	/**
-	 * Determine whether the bean with the given name is a FactoryBean.
-	 * @param name the name of the bean to check
-	 * @return whether the bean is a FactoryBean
-	 * ({@code false} means the bean exists but is not a FactoryBean)
-	 * @throws NoSuchBeanDefinitionException if there is no bean with the given name
+	 * 确定具有给定名称的bean是否为FactoryBean。
+	 * @param name 用于检查的bean名称
+	 * @return 返回bean是否是一个FactoryBean
+	 * (如果bean存在但是不是一个FactoryBean，则返回{@code false})
+	 * @throws NoSuchBeanDefinitionException 如果没有找到给定名称的bean
 	 * @since 2.5
 	 */
 	boolean isFactoryBean(String name) throws NoSuchBeanDefinitionException;
