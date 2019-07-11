@@ -34,7 +34,7 @@ import org.springframework.lang.Nullable;
 public interface HierarchicalBeanFactory extends BeanFactory {
 
 	/**
-	 * Return the parent bean factory, or {@code null} if there is none.
+	 * 返回父级bean工厂，如果没有，则返回{@code null}
 	 */
 	@Nullable
 	BeanFactory getParentBeanFactory();
