@@ -17,8 +17,7 @@
 package org.springframework.beans.factory;
 
 /**
- * Exception thrown in case of a reference to a bean that's currently in creation.
- * Typically happens when constructor autowiring matches the currently constructed bean.
+ * 在引用当前正在创建的bean时抛出异常。通常在构造函数自动装配与当前构造的bean匹配时发生。
  *
  * @author Juergen Hoeller
  * @since 1.1
@@ -27,11 +26,11 @@ package org.springframework.beans.factory;
 public class BeanCurrentlyInCreationException extends BeanCreationException {
 
 	/**
-	 * Create a new BeanCurrentlyInCreationException,
-	 * with a default error message that indicates a circular reference.
+	 * 创建一个新的BeanCurrentlyInCreationException，并使用默认错误消息指示循环引用。
 	 * @param beanName the name of the bean requested
 	 */
 	public BeanCurrentlyInCreationException(String beanName) {
+		// 当前正在创建被请求的bean:是否存在无法解析的循环引用?
 		super(beanName,
 				"Requested bean is currently in creation: Is there an unresolvable circular reference?");
 	}
