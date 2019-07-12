@@ -61,18 +61,12 @@ public interface SmartFactoryBean<T> extends FactoryBean<T> {
 	}
 
 	/**
-	 * Does this FactoryBean expect eager initialization, that is,
-	 * eagerly initialize itself as well as expect eager initialization
-	 * of its singleton object (if any)?
-	 * <p>A standard FactoryBean is not expected to initialize eagerly:
-	 * Its {@link #getObject()} will only be called for actual access, even
-	 * in case of a singleton object. Returning {@code true} from this
-	 * method suggests that {@link #getObject()} should be called eagerly,
-	 * also applying post-processors eagerly. This may make sense in case
-	 * of a {@link #isSingleton() singleton} object, in particular if
-	 * post-processors expect to be applied on startup.
-	 * <p>The default implementation returns {@code false}.
-	 * @return whether eager initialization applies
+	 * 这个FactoryBean是否期望立即初始化，即急切地初始化它自己，以及急切地初始化它的单例对象(如果有的话)?
+	 * <p>标准的FactoryBean不会急切地初始化：它的{@link #getObject()}只会在实际访问时调用，即使是在单例对象的情况下。
+	 * 这个方法返回{@code true}意味着应该急切地调用{@link #getObject()}，同时也要急切地应用后处理程序。
+	 * 对于{@link #isSingleton() singleton}对象，这可能是有意义的，特别是如果后处理器希望在启动时应用的时候。
+	 * <p>默认实现返回{@code false}.
+	 * @return 返回是否期望立即初始化
 	 * @see org.springframework.beans.factory.config.ConfigurableListableBeanFactory#preInstantiateSingletons()
 	 */
 	default boolean isEagerInit() {

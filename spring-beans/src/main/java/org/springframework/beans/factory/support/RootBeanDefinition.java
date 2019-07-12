@@ -67,7 +67,7 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	@Nullable
 	volatile ResolvableType targetType;
 
-	/** Package-visible field for caching the determined Class of a given bean definition. */
+	/** 包可见字段，用于缓存给定bean定义的已确定类。 */
 	@Nullable
 	volatile Class<?> resolvedTargetType;
 
@@ -298,7 +298,7 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	}
 
 	/**
-	 * Specify a generics-containing target type of this bean definition, if known in advance.
+	 * 如果预先知道，则指定此bean定义的包含泛型的目标类型。
 	 * @since 4.3.3
 	 */
 	public void setTargetType(ResolvableType targetType) {
@@ -306,7 +306,7 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	}
 
 	/**
-	 * Specify the target type of this bean definition, if known in advance.
+	 * 如果预先知道，则指定此bean定义的包含泛型的目标类型。
 	 * @since 3.2.2
 	 */
 	public void setTargetType(@Nullable Class<?> targetType) {
@@ -314,8 +314,7 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	}
 
 	/**
-	 * Return the target type of this bean definition, if known
-	 * (either specified in advance or resolved on first instantiation).
+	 * 如果已知，返回此bean定义的目标类型(预先指定或在第一次实例化时解析)。
 	 * @since 3.2.2
 	 */
 	@Nullable

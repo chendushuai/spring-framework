@@ -814,7 +814,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	}
 
 	/**
-	 * Return a factory method, if any.
+	 * 如果有的话，返回工厂方法名称
 	 */
 	@Override
 	@Nullable

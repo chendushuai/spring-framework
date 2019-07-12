@@ -189,6 +189,12 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	// BeanFactory接口的方法实现
 	//---------------------------------------------------------------------
 
+	/**
+	 * 根据bean名称获取bean
+	 * @param name the name of the bean to retrieve
+	 * @return
+	 * @throws BeansException
+	 */
 	@Override
 	public Object getBean(String name) throws BeansException {
 		return doGetBean(name, null, null, false);
@@ -1018,9 +1024,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	}
 
 	/**
-	 * Return whether the specified prototype bean is currently in creation
-	 * (within the current thread).
-	 * @param beanName the name of the bean
+	 * 返回指定的原型bean是否正在创建中(在当前线程中)。
+	 * @param beanName bean名称
 	 */
 	protected boolean isPrototypeCurrentlyInCreation(String beanName) {
 		Object curVal = this.prototypesCurrentlyInCreation.get();
@@ -1346,9 +1351,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	}
 
 	/**
-	 * Resolve the bean class for the specified bean definition,
-	 * resolving a bean class name into a Class reference (if necessary)
-	 * and storing the resolved Class in the bean definition for further use.
+	 * 为指定的bean定义解析bean类，将bean类名解析为类引用(如果需要)，并将解析后的类存储在bean定义中，以供进一步使用。
 	 * @param mbd the merged bean definition to determine the class for
 	 * @param beanName the name of the bean (for error handling purposes)
 	 * @param typesToMatch the types to match in case of internal type matching purposes
@@ -1471,19 +1474,14 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 
 	/**
-	 * Predict the eventual bean type (of the processed bean instance) for the
-	 * specified bean. Called by {@link #getType} and {@link #isTypeMatch}.
-	 * Does not need to handle FactoryBeans specifically, since it is only
-	 * supposed to operate on the raw bean type.
-	 * <p>This implementation is simplistic in that it is not able to
-	 * handle factory methods and InstantiationAwareBeanPostProcessors.
-	 * It only predicts the bean type correctly for a standard bean.
-	 * To be overridden in subclasses, applying more sophisticated type detection.
-	 * @param beanName the name of the bean
-	 * @param mbd the merged bean definition to determine the type for
-	 * @param typesToMatch the types to match in case of internal type matching purposes
-	 * (also signals that the returned {@code Class} will never be exposed to application code)
-	 * @return the type of the bean, or {@code null} if not predictable
+	 * 预测指定bean的最终bean类型(已处理bean实例的)。由{@link #getType}和{@link #isTypeMatch}调用。
+	 * 不需要专门处理FactoryBeans，因为它只应该对原始bean类型进行操作。
+	 * <p>这个实现过于简单，因为它不能处理工厂方法和InstantiationAwareBeanPostProcessors。
+	 * 它只正确地预测标准bean的bean类型。在子类中重写该方法，可以应用更复杂的类型检测。
+	 * @param beanName bean的名称
+	 * @param mbd 用于确定类型的合并bean定义
+	 * @param typesToMatch 用于内部类型匹配目的的匹配类型(也表示返回的将永远不会暴露给应用程序代码的{@code Class})
+	 * @return bean的类型，如果不可预测，则为{@code null}
 	 */
 	@Nullable
 	protected Class<?> predictBeanType(String beanName, RootBeanDefinition mbd, Class<?>... typesToMatch) {
@@ -1498,9 +1496,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	}
 
 	/**
-	 * Check whether the given bean is defined as a {@link FactoryBean}.
-	 * @param beanName the name of the bean
-	 * @param mbd the corresponding bean definition
+	 * 检查给定的bean是否被定义为{@link FactoryBean}.
+	 * @param beanName bean的名称
+	 * @param mbd 当前bean定义
 	 */
 	protected boolean isFactoryBean(String beanName, RootBeanDefinition mbd) {
 		Class<?> beanType = predictBeanType(beanName, mbd, FactoryBean.class);
