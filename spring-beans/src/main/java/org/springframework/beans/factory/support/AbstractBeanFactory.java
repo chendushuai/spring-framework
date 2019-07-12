@@ -261,21 +261,21 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				throw new BeanCurrentlyInCreationException(beanName);
 			}
 
-			// Check if bean definition exists in this factory.
+			// 检查这个工厂中是否存在bean定义。
 			BeanFactory parentBeanFactory = getParentBeanFactory();
 			if (parentBeanFactory != null && !containsBeanDefinition(beanName)) {
-				// Not found -> check parent.
+				// 找不到 -> 检查父级
 				String nameToLookup = originalBeanName(name);
 				if (parentBeanFactory instanceof AbstractBeanFactory) {
 					return ((AbstractBeanFactory) parentBeanFactory).doGetBean(
 							nameToLookup, requiredType, args, typeCheckOnly);
 				}
 				else if (args != null) {
-					// Delegation to parent with explicit args.
+					// 使用显式args委托给父对象。
 					return (T) parentBeanFactory.getBean(nameToLookup, args);
 				}
 				else if (requiredType != null) {
-					// No args -> delegate to standard getBean method.
+					// 没有args -> 委托给标准getBean方法
 					return parentBeanFactory.getBean(nameToLookup, requiredType);
 				}
 				else {
@@ -283,22 +283,27 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				}
 			}
 
+			// 如果bean用于类型检查，则直接标记为已创建
 			if (!typeCheckOnly) {
 				markBeanAsCreated(beanName);
 			}
 
 			try {
+				// 重新获取合并bean定义
 				final RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
+				// 检查合并bean定义是否是抽象的，如果是抽象的，则抛出异常
 				checkMergedBeanDefinition(mbd, beanName, args);
 
-				// Guarantee initialization of beans that the current bean depends on.
+				// 保证当前bean所依赖的bean的初始化。获取当前bean的依赖bean名称
 				String[] dependsOn = mbd.getDependsOn();
 				if (dependsOn != null) {
 					for (String dep : dependsOn) {
+						// 判断是否存在依赖关系，如果无依赖关系，返回false
 						if (isDependent(beanName, dep)) {
 							throw new BeanCreationException(mbd.getResourceDescription(), beanName,
 									"Circular depends-on relationship between '" + beanName + "' and '" + dep + "'");
 						}
+						// 注册依赖bean
 						registerDependentBean(dep, beanName);
 						try {
 							getBean(dep);
@@ -682,9 +687,13 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 
 	//---------------------------------------------------------------------
-	// Implementation of HierarchicalBeanFactory interface
+	// 分层beanfactory接口的实现
 	//---------------------------------------------------------------------
 
+	/**
+	 * 得到父bean工厂
+	 * @return
+	 */
 	@Override
 	@Nullable
 	public BeanFactory getParentBeanFactory() {
@@ -1127,9 +1136,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	}
 
 	/**
-	 * Determine the original bean name, resolving locally defined aliases to canonical names.
-	 * @param name the user-specified name
-	 * @return the original bean name
+	 * 确定原始bean名称，将本地定义的别名解析为规范名称。
+	 * @param name 用户指定名称
+	 * @return 原bean名称
 	 */
 	protected String originalBeanName(String name) {
 		String beanName = transformedBeanName(name);
@@ -1314,12 +1323,11 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	}
 
 	/**
-	 * Check the given merged bean definition,
-	 * potentially throwing validation exceptions.
-	 * @param mbd the merged bean definition to check
-	 * @param beanName the name of the bean
-	 * @param args the arguments for bean creation, if any
-	 * @throws BeanDefinitionStoreException in case of validation failure
+	 * 检查给定的合并bean定义，可能会引发验证异常。
+	 * @param mbd 要检查的合并bean定义
+	 * @param beanName bean名称
+	 * @param args 如果有，就是bean创建时候的参数
+	 * @throws BeanDefinitionStoreException 如果校验失败的情况
 	 */
 	protected void checkMergedBeanDefinition(RootBeanDefinition mbd, String beanName, @Nullable Object[] args)
 			throws BeanDefinitionStoreException {
@@ -1330,9 +1338,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	}
 
 	/**
-	 * Remove the merged bean definition for the specified bean,
-	 * recreating it on next access.
-	 * @param beanName the bean name to clear the merged definition for
+	 * 删除指定bean的合并bean定义，在下次访问时重新创建它。
+	 * @param beanName 用于清除合并定义的bean名称
 	 */
 	protected void clearMergedBeanDefinition(String beanName) {
 		this.mergedBeanDefinitions.remove(beanName);
@@ -1551,17 +1558,16 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	}
 
 	/**
-	 * Mark the specified bean as already created (or about to be created).
-	 * <p>This allows the bean factory to optimize its caching for repeated
-	 * creation of the specified bean.
-	 * @param beanName the name of the bean
+	 * 将指定的bean标记为已经创建(或即将创建)。
+	 * <p>这允许bean工厂为重复创建指定的bean优化缓存。
+	 * @param beanName bean名称
 	 */
 	protected void markBeanAsCreated(String beanName) {
+		// 如果已经创建一次的bean中不包含指定的bean名称
 		if (!this.alreadyCreated.contains(beanName)) {
 			synchronized (this.mergedBeanDefinitions) {
 				if (!this.alreadyCreated.contains(beanName)) {
-					// Let the bean definition get re-merged now that we're actually creating
-					// the bean... just in case some of its metadata changed in the meantime.
+					// 现在我们正在创建bean，让bean定义重新合并……以防它的元数据在此期间发生变化。
 					clearMergedBeanDefinition(beanName);
 					this.alreadyCreated.add(beanName);
 				}
@@ -1570,8 +1576,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	}
 
 	/**
-	 * Perform appropriate cleanup of cached metadata after bean creation failed.
-	 * @param beanName the name of the bean
+	 * 在bean创建失败后，对缓存的元数据执行适当的清理。
+	 * @param beanName bean名称
 	 */
 	protected void cleanupAfterBeanCreationFailure(String beanName) {
 		synchronized (this.mergedBeanDefinitions) {

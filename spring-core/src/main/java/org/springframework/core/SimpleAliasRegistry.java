@@ -207,13 +207,13 @@ public class SimpleAliasRegistry implements AliasRegistry {
 	}
 
 	/**
-	 * Determine the raw name, resolving aliases to canonical names.
-	 * @param name the user-specified name
-	 * @return the transformed name
+	 * 确定原始名称，将别名解析为规范名称。
+	 * @param name 用户指定名称
+	 * @return 转换后的名字
 	 */
 	public String canonicalName(String name) {
 		String canonicalName = name;
-		// Handle aliasing...
+		// 处理别名...
 		String resolvedName;
 		do {
 			resolvedName = this.aliasMap.get(canonicalName);
