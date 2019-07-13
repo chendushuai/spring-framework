@@ -405,10 +405,9 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	}
 
 	/**
-	 * Return the class of the wrapped bean (assuming it is resolved already).
-	 * @return the bean class (never {@code null})
-	 * @throws IllegalStateException if the bean definition does not define a bean class,
-	 * or a specified bean class name has not been resolved into an actual Class yet
+	 * 返回包装bean的类(假设它已经被解析)。
+	 * @return bean类(不可能是{@code null})
+	 * @throws IllegalStateException 如果bean定义没有定义bean类，或者指定的bean类名称还没有解析为实际的类
 	 * @see #hasBeanClass()
 	 * @see #setBeanClass(Class)
 	 * @see #resolveBeanClass(ClassLoader)
@@ -426,7 +425,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	}
 
 	/**
-	 * Return whether this definition specifies a bean class.
+	 * 返回这个定义中是否制定bean类
 	 * @see #getBeanClass()
 	 * @see #setBeanClass(Class)
 	 * @see #resolveBeanClass(ClassLoader)
@@ -436,9 +435,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	}
 
 	/**
-	 * Determine the class of the wrapped bean, resolving it from a
-	 * specified class name if necessary. Will also reload a specified
-	 * Class from its name when called with the bean class already resolved.
+	 * 确定包装bean的类，必要时从指定的类名解析它。在调用已解析的bean类时，还将从其名称重新加载指定的类。
 	 * @param classLoader the ClassLoader to use for resolving a (potential) class name
 	 * @return the resolved bean class
 	 * @throws ClassNotFoundException if the class name could be resolved

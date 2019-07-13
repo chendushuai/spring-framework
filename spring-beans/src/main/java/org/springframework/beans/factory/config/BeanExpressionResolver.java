@@ -34,8 +34,7 @@ import org.springframework.lang.Nullable;
 public interface BeanExpressionResolver {
 
 	/**
-	 * Evaluate the given value as an expression, if applicable;
-	 * return the value as-is otherwise.
+	 * 将给定的值作为表达式求值(如果适用);按原样返回值。
 	 * @param value the value to check
 	 * @param evalContext the evaluation context
 	 * @return the resolved value (potentially the given value as-is)
