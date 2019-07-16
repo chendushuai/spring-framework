@@ -130,26 +130,25 @@ public abstract class AnnotationConfigUtils {
 
 
 	/**
-	 * Register all relevant annotation post processors in the given registry.
-	 * @param registry the registry to operate on
+	 * 在给定注册表中注册所有相关的注释后处理器。
+	 * @param registry 要操作的注册表
 	 */
 	public static void registerAnnotationConfigProcessors(BeanDefinitionRegistry registry) {
 		registerAnnotationConfigProcessors(registry, null);
 	}
 
 	/**
-	 * Register all relevant annotation post processors in the given registry.
-	 * @param registry the registry to operate on
-	 * @param source the configuration source element (already extracted)
-	 * that this registration was triggered from. May be {@code null}.
-	 * @return a Set of BeanDefinitionHolders, containing all bean definitions
-	 * that have actually been registered by this call
+	 * 在给定注册表中注册所有相关的注解后处理器。
+	 * @param registry 要操作的注册表
+	 * @param source 触发此注册的配置源元素(已提取)。可以是{@code null}。
+	 * @return 一组BeanDefinitionHolder，包含此调用实际注册的所有bean定义
 	 */
 	public static Set<BeanDefinitionHolder> registerAnnotationConfigProcessors(
 			BeanDefinitionRegistry registry, @Nullable Object source) {
 
 		DefaultListableBeanFactory beanFactory = unwrapDefaultListableBeanFactory(registry);
 		if (beanFactory != null) {
+			// 判断是否需要进行排序，如果没有指定排序方式，则使用默认排序方案
 			if (!(beanFactory.getDependencyComparator() instanceof AnnotationAwareOrderComparator)) {
 				beanFactory.setDependencyComparator(AnnotationAwareOrderComparator.INSTANCE);
 			}
@@ -217,6 +216,11 @@ public abstract class AnnotationConfigUtils {
 		return new BeanDefinitionHolder(definition, beanName);
 	}
 
+	/**
+	 * 打开获取DefaultListableBeanFactory
+	 * @param registry
+	 * @return
+	 */
 	@Nullable
 	private static DefaultListableBeanFactory unwrapDefaultListableBeanFactory(BeanDefinitionRegistry registry) {
 		if (registry instanceof DefaultListableBeanFactory) {

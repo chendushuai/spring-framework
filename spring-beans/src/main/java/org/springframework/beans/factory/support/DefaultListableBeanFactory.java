@@ -85,24 +85,19 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 /**
- * Spring's default implementation of the {@link ConfigurableListableBeanFactory}
- * and {@link BeanDefinitionRegistry} interfaces: a full-fledged bean factory
- * based on bean definition metadata, extensible through post-processors.
+ * {@link ConfigurableListableBeanFactory}接口和{@link BeanDefinitionRegistry}
+ * 接口的Spring的默认实现：一个基于bean定义元数据的成熟bean工厂，可通过后处理器扩展。
  *
- * <p>Typical usage is registering all bean definitions first (possibly read
- * from a bean definition file), before accessing beans. Bean lookup by name
- * is therefore an inexpensive operation in a local bean definition table,
- * operating on pre-resolved bean definition metadata objects.
+ * <p>典型的用法是在访问bean之前首先注册所有bean定义(可能从bean定义文件中读取)。
+ * 因此，在本地Bean定义表中，通过名称查找Bean是一种廉价的操作，可以在预解析Bean
+ * 定义元数据对象上操作。
  *
- * <p>Note that readers for specific bean definition formats are typically
- * implemented separately rather than as bean factory subclasses:
- * see for example {@link PropertiesBeanDefinitionReader} and
- * {@link org.springframework.beans.factory.xml.XmlBeanDefinitionReader}.
+ * <p>注意，特定bean定义格式的阅读器通常是单独实现的，而不是作为bean工厂子类实现的：
+ * 查看{@link PropertiesBeanDefinitionReader}和
+ * {@link org.springframework.beans.factory.xml.XmlBeanDefinitionReader}的示例
  *
- * <p>For an alternative implementation of the
- * {@link org.springframework.beans.factory.ListableBeanFactory} interface,
- * have a look at {@link StaticListableBeanFactory}, which manages existing
- * bean instances rather than creating new ones based on bean definitions.
+ * <p>用于{@link org.springframework.beans.factory.ListableBeanFactory}接口的另一种实现，
+ * 查看{@link StaticListableBeanFactory}，它管理现有的bean实例，而不是基于bean定义创建新的bean实例。
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
@@ -267,7 +262,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	/**
-	 * Set a {@link java.util.Comparator} for dependency Lists and arrays.
+	 * 设置一个{@link java.util.Comparator}，用于依赖项列表和数组。
 	 * @since 4.0
 	 * @see org.springframework.core.OrderComparator
 	 * @see org.springframework.core.annotation.AnnotationAwareOrderComparator
@@ -277,7 +272,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	/**
-	 * Return the dependency comparator for this BeanFactory (may be {@code null}.
+	 * 返回这个BeanFactory的依赖比较器(可能是{@code null})。
 	 * @since 4.0
 	 */
 	@Nullable
@@ -307,7 +302,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	/**
-	 * Return the autowire candidate resolver for this BeanFactory (never {@code null}).
+	 * 返回此BeanFactory的自动装配候选解析器(绝不是{@code null})。
 	 */
 	public AutowireCandidateResolver getAutowireCandidateResolver() {
 		return this.autowireCandidateResolver;
