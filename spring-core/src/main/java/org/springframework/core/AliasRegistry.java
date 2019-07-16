@@ -42,10 +42,9 @@ public interface AliasRegistry {
 	void removeAlias(String alias);
 
 	/**
-	 * Determine whether this given name is defines as an alias
-	 * (as opposed to the name of an actually registered component).
-	 * @param name the name to check
-	 * @return whether the given name is an alias
+	 * 确定此给定名称是否定义为别名(与实际注册组件的名称相反)。
+	 * @param name 用于检查的名称
+	 * @return 给定的名称是否为别名
 	 */
 	boolean isAlias(String name);
 

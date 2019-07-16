@@ -120,6 +120,11 @@ public class SimpleAliasRegistry implements AliasRegistry {
 		}
 	}
 
+	/**
+	 * 判断给定的名称是否是别名
+	 * @param name 用于检查的名称
+	 * @return 如果给定的名称是别名，则返回true，不是则返回false
+	 */
 	@Override
 	public boolean isAlias(String name) {
 		return this.aliasMap.containsKey(name);

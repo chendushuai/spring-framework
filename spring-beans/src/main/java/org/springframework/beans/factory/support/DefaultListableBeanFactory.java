@@ -125,13 +125,13 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 					ClassUtils.forName("javax.inject.Provider", DefaultListableBeanFactory.class.getClassLoader());
 		}
 		catch (ClassNotFoundException ex) {
-			// JSR-330 API not available - Provider interface simply not supported then.
+			// JSR-330 API不可用 - 那时根本不支持提供者接口。
 			javaxInjectProviderClass = null;
 		}
 	}
 
 
-	/** Map from serialized id to factory instance. */
+	/** 从序列化id映射到工厂实例。 */
 	private static final Map<String, Reference<DefaultListableBeanFactory>> serializableFactories =
 			new ConcurrentHashMap<>(8);
 
@@ -139,55 +139,55 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	@Nullable
 	private String serializationId;
 
-	/** Whether to allow re-registration of a different definition with the same name. */
+	/** 是否允许重新注册具有相同名称的不同定义。 */
 	private boolean allowBeanDefinitionOverriding = true;
 
-	/** Whether to allow eager class loading even for lazy-init beans. */
+	/** 是否允许即时加载类，即使是延迟初始化bean。 */
 	private boolean allowEagerClassLoading = true;
 
 	/** 可选的OrderComparator，用于依赖列表和数组。用于排序 */
 	@Nullable
 	private Comparator<Object> dependencyComparator;
 
-	/** Resolver to use for checking if a bean definition is an autowire candidate. */
+	/** 解析器，用于检查bean定义是否是自动装配候选项。 */
 	private AutowireCandidateResolver autowireCandidateResolver = new SimpleAutowireCandidateResolver();
 
-	/** Map from dependency type to corresponding autowired value. */
+	/** 从依赖项类型映射到相应的自动装配值。 */
 	private final Map<Class<?>, Object> resolvableDependencies = new ConcurrentHashMap<>(16);
 
 	/** bean定义对象的映射，按bean名称键控。 */
 	private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>(256);
 
-	/** Map of singleton and non-singleton bean names, keyed by dependency type. */
+	/** 单例和非单例bean名称的映射，按依赖项类型。 */
 	private final Map<Class<?>, String[]> allBeanNamesByType = new ConcurrentHashMap<>(64);
 
-	/** Map of singleton-only bean names, keyed by dependency type. */
+	/** 单一bean名称的映射，按依赖项类型。 */
 	private final Map<Class<?>, String[]> singletonBeanNamesByType = new ConcurrentHashMap<>(64);
 
-	/** List of bean definition names, in registration order. */
+	/** bean定义名称列表，按注册顺序排列。 */
 	private volatile List<String> beanDefinitionNames = new ArrayList<>(256);
 
-	/** List of names of manually registered singletons, in registration order. */
+	/** 手动注册的单例程序的名称列表，按注册顺序排列。 */
 	private volatile Set<String> manualSingletonNames = new LinkedHashSet<>(16);
 
-	/** Cached array of bean definition names in case of frozen configuration. */
+	/** 缓存的bean定义名数组，以防冻结配置。 */
 	@Nullable
 	private volatile String[] frozenBeanDefinitionNames;
 
-	/** Whether bean definition metadata may be cached for all beans. */
+	/** 是否可以缓存所有bean的bean定义元数据。 */
 	private volatile boolean configurationFrozen = false;
 
 
 	/**
-	 * Create a new DefaultListableBeanFactory.
+	 * 创建一个新的DefaultListableBeanFactory.
 	 */
 	public DefaultListableBeanFactory() {
 		super();
 	}
 
 	/**
-	 * Create a new DefaultListableBeanFactory with the given parent.
-	 * @param parentBeanFactory the parent BeanFactory
+	 * 使用给定的父类创建一个新的DefaultListableBeanFactory。
+	 * @param parentBeanFactory 父级BeanFactory
 	 */
 	public DefaultListableBeanFactory(@Nullable BeanFactory parentBeanFactory) {
 		super(parentBeanFactory);
@@ -195,8 +195,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 
 	/**
-	 * Specify an id for serialization purposes, allowing this BeanFactory to be
-	 * deserialized from this id back into the BeanFactory object, if needed.
+	 * 指定一个用于序列化的id，如果需要，允许将这个BeanFactory从这个id反序列化回BeanFactory对象。
 	 */
 	public void setSerializationId(@Nullable String serializationId) {
 		if (serializationId != null) {
@@ -209,8 +208,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	/**
-	 * Return an id for serialization purposes, if specified, allowing this BeanFactory
-	 * to be deserialized from this id back into the BeanFactory object, if needed.
+	 * 如果指定，返回用于序列化目的的id，如果需要，允许将这个BeanFactory从这个id反序列化回BeanFactory对象。
 	 * @since 4.1.2
 	 */
 	@Nullable
@@ -219,10 +217,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	/**
-	 * Set whether it should be allowed to override bean definitions by registering
-	 * a different definition with the same name, automatically replacing the former.
-	 * If not, an exception will be thrown. This also applies to overriding aliases.
-	 * <p>Default is "true".
+	 * 设置是否应该允许它通过注册具有相同名称的不同定义来覆盖bean定义，从而自动替换前者。
+	 * 如果没有，将抛出异常。这也适用于覆盖别名。
+	 * <p>默认为"true".
 	 * @see #registerBeanDefinition
 	 */
 	public void setAllowBeanDefinitionOverriding(boolean allowBeanDefinitionOverriding) {
@@ -230,8 +227,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	/**
-	 * Return whether it should be allowed to override bean definitions by registering
-	 * a different definition with the same name, automatically replacing the former.
+	 * 返回是否应该允许它通过注册具有相同名称的不同定义来覆盖bean定义，从而自动替换前者。
 	 * @since 4.1.2
 	 */
 	public boolean isAllowBeanDefinitionOverriding() {
@@ -239,13 +235,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	/**
-	 * Set whether the factory is allowed to eagerly load bean classes
-	 * even for bean definitions that are marked as "lazy-init".
-	 * <p>Default is "true". Turn this flag off to suppress class loading
-	 * for lazy-init beans unless such a bean is explicitly requested.
-	 * In particular, by-type lookups will then simply ignore bean definitions
-	 * without resolved class name, instead of loading the bean classes on
-	 * demand just to perform a type check.
+	 * 设置是否允许工厂急切地加载bean类，即使对于标记为“lazy-init”的bean定义也是如此。
+	 * <p>默认为“true”。除非显式地请求延迟初始化bean，则关闭此标志以禁止加载该类。
+	 * 特别是，按类型查找将直接忽略没有解析类名的bean定义，而不是根据需要加载bean类来执行类型检查。
 	 * @see AbstractBeanDefinition#setLazyInit
 	 */
 	public void setAllowEagerClassLoading(boolean allowEagerClassLoading) {
@@ -253,8 +245,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	/**
-	 * Return whether the factory is allowed to eagerly load bean classes
-	 * even for bean definitions that are marked as "lazy-init".
+	 * 返回是否允许工厂急切地加载bean类，即使对于标记为“lazy-init”的bean定义也是如此。
 	 * @since 4.1.2
 	 */
 	public boolean isAllowEagerClassLoading() {
@@ -281,9 +272,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	/**
-	 * Set a custom autowire candidate resolver for this BeanFactory to use
-	 * when deciding whether a bean definition should be considered as a
-	 * candidate for autowiring.
+	 * 为这个bean工厂设置一个自定义自动装配候选解析器，以便在决定是否应该将bean定义视为自动装配的候选时使用。
 	 */
 	public void setAutowireCandidateResolver(final AutowireCandidateResolver autowireCandidateResolver) {
 		Assert.notNull(autowireCandidateResolver, "AutowireCandidateResolver must not be null");
@@ -326,7 +315,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 
 	//---------------------------------------------------------------------
-	// Implementation of remaining BeanFactory methods
+	// 实现剩余的BeanFactory方法
 	//---------------------------------------------------------------------
 
 	@Override
@@ -431,7 +420,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 
 	//---------------------------------------------------------------------
-	// Implementation of ListableBeanFactory interface
+	// ListableBeanFactory接口的实现
 	//---------------------------------------------------------------------
 
 	/**
@@ -495,17 +484,23 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		return resolvedBeanNames;
 	}
 
+	/**
+	 * 根据类型获取Bean名称
+	 * @param type
+	 * @param includeNonSingletons
+	 * @param allowEagerInit
+	 * @return
+	 */
 	private String[] doGetBeanNamesForType(ResolvableType type, boolean includeNonSingletons, boolean allowEagerInit) {
 		List<String> result = new ArrayList<>();
 
-		// Check all bean definitions.
+		// 检查所有的bean定义
 		for (String beanName : this.beanDefinitionNames) {
-			// Only consider bean as eligible if the bean name
-			// is not defined as alias for some other bean.
+			// 只有当bean名称没有定义为其他bean的别名时，才认为bean是合格的。
 			if (!isAlias(beanName)) {
 				try {
 					RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
-					// Only check bean definition if it is complete.
+					// 只有当bean定义完成时才检查它。
 					if (!mbd.isAbstract() && (allowEagerInit ||
 							(mbd.hasBeanClass() || !mbd.isLazyInit() || isAllowEagerClassLoading()) &&
 									!requiresEagerInitForType(mbd.getFactoryBeanName()))) {
