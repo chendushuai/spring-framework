@@ -1016,10 +1016,20 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		return getMergedLocalBeanDefinition(beanName);
 	}
 
+	/**
+	 * 判断给定名称是不是FactoryBean类型
+	 * @param name 用于检查的bean名称
+	 * @return
+	 * @throws NoSuchBeanDefinitionException
+	 */
 	@Override
 	public boolean isFactoryBean(String name) throws NoSuchBeanDefinitionException {
+		// 解析bean名称
 		String beanName = transformedBeanName(name);
+
+		// 返回给定名称下注册的单例对象，不允许创建早期引用对象
 		Object beanInstance = getSingleton(beanName, false);
+		// 如果匹配到单例对象，返回是否是FactoryBean类型
 		if (beanInstance != null) {
 			return (beanInstance instanceof FactoryBean);
 		}

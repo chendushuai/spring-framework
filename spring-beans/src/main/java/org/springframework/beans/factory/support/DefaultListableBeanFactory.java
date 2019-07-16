@@ -486,9 +486,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 	/**
 	 * 根据类型获取Bean名称
-	 * @param type
-	 * @param includeNonSingletons
-	 * @param allowEagerInit
+	 * @param type 解析类型
+	 * @param includeNonSingletons 包括非单例对象
+	 * @param allowEagerInit 允许提前初始化
 	 * @return
 	 */
 	private String[] doGetBeanNamesForType(ResolvableType type, boolean includeNonSingletons, boolean allowEagerInit) {
@@ -576,11 +576,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	/**
-	 * Check whether the specified bean would need to be eagerly initialized
-	 * in order to determine its type.
-	 * @param factoryBeanName a factory-bean reference that the bean definition
-	 * defines a factory method for
-	 * @return whether eager initialization is necessary
+	 * 检查是否需要急切地初始化指定的bean，以确定其类型。
+	 * @param factoryBeanName bean定义为其定义工厂方法的工厂bean引用
+	 * @return 是否需要立即初始化
 	 */
 	private boolean requiresEagerInitForType(@Nullable String factoryBeanName) {
 		return (factoryBeanName != null && isFactoryBean(factoryBeanName) && !containsSingleton(factoryBeanName));
