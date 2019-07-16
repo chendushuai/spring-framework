@@ -71,12 +71,9 @@ public class AnnotatedBeanDefinitionReader {
 	}
 
 	/**
-	 * Create a new {@code AnnotatedBeanDefinitionReader} for the given registry and using
-	 * the given {@link Environment}.
-	 * @param registry the {@code BeanFactory} to load bean definitions into,
-	 * in the form of a {@code BeanDefinitionRegistry}
-	 * @param environment the {@code Environment} to use when evaluating bean definition
-	 * profiles.
+	 * 为给定注册表创建一个新的{@code AnnotatedBeanDefinitionReader}，并使用给定的{@link Environment}。
+	 * @param registry 以{@code BeanDefinitionRegistry}的形式将bean定义加载到{@code BeanFactory}中
+	 * @param environment 在评估bean定义概要文件时要使用的{@code Environment}。
 	 * @since 3.1
 	 */
 	public AnnotatedBeanDefinitionReader(BeanDefinitionRegistry registry, Environment environment) {
