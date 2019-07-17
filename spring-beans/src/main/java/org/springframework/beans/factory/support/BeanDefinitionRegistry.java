@@ -48,13 +48,11 @@ import org.springframework.core.AliasRegistry;
 public interface BeanDefinitionRegistry extends AliasRegistry {
 
 	/**
-	 * Register a new bean definition with this registry.
-	 * Must support RootBeanDefinition and ChildBeanDefinition.
-	 * @param beanName the name of the bean instance to register
-	 * @param beanDefinition definition of the bean instance to register
-	 * @throws BeanDefinitionStoreException if the BeanDefinition is invalid
-	 * @throws BeanDefinitionOverrideException if there is already a BeanDefinition
-	 * for the specified bean name and we are not allowed to override it
+	 * 用这个注册表注册一个新的bean定义。必须支持RootBeanDefinition和ChildBeanDefinition。
+	 * @param beanName 要注册的bean实例的名称
+	 * @param beanDefinition 要注册的bean实例的定义
+	 * @throws BeanDefinitionStoreException 如果BeanDefinition无效
+	 * @throws BeanDefinitionOverrideException 如果已经有指定bean名称的bean定义，并且不允许覆盖它
 	 * @see GenericBeanDefinition
 	 * @see RootBeanDefinition
 	 * @see ChildBeanDefinition

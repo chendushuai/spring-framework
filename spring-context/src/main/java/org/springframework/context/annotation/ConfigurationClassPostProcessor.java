@@ -242,8 +242,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	}
 
 	/**
-	 * Prepare the Configuration classes for servicing bean requests at runtime
-	 * by replacing them with CGLIB-enhanced subclasses.
+	 * 通过使用CGLIB增强的子类替换bean请求，准备在运行时为bean请求提供服务的配置类。
 	 */
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) {
@@ -254,12 +253,14 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		}
 		this.factoriesPostProcessed.add(factoryId);
 		if (!this.registriesPostProcessed.contains(factoryId)) {
-			// BeanDefinitionRegistryPostProcessor hook apparently not supported...
-			// Simply call processConfigurationClasses lazily at this point then.
+			// 显然不支持BeanDefinitionRegistryPostProcessor钩子……
+			// 然后，简单地调用processConfigurationClasses。
 			processConfigBeanDefinitions((BeanDefinitionRegistry) beanFactory);
 		}
 
+		// 对一个bean工厂进行后处理，以查找配置类bean定义；
 		enhanceConfigurationClasses(beanFactory);
+		// 添加ImportAwareBeanPostProcessor bean后置处理器
 		beanFactory.addBeanPostProcessor(new ImportAwareBeanPostProcessor(beanFactory));
 	}
 
@@ -336,6 +337,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 						registry, this.sourceExtractor, this.resourceLoader, this.environment,
 						this.importBeanNameGenerator, parser.getImportRegistry());
 			}
+			// 从配置类加载bean定义
 			this.reader.loadBeanDefinitions(configClasses);
 			alreadyParsed.addAll(configClasses);
 
@@ -361,28 +363,29 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		}
 		while (!candidates.isEmpty());
 
-		// Register the ImportRegistry as a bean in order to support ImportAware @Configuration classes
+		// 将ImportRegistry注册为bean，以便支持支持ImportAware @Configuration类
 		if (sbr != null && !sbr.containsSingleton(IMPORT_REGISTRY_BEAN_NAME)) {
 			sbr.registerSingleton(IMPORT_REGISTRY_BEAN_NAME, parser.getImportRegistry());
 		}
 
 		if (this.metadataReaderFactory instanceof CachingMetadataReaderFactory) {
-			// Clear cache in externally provided MetadataReaderFactory; this is a no-op
-			// for a shared cache since it'll be cleared by the ApplicationContext.
+			// 清除外部提供的MetadataReaderFactory中的缓存；对于共享缓存，这里不会操作，因为它将被ApplicationContext清除。
 			((CachingMetadataReaderFactory) this.metadataReaderFactory).clearCache();
 		}
 	}
 
 	/**
-	 * Post-processes a BeanFactory in search of Configuration class BeanDefinitions;
-	 * any candidates are then enhanced by a {@link ConfigurationClassEnhancer}.
-	 * Candidate status is determined by BeanDefinition attribute metadata.
+	 * 对一个bean工厂进行后处理，以查找配置类bean定义；
+	 * 然后，使用{@link ConfigurationClassEnhancer}增强任何候选项。候选状态由BeanDefinition属性元数据决定。
 	 * @see ConfigurationClassEnhancer
 	 */
 	public void enhanceConfigurationClasses(ConfigurableListableBeanFactory beanFactory) {
 		Map<String, AbstractBeanDefinition> configBeanDefs = new LinkedHashMap<>();
+		// 遍历工厂的bean定义名称集合
 		for (String beanName : beanFactory.getBeanDefinitionNames()) {
+			// 得到对应的bean定义
 			BeanDefinition beanDef = beanFactory.getBeanDefinition(beanName);
+			// 获取bean定义中的配置属性
 			Object configClassAttr = beanDef.getAttribute(ConfigurationClassUtils.CONFIGURATION_CLASS_ATTRIBUTE);
 			MethodMetadata methodMetadata = null;
 			if (beanDef instanceof AnnotatedBeanDefinition) {

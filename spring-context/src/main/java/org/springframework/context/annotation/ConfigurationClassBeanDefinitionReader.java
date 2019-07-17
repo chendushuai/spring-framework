@@ -137,13 +137,17 @@ class ConfigurationClassBeanDefinitionReader {
 
 		// 判断该配置类是否是通过@Import注册的
 		if (configClass.isImported()) {
+			// 如果该配置类是通过@Import注册的，则将该配置类本身注册为bean定义
 			registerBeanDefinitionForImportedConfigurationClass(configClass);
 		}
 		for (BeanMethod beanMethod : configClass.getBeanMethods()) {
+			// 遍历配置类的bean方法，从方法中加载bean定义
 			loadBeanDefinitionsForBeanMethod(beanMethod);
 		}
 
+		// 从配置类的引入资源中加载bean定义
 		loadBeanDefinitionsFromImportedResources(configClass.getImportedResources());
+		// 从配置类的导入bean定义注册中加载bean定义
 		loadBeanDefinitionsFromRegistrars(configClass.getImportBeanDefinitionRegistrars());
 	}
 
@@ -170,8 +174,7 @@ class ConfigurationClassBeanDefinitionReader {
 	}
 
 	/**
-	 * Read the given {@link BeanMethod}, registering bean definitions
-	 * with the BeanDefinitionRegistry based on its contents.
+	 * 读取给定的{@link BeanMethod}，根据其内容向BeanDefinitionRegistry注册bean定义。
 	 */
 	@SuppressWarnings("deprecation")  // for RequiredAnnotationBeanPostProcessor.SKIP_REQUIRED_CHECK_ATTRIBUTE
 	private void loadBeanDefinitionsForBeanMethod(BeanMethod beanMethod) {

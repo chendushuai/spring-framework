@@ -893,6 +893,12 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	// Implementation of BeanDefinitionRegistry interface
 	//---------------------------------------------------------------------
 
+	/**
+	 * 用这个注册表注册一个新的bean定义。必须支持RootBeanDefinition和ChildBeanDefinition。
+	 * @param beanName 要注册的bean实例的名称
+	 * @param beanDefinition 要注册的bean实例的定义
+	 * @throws BeanDefinitionStoreException 如果BeanDefinition无效
+	 */
 	@Override
 	public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition)
 			throws BeanDefinitionStoreException {

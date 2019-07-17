@@ -24,15 +24,13 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
- * Extension of the {@link org.springframework.beans.factory.support.GenericBeanDefinition}
- * class, adding support for annotation metadata exposed through the
- * {@link AnnotatedBeanDefinition} interface.
+ * {@link org.springframework.beans.factory.support.GenericBeanDefinition}类的扩展，
+ * 添加了对通过{@link AnnotatedBeanDefinition}接口公开的注释元数据的支持。
  *
- * <p>This GenericBeanDefinition variant is mainly useful for testing code that expects
- * to operate on an AnnotatedBeanDefinition, for example strategy implementations
- * in Spring's component scanning support (where the default definition class is
- * {@link org.springframework.context.annotation.ScannedGenericBeanDefinition},
- * which also implements the AnnotatedBeanDefinition interface).
+ * <p>这个GenericBeanDefinition变体主要用于测试希望在AnnotatedBeanDefinition上操作的代码，
+ * 例如Spring组件扫描支持中的策略实现(其中默认定义类是
+ * {@link org.springframework.context.annotation.ScannedGenericBeanDefinition}，
+ * 它也实现了AnnotatedBeanDefinition接口)。
  *
  * @author Juergen Hoeller
  * @author Chris Beams
@@ -43,15 +41,21 @@ import org.springframework.util.Assert;
 @SuppressWarnings("serial")
 public class AnnotatedGenericBeanDefinition extends GenericBeanDefinition implements AnnotatedBeanDefinition {
 
+	/**
+	 * 注解元数据
+	 */
 	private final AnnotationMetadata metadata;
 
+	/**
+	 * 工厂方法元数据
+	 */
 	@Nullable
 	private MethodMetadata factoryMethodMetadata;
 
 
 	/**
-	 * Create a new AnnotatedGenericBeanDefinition for the given bean class.
-	 * @param beanClass the loaded bean class
+	 * 为给定的bean类创建一个新的AnnotatedGenericBeanDefinition。
+	 * @param beanClass 已加载的bean类
 	 */
 	public AnnotatedGenericBeanDefinition(Class<?> beanClass) {
 		setBeanClass(beanClass);

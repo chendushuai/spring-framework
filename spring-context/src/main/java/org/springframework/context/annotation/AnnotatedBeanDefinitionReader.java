@@ -67,6 +67,9 @@ public class AnnotatedBeanDefinitionReader {
 	 *  那么何为BeanDefinition呢？参考BeanDefinition的源码的注释
 	 */
 	public AnnotatedBeanDefinitionReader(BeanDefinitionRegistry registry) {
+		/**
+		 * 生成一个Reader，添加后置处理器，解析bean定义，Config文件等
+		 */
 		this(registry, getOrCreateEnvironment(registry));
 	}
 
@@ -284,8 +287,7 @@ public class AnnotatedBeanDefinitionReader {
 
 
 	/**
-	 * Get the Environment from the given registry if possible, otherwise return a new
-	 * StandardEnvironment.
+	 * 如果可能，从给定的注册表获取环境，否则返回一个新的StandardEnvironment。
 	 */
 	private static Environment getOrCreateEnvironment(BeanDefinitionRegistry registry) {
 		Assert.notNull(registry, "BeanDefinitionRegistry must not be null");
