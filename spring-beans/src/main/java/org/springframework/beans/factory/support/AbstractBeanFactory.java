@@ -867,19 +867,26 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		return result;
 	}
 
+	/**
+	 * 添加一个新的BeanPostProcessor，它将应用于这个工厂创建的bean。在工厂配置期间调用。
+	 * <p>注意：此处提交的后处理程序将按注册顺序申请；
+	 * 通过实现{@link org.springframework.core.Ordered}来表达的任何排序语义都将被忽略。
+	 * 注意，自动检测的后处理程序(例如，作为ApplicationContext中的bean)总是在以编程方式注册后处理程序后应用。
+	 * @param beanPostProcessor 要注册的后处理器
+	 */
 	@Override
 	public void addBeanPostProcessor(BeanPostProcessor beanPostProcessor) {
 		Assert.notNull(beanPostProcessor, "BeanPostProcessor must not be null");
-		// Remove from old position, if any
+		// 如果有的话，移除已有的BeanPostProcessor
 		this.beanPostProcessors.remove(beanPostProcessor);
-		// Track whether it is instantiation/destruction aware
+		// 跟踪它是否支持实例化/销毁
 		if (beanPostProcessor instanceof InstantiationAwareBeanPostProcessor) {
 			this.hasInstantiationAwareBeanPostProcessors = true;
 		}
 		if (beanPostProcessor instanceof DestructionAwareBeanPostProcessor) {
 			this.hasDestructionAwareBeanPostProcessors = true;
 		}
-		// Add to end of list
+		// 添加到列表末尾
 		this.beanPostProcessors.add(beanPostProcessor);
 	}
 
@@ -915,6 +922,11 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		return this.hasDestructionAwareBeanPostProcessors;
 	}
 
+	/**
+	 * 注册由给定范围实现支持的给定范围。
+	 * @param scopeName 范围标识
+	 * @param scope 支持范围实现
+	 */
 	@Override
 	public void registerScope(String scopeName, Scope scope) {
 		Assert.notNull(scopeName, "Scope identifier must not be null");

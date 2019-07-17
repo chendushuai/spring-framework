@@ -144,8 +144,7 @@ class ConfigurationClassParser {
 
 
 	/**
-	 * Create a new {@link ConfigurationClassParser} instance that will be used
-	 * to populate the set of configuration classes.
+	 * 创建一个新的{@link ConfigurationClassParser}实例，用于填充一组配置类。
 	 */
 	public ConfigurationClassParser(MetadataReaderFactory metadataReaderFactory,
 			ProblemReporter problemReporter, Environment environment, ResourceLoader resourceLoader,

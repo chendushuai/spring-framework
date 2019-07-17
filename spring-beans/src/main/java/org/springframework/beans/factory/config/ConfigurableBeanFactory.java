@@ -31,16 +31,13 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.StringValueResolver;
 
 /**
- * Configuration interface to be implemented by most bean factories. Provides
- * facilities to configure a bean factory, in addition to the bean factory
- * client methods in the {@link org.springframework.beans.factory.BeanFactory}
- * interface.
+ * 配置接口将由大多数bean工厂实现。
+ * 除了在{@link org.springframework.beans.factory.BeanFactory}接口中提供bean工厂客户端方法之外，还提供配置bean工厂的工具。
  *
- * <p>This bean factory interface is not meant to be used in normal application
- * code: Stick to {@link org.springframework.beans.factory.BeanFactory} or
- * {@link org.springframework.beans.factory.ListableBeanFactory} for typical
- * needs. This extended interface is just meant to allow for framework-internal
- * plug'n'play and for special access to bean factory configuration methods.
+ * <p>这个bean工厂接口不打算在普通的应用程序代码中使用：
+ * 坚持使用{@link org.springframework.beans.factory.BeanFactory}或者
+ * {@link org.springframework.beans.factory.ListableBeanFactory}用于典型需求。
+ * 这个扩展接口只是为了允许框架-内部即插即用和对bean工厂配置方法的特殊访问。
  *
  * @author Juergen Hoeller
  * @since 03.11.2003
@@ -51,15 +48,13 @@ import org.springframework.util.StringValueResolver;
 public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, SingletonBeanRegistry {
 
 	/**
-	 * Scope identifier for the standard singleton scope: "singleton".
-	 * Custom scopes can be added via {@code registerScope}.
+	 * 标准单例范围的范围标识符:“singleton”。可以通过{@code registerScope}添加自定义范围。
 	 * @see #registerScope
 	 */
 	String SCOPE_SINGLETON = "singleton";
 
 	/**
-	 * Scope identifier for the standard prototype scope: "prototype".
-	 * Custom scopes can be added via {@code registerScope}.
+	 * 标准原型作用域的作用域标识符:“prototype”。可以通过{@code registerScope}添加自定义范围。
 	 * @see #registerScope
 	 */
 	String SCOPE_PROTOTYPE = "prototype";
@@ -233,14 +228,11 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
 	String resolveEmbeddedValue(String value);
 
 	/**
-	 * Add a new BeanPostProcessor that will get applied to beans created
-	 * by this factory. To be invoked during factory configuration.
-	 * <p>Note: Post-processors submitted here will be applied in the order of
-	 * registration; any ordering semantics expressed through implementing the
-	 * {@link org.springframework.core.Ordered} interface will be ignored. Note
-	 * that autodetected post-processors (e.g. as beans in an ApplicationContext)
-	 * will always be applied after programmatically registered ones.
-	 * @param beanPostProcessor the post-processor to register
+	 * 添加一个新的BeanPostProcessor，它将应用于这个工厂创建的bean。在工厂配置期间调用。
+	 * <p>注意：此处提交的后处理程序将按注册顺序申请；
+	 * 通过实现{@link org.springframework.core.Ordered}来表达的任何排序语义都将被忽略。
+	 * 注意，自动检测的后处理程序(例如，作为ApplicationContext中的bean)总是在以编程方式注册后处理程序后应用。
+	 * @param beanPostProcessor 要注册的后处理器
 	 */
 	void addBeanPostProcessor(BeanPostProcessor beanPostProcessor);
 
@@ -250,9 +242,9 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
 	int getBeanPostProcessorCount();
 
 	/**
-	 * Register the given scope, backed by the given Scope implementation.
-	 * @param scopeName the scope identifier
-	 * @param scope the backing Scope implementation
+	 * 注册由给定范围实现支持的给定范围。
+	 * @param scopeName 范围标识
+	 * @param scope 支持范围实现
 	 */
 	void registerScope(String scopeName, Scope scope);
 

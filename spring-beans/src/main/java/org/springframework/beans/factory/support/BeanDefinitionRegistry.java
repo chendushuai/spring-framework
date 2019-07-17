@@ -85,9 +85,8 @@ public interface BeanDefinitionRegistry extends AliasRegistry {
 	boolean containsBeanDefinition(String beanName);
 
 	/**
-	 * Return the names of all beans defined in this registry.
-	 * @return the names of all beans defined in this registry,
-	 * or an empty array if none defined
+	 * 返回此注册表中定义的所有bean的名称。
+	 * @return 此注册表中定义的所有bean的名称，如果没有定义，则为空数组
 	 */
 	String[] getBeanDefinitionNames();
 

@@ -134,6 +134,7 @@ public abstract class AnnotationConfigUtils {
 	 * @param registry 要操作的注册表
 	 */
 	public static void registerAnnotationConfigProcessors(BeanDefinitionRegistry registry) {
+		// 在给定注册表中注册所有相关的注解后处理器。
 		registerAnnotationConfigProcessors(registry, null);
 	}
 
@@ -146,6 +147,7 @@ public abstract class AnnotationConfigUtils {
 	public static Set<BeanDefinitionHolder> registerAnnotationConfigProcessors(
 			BeanDefinitionRegistry registry, @Nullable Object source) {
 
+		// 从bean定义注册器中获取DefaultListableBeanFactory
 		DefaultListableBeanFactory beanFactory = unwrapDefaultListableBeanFactory(registry);
 		if (beanFactory != null) {
 			// 判断是否需要进行排序，如果没有指定排序方式，则使用默认排序方案
@@ -157,6 +159,7 @@ public abstract class AnnotationConfigUtils {
 			}
 		}
 
+		// 创建BeanDefinitionHolder集合，BeanDefinitionHolder可以认为是bean定义的包装，包含一个bean定义和bean名称，及一组bean别名
 		Set<BeanDefinitionHolder> beanDefs = new LinkedHashSet<>(8);
 
 		if (!registry.containsBeanDefinition(CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME)) {

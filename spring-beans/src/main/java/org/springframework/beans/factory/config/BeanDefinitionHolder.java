@@ -24,11 +24,12 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 /**
- * 包含名称和别名的bean定义的Holder。可以注册为内部bean的占位符。
+ * 可以认为是bean定义BeanDefinition的包装，包装内容中包含bean定义BeanDefinition、bean名称和对应的别名列表
  *
- * <p>Can also be used for programmatic registration of inner bean
- * definitions. If you don't care about BeanNameAware and the like,
- * registering RootBeanDefinition or ChildBeanDefinition is good enough.
+ * <p>包含名称和别名的bean定义的Holder。可以注册为内部bean的占位符。
+ *
+ * <p>还可以用于内部bean定义的编程注册。
+ * 如果您不关心BeanNameAware之类的东西，注册RootBeanDefinition或ChildBeanDefinition就足够了。
  *
  * @author Juergen Hoeller
  * @since 1.0.2
@@ -47,9 +48,9 @@ public class BeanDefinitionHolder implements BeanMetadataElement {
 
 
 	/**
-	 * Create a new BeanDefinitionHolder.
-	 * @param beanDefinition the BeanDefinition to wrap
-	 * @param beanName the name of the bean, as specified for the bean definition
+	 * 创建一个BeanDefinitionHolder.
+	 * @param beanDefinition 要包装的bean定义
+	 * @param beanName bean的名称，如bean定义所指定的
 	 */
 	public BeanDefinitionHolder(BeanDefinition beanDefinition, String beanName) {
 		this(beanDefinition, beanName, null);
