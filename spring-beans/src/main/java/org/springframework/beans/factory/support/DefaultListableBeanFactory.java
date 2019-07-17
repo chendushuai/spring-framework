@@ -969,6 +969,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	public void removeBeanDefinition(String beanName) throws NoSuchBeanDefinitionException {
 		Assert.hasText(beanName, "'beanName' must not be empty");
 
+		// 返回并移除指定名称的BeanDefinition
 		BeanDefinition bd = this.beanDefinitionMap.remove(beanName);
 		if (bd == null) {
 			if (logger.isTraceEnabled()) {
@@ -977,53 +978,55 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			throw new NoSuchBeanDefinitionException(beanName);
 		}
 
+		// 判断是否正在创建
 		if (hasBeanCreationStarted()) {
-			// Cannot modify startup-time collection elements anymore (for stable iteration)
+			// 对于稳定的集合，不能再修改启动时的集合元素
 			synchronized (this.beanDefinitionMap) {
 				List<String> updatedDefinitions = new ArrayList<>(this.beanDefinitionNames);
 				updatedDefinitions.remove(beanName);
+				// 从已有的bean定义名称集合中移除指定bean
 				this.beanDefinitionNames = updatedDefinitions;
 			}
 		}
 		else {
-			// Still in startup registration phase
+			// 仍处于启动注册阶段
 			this.beanDefinitionNames.remove(beanName);
 		}
 		this.frozenBeanDefinitionNames = null;
 
+		// 重置bean定义
 		resetBeanDefinition(beanName);
 	}
 
 	/**
-	 * Reset all bean definition caches for the given bean,
-	 * including the caches of beans that are derived from it.
-	 * <p>Called after an existing bean definition has been replaced or removed,
-	 * triggering {@link #clearMergedBeanDefinition}, {@link #destroySingleton}
-	 * and {@link MergedBeanDefinitionPostProcessor#resetBeanDefinition} on the
-	 * given bean and on all bean definitions that have the given bean as parent.
-	 * @param beanName the name of the bean to reset
+	 * 重置给定bean的所有bean定义缓存，包括派生自该bean的bean的缓存。
+	 * <p>在替换或删除现有bean定义之后调用，在给定bean和所有具有给定bean父bean的bean定义上触发
+	 * {@link #clearMergedBeanDefinition}、{@link #destroySingleton}和
+	 * {@link MergedBeanDefinitionPostProcessor#resetBeanDefinition}。
+	 * @param beanName 要重置的bean的名称
 	 * @see #registerBeanDefinition
 	 * @see #removeBeanDefinition
 	 */
 	protected void resetBeanDefinition(String beanName) {
-		// Remove the merged bean definition for the given bean, if already created.
+		// 删除已创建的给定bean的合并bean定义。
 		clearMergedBeanDefinition(beanName);
 
-		// Remove corresponding bean from singleton cache, if any. Shouldn't usually
-		// be necessary, rather just meant for overriding a context's default beans
-		// (e.g. the default StaticMessageSource in a StaticApplicationContext).
+		// 从单例缓存中删除相应的bean(如果有的话)。
+		// 通常不需要，而只是用于覆盖上下文的默认bean(例如，StaticApplicationContext中的默认StaticMessageSource)。
 		destroySingleton(beanName);
 
-		// Notify all post-processors that the specified bean definition has been reset.
+		// 通知所有后处理程序指定的bean定义已经重置。
 		for (BeanPostProcessor processor : getBeanPostProcessors()) {
+			// 如果实现了合并bean定义后处理器，则需要重置bean后处理器的BeanDefinition
 			if (processor instanceof MergedBeanDefinitionPostProcessor) {
 				((MergedBeanDefinitionPostProcessor) processor).resetBeanDefinition(beanName);
 			}
 		}
 
-		// Reset all bean definitions that have the given bean as parent (recursively).
+		// 重置所有将给定bean作为父bean的bean定义(递归地)。
 		for (String bdName : this.beanDefinitionNames) {
 			if (!beanName.equals(bdName)) {
+				// 遍历所有bean定义，判断给定bean定义是不是bean定义的父bean，如果是，重置bean说明
 				BeanDefinition bd = this.beanDefinitionMap.get(bdName);
 				if (beanName.equals(bd.getParentName())) {
 					resetBeanDefinition(bdName);
@@ -1054,6 +1057,10 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		clearByTypeCache();
 	}
 
+	/**
+	 *
+	 * @param beanName the name of the bean
+	 */
 	@Override
 	public void destroySingleton(String beanName) {
 		super.destroySingleton(beanName);

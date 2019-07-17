@@ -135,6 +135,7 @@ class ConfigurationClassBeanDefinitionReader {
 			return;
 		}
 
+		// 判断该配置类是否是通过@Import注册的
 		if (configClass.isImported()) {
 			registerBeanDefinitionForImportedConfigurationClass(configClass);
 		}
@@ -147,7 +148,7 @@ class ConfigurationClassBeanDefinitionReader {
 	}
 
 	/**
-	 * Register the {@link Configuration} class itself as a bean definition.
+	 * 将{@link Configuration}类本身注册为bean定义。
 	 */
 	private void registerBeanDefinitionForImportedConfigurationClass(ConfigurationClass configClass) {
 		AnnotationMetadata metadata = configClass.getMetadata();

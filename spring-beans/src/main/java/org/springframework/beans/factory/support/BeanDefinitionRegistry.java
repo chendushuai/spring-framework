@@ -63,9 +63,9 @@ public interface BeanDefinitionRegistry extends AliasRegistry {
 			throws BeanDefinitionStoreException;
 
 	/**
-	 * Remove the BeanDefinition for the given name.
-	 * @param beanName the name of the bean instance to register
-	 * @throws NoSuchBeanDefinitionException if there is no such bean definition
+	 * 移除给定名称的BeanDefinition
+	 * @param beanName 要注册的bean实例的名称
+	 * @throws NoSuchBeanDefinitionException 如果没有匹配的bean定义
 	 */
 	void removeBeanDefinition(String beanName) throws NoSuchBeanDefinitionException;
 

@@ -37,9 +37,8 @@ package org.springframework.beans.factory;
 public interface DisposableBean {
 
 	/**
-	 * Invoked by the containing {@code BeanFactory} on destruction of a bean.
-	 * @throws Exception in case of shutdown errors. Exceptions will get logged
-	 * but not rethrown to allow other beans to release their resources as well.
+	 * 在销毁bean时，由包含{@code BeanFactory}的调用。
+	 * @throws Exception 在关机错误的情况下。异常将被记录，但不会被重新抛出，以允许其他bean也释放它们的资源。
 	 */
 	void destroy() throws Exception;
 
