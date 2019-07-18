@@ -41,7 +41,7 @@ import org.springframework.core.PriorityOrdered;
 import org.springframework.lang.Nullable;
 
 /**
- * Delegate for AbstractApplicationContext's post-processor handling.
+ * 委托AbstractApplicationContext的后处理器处理。
  *
  * @author Juergen Hoeller
  * @since 4.0
@@ -51,11 +51,15 @@ final class PostProcessorRegistrationDelegate {
 	private PostProcessorRegistrationDelegate() {
 	}
 
-
+	/**
+	 * 请求BeanFactoryPostProcessor集合处理
+	 * @param beanFactory bean工厂
+	 * @param beanFactoryPostProcessors bean工厂后置处理器集合
+	 */
 	public static void invokeBeanFactoryPostProcessors(
 			ConfigurableListableBeanFactory beanFactory, List<BeanFactoryPostProcessor> beanFactoryPostProcessors) {
 
-		// Invoke BeanDefinitionRegistryPostProcessors first, if any.
+		// 如果有的话，首先调用BeanDefinitionRegistryPostProcessor。
 		Set<String> processedBeans = new HashSet<>();
 
 		if (beanFactory instanceof BeanDefinitionRegistry) {
@@ -63,10 +67,13 @@ final class PostProcessorRegistrationDelegate {
 			List<BeanFactoryPostProcessor> regularPostProcessors = new ArrayList<>();
 			List<BeanDefinitionRegistryPostProcessor> registryProcessors = new ArrayList<>();
 
+			// 自定义的beanFactoryPostProcessors
 			for (BeanFactoryPostProcessor postProcessor : beanFactoryPostProcessors) {
+				// 如果后置处理器的类型是bean定义注册后置处理器BeanDefinitionRegistryPostProcessor
 				if (postProcessor instanceof BeanDefinitionRegistryPostProcessor) {
 					BeanDefinitionRegistryPostProcessor registryProcessor =
 							(BeanDefinitionRegistryPostProcessor) postProcessor;
+					// 在上下文初始化，bean定义加载完成，但尚未初始化之前，执行处理
 					registryProcessor.postProcessBeanDefinitionRegistry(registry);
 					registryProcessors.add(registryProcessor);
 				}
@@ -75,24 +82,42 @@ final class PostProcessorRegistrationDelegate {
 				}
 			}
 
-			// Do not initialize FactoryBeans here: We need to leave all regular beans
-			// uninitialized to let the bean factory post-processors apply to them!
-			// Separate between BeanDefinitionRegistryPostProcessors that implement
-			// PriorityOrdered, Ordered, and the rest.
+			// 不要在这里初始化FactoryBean：
+			// 我们需要不初始化所有常规bean，让bean工厂的后处理程序应用于它们！
+			// 将实现优先排序、有序的BeanDefinitionRegistryPostProcessor与其他处理器分开。
+			// 这个currentRegistryProcessors 放的是spring内部自己实现了BeanDefinitionRegistryPostProcessor接口的对象
 			List<BeanDefinitionRegistryPostProcessor> currentRegistryProcessors = new ArrayList<>();
 
-			// First, invoke the BeanDefinitionRegistryPostProcessors that implement PriorityOrdered.
+			// 首先，调用实现PriorityOrdered的BeanDefinitionRegistryPostProcessors。
+			// BeanDefinitionRegistryPostProcessor 等于 BeanFactoryPostProcessor
+			// getBeanNamesForType 根据bean的类型获取bean的名字ConfigurationClassPostProcessor
 			String[] postProcessorNames =
 					beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
+			//这个地方可以得到一个BeanFactoryPostProcessor，因为是spring默认在最开始自己注册的
+			//为什么要在最开始注册这个呢？
+			//因为spring的工厂需要许解析去扫描等等功能
+			//而这些功能都是需要在spring工厂初始化完成之前执行
+			//要么在工厂最开始的时候、要么在工厂初始化之中，反正不能再之后
+			//因为如果在之后就没有意义，因为那个时候已经需要使用工厂了
+			//所以这里spring'在一开始就注册了一个BeanFactoryPostProcessor，用来插手springfactory的实例化过程
+			//在这个地方断点可以知道这个类叫做ConfigurationClassPostProcessor
+			//ConfigurationClassPostProcessor那么这个类能干嘛呢？可以参考源码
+			//下面我们对这个牛逼哄哄的类（他能插手spring工厂的实例化过程还不牛逼吗？）重点解释
 			for (String ppName : postProcessorNames) {
 				if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) {
 					currentRegistryProcessors.add(beanFactory.getBean(ppName, BeanDefinitionRegistryPostProcessor.class));
 					processedBeans.add(ppName);
 				}
 			}
+			//排序不重要，况且currentRegistryProcessors这里也只有一个数据
 			sortPostProcessors(currentRegistryProcessors, beanFactory);
+			//合并list，不重要(为什么要合并，因为还有自己的)
 			registryProcessors.addAll(currentRegistryProcessors);
+			//最重要。注意这里是方法调用
+			//执行所有BeanDefinitionRegistryPostProcessor
 			invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry);
+			//执行完成了所有BeanDefinitionRegistryPostProcessor
+			//这个list只是一个临时变量，故而要清除
 			currentRegistryProcessors.clear();
 
 			// Next, invoke the BeanDefinitionRegistryPostProcessors that implement Ordered.

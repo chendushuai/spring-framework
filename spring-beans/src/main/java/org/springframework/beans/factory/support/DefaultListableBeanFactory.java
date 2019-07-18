@@ -499,13 +499,15 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			// 只有当bean名称没有定义为其他bean的别名时，才认为bean是合格的。
 			if (!isAlias(beanName)) {
 				try {
+					// 根据bean名称返回bean对应的合并定义
 					RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
 					// 只有当bean定义完成时才检查它。
 					if (!mbd.isAbstract() && (allowEagerInit ||
 							(mbd.hasBeanClass() || !mbd.isLazyInit() || isAllowEagerClassLoading()) &&
 									!requiresEagerInitForType(mbd.getFactoryBeanName()))) {
-						// In case of FactoryBean, match object created by FactoryBean.
+						// 对于FactoryBean，匹配FactoryBean创建的对象。
 						boolean isFactoryBean = isFactoryBean(beanName, mbd);
+						// 得到bean定义的修饰对象holder
 						BeanDefinitionHolder dbd = mbd.getDecoratedDefinition();
 						boolean matchFound =
 								(allowEagerInit || !isFactoryBean ||
@@ -514,7 +516,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 										(dbd != null ? mbd.isSingleton() : isSingleton(beanName))) &&
 								isTypeMatch(beanName, type);
 						if (!matchFound && isFactoryBean) {
-							// In case of FactoryBean, try to match FactoryBean instance itself next.
+							// 对于FactoryBean，接下来尝试匹配FactoryBean实例本身。
 							beanName = FACTORY_BEAN_PREFIX + beanName;
 							matchFound = (includeNonSingletons || mbd.isSingleton()) && isTypeMatch(beanName, type);
 						}
@@ -527,7 +529,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 					if (allowEagerInit) {
 						throw ex;
 					}
-					// Probably a class name with a placeholder: let's ignore it for type matching purposes.
+					// 可能是一个带有占位符的类名:出于类型匹配的目的，让我们忽略它。
 					if (logger.isTraceEnabled()) {
 						logger.trace("Ignoring bean class loading failure for bean '" + beanName + "'", ex);
 					}

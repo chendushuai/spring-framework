@@ -263,9 +263,8 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	}
 
 	/**
-	 * Register an Exception that happened to get suppressed during the creation of a
-	 * singleton bean instance, e.g. a temporary circular reference resolution problem.
-	 * @param ex the Exception to register
+	 * 注册在创建单例bean实例时被抑制的异常，例如临时循环引用解析问题。
+	 * @param ex 要注册的异常
 	 */
 	protected void onSuppressedException(Exception ex) {
 		synchronized (this.singletonObjects) {
