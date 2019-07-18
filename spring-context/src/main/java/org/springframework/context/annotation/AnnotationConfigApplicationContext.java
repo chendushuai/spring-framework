@@ -69,9 +69,16 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	/**
 	 * 在构造方法中实例化的
 	 * 用于读取被加了注解的Bean
+	 * 这个类顾名思义是一个reader，一个读取器
+	 * 读取什么呢？还是顾名思义AnnotatedBeanDefinition意思是读取一个被加了注解的bean
+	 * 这个类在构造方法中实例化的
 	 */
 	private final AnnotatedBeanDefinitionReader reader;
 
+	/**
+	 * 同意顾名思义，这是一个扫描器，扫描所有加了注解的bean
+	 *  同样是在构造方法中被实例化的
+	 */
 	private final ClassPathBeanDefinitionScanner scanner;
 
 
@@ -82,8 +89,6 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 * 去注册配置类（javaconfig），并调用refresh()方法刷新容器，
 	 * 触发容器对注解Bean的载入、解析和注册过程
 	 * 这种使用过程我在ioc应用的第二节课讲@profile的时候讲过
-	 * Create a new AnnotationConfigApplicationContext that needs to be populated
-	 * through {@link #register} calls and then manually {@linkplain #refresh refreshed}.
 	 */
 	public AnnotationConfigApplicationContext() {
 		/**
@@ -113,10 +118,11 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	}
 
 	/**
-	 * Create a new AnnotationConfigApplicationContext, deriving bean definitions
-	 * from the given annotated classes and automatically refreshing the context.
-	 * @param annotatedClasses one or more annotated classes,
-	 * e.g. {@link Configuration @Configuration} classes
+	 * 这个构造方法需要传入一个被javaconfig注解了的配置类
+	 * 然后会把这个被注解了javaconfig的类通过注解读取器读取后继而解析
+	 *
+	 * <p>创建一个新的AnnotationConfigApplicationContext，从给定的带注释的类派生bean定义，并自动刷新上下文。
+	 * @param annotatedClasses 一个或多个注解类，例如：{@link Configuration @Configuration}类
 	 */
 	public AnnotationConfigApplicationContext(Class<?>... annotatedClasses) {
 		this();
@@ -180,16 +186,22 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	//---------------------------------------------------------------------
 
 	/**
-	 * Register one or more annotated classes to be processed.
-	 * <p>Note that {@link #refresh()} must be called in order for the context
-	 * to fully process the new classes.
-	 * @param annotatedClasses one or more annotated classes,
-	 * e.g. {@link Configuration @Configuration} classes
+	 * 注册单个bean给容器
+	 * 比如有新加的类可以用这个方法
+	 * 但是注册注册之后需要手动调用refresh方法去触发容器解析注解
+	 *
+	 * 有两个意思
+	 * 他可以注册一个配置类
+	 * 他还可以单独注册一个bean
+	 *
+	 * <p>注意，必须调用{@link #refresh()}，以便上下文能够完全处理新类。
+	 * @param annotatedClasses 一个或多个注解类，例如：{@link Configuration @Configuration}类
 	 * @see #scan(String...)
 	 * @see #refresh()
 	 */
 	public void register(Class<?>... annotatedClasses) {
 		Assert.notEmpty(annotatedClasses, "At least one annotated class must be specified");
+		// 使用bean定义读取器加载指定的类，可以是注解配置类，也可以是单独的bean
 		this.reader.register(annotatedClasses);
 	}
 

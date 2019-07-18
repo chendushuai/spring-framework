@@ -126,24 +126,23 @@ public class AnnotatedBeanDefinitionReader {
 
 
 	/**
-	 * Register one or more annotated classes to be processed.
-	 * <p>Calls to {@code register} are idempotent; adding the same
-	 * annotated class more than once has no additional effect.
-	 * @param annotatedClasses one or more annotated classes,
-	 * e.g. {@link Configuration @Configuration} classes
+	 * 注册一个或多个要处理的注解类
+	 * <p>对{@code register}的调用是幂等的；多次添加同一个带注释的类不会产生额外的效果。
+	 * @param annotatedClasses 一个或多个注解类，例如：{@link Configuration @Configuration}类
 	 */
 	public void register(Class<?>... annotatedClasses) {
+		// 遍历添加的注解类，执行注册
 		for (Class<?> annotatedClass : annotatedClasses) {
 			registerBean(annotatedClass);
 		}
 	}
 
 	/**
-	 * Register a bean from the given bean class, deriving its metadata from
-	 * class-declared annotations.
-	 * @param annotatedClass the class of the bean
+	 * 注册来自给定bean类的bean，从类声明的注释派生其元数据。
+	 * @param annotatedClass bean的Class
 	 */
 	public void registerBean(Class<?> annotatedClass) {
+		// 执行注册bean
 		doRegisterBean(annotatedClass, null, null, null, null);
 	}
 

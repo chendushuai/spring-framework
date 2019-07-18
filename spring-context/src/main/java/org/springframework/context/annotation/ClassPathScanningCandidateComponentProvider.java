@@ -94,10 +94,19 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 
 	private String resourcePattern = DEFAULT_RESOURCE_PATTERN;
 
+	/**
+	 * 包括的过滤器类型
+	 */
 	private final List<TypeFilter> includeFilters = new LinkedList<>();
 
+	/**
+	 * 排除的过滤器类型
+	 */
 	private final List<TypeFilter> excludeFilters = new LinkedList<>();
 
+	/**
+	 * 环境类型
+	 */
 	@Nullable
 	private Environment environment;
 
@@ -193,20 +202,21 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	}
 
 	/**
-	 * Register the default filter for {@link Component @Component}.
-	 * <p>This will implicitly register all annotations that have the
-	 * {@link Component @Component} meta-annotation including the
-	 * {@link Repository @Repository}, {@link Service @Service}, and
-	 * {@link Controller @Controller} stereotype annotations.
-	 * <p>Also supports Java EE 6's {@link javax.annotation.ManagedBean} and
-	 * JSR-330's {@link javax.inject.Named} annotations, if available.
+	 * 为{@link Component @Component}注册默认的过滤器
+	 * <p>这将隐式地注册所有具有{@link Component @Component}元注释的注释，
+	 * 包括{@link Repository @Repository}、{@link Service @Service}和{@link Controller @Controller}原型注释。
+	 * <p>如果可用，也支持Java EE 6's {@link javax.annotation.ManagedBean}和
+	 * JSR-330 的 {@link javax.inject.Named}注解。
 	 *
 	 */
 	@SuppressWarnings("unchecked")
 	protected void registerDefaultFilters() {
+		// 添加Component注解类型到包括的过滤器类型中
 		this.includeFilters.add(new AnnotationTypeFilter(Component.class));
+		// 得到类加载器
 		ClassLoader cl = ClassPathScanningCandidateComponentProvider.class.getClassLoader();
 		try {
+			// 添加继承实现了Component注解的ManagedBean注解类型作为过滤器类型
 			this.includeFilters.add(new AnnotationTypeFilter(
 					((Class<? extends Annotation>) ClassUtils.forName("javax.annotation.ManagedBean", cl)), false));
 			logger.trace("JSR-250 'javax.annotation.ManagedBean' found and supported for component scanning");
