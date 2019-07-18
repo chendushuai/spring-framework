@@ -51,8 +51,14 @@ public class AnnotatedBeanDefinitionReader {
 
 	private BeanNameGenerator beanNameGenerator = AnnotationBeanNameGenerator.INSTANCE;
 
+	/**
+	 * 注解范围解析器
+	 */
 	private ScopeMetadataResolver scopeMetadataResolver = new AnnotationScopeMetadataResolver();
 
+	/**
+	 * 用于计算{@link Conditional}注解
+	 */
 	private ConditionEvaluator conditionEvaluator;
 
 
@@ -83,6 +89,7 @@ public class AnnotatedBeanDefinitionReader {
 		Assert.notNull(registry, "BeanDefinitionRegistry must not be null");
 		Assert.notNull(environment, "Environment must not be null");
 		this.registry = registry;
+		// 创建用于计算{@link Conditional}注解类
 		this.conditionEvaluator = new ConditionEvaluator(registry, environment, null);
 		// 在给定注册表中注册所有相关的注释后处理器。
 		AnnotationConfigUtils.registerAnnotationConfigProcessors(this.registry);
@@ -133,6 +140,7 @@ public class AnnotatedBeanDefinitionReader {
 	public void register(Class<?>... annotatedClasses) {
 		// 遍历添加的注解类，执行注册
 		for (Class<?> annotatedClass : annotatedClasses) {
+			// 执行注册
 			registerBean(annotatedClass);
 		}
 	}
@@ -233,30 +241,30 @@ public class AnnotatedBeanDefinitionReader {
 	}
 
 	/**
-	 * Register a bean from the given bean class, deriving its metadata from
-	 * class-declared annotations.
-	 * @param annotatedClass the class of the bean
-	 * @param name an explicit name for the bean
-	 * @param supplier a callback for creating an instance of the bean
-	 * (may be {@code null})
-	 * @param qualifiers specific qualifier annotations to consider, if any,
-	 * in addition to qualifiers at the bean class level
-	 * @param customizers one or more callbacks for customizing the factory's
-	 * {@link BeanDefinition}, e.g. setting a lazy-init or primary flag
+	 * 注册来自给定bean类的bean，从类声明的注解派生其元数据。
+	 * @param annotatedClass bean类
+	 * @param name bean的显式名称
+	 * @param supplier 用于创建bean实例的回调函数(可能是{@code null})
+	 * @param qualifiers 除了bean类级别上的限定符之外，还需要考虑特定的限定符注释(如果有的话)
+	 * @param customizers 一个或多个回调函数，用于定制工厂的{@link BeanDefinition}，例如设置一个lazy-init或primary标志
 	 * @since 5.0
 	 */
 	private <T> void doRegisterBean(Class<T> annotatedClass, @Nullable String name,
 			@Nullable Class<? extends Annotation>[] qualifiers, @Nullable Supplier<T> supplier,
 			@Nullable BeanDefinitionCustomizer[] customizers) {
 
+		// 生成注解bean定义
 		AnnotatedGenericBeanDefinition abd = new AnnotatedGenericBeanDefinition(annotatedClass);
 		if (this.conditionEvaluator.shouldSkip(abd.getMetadata())) {
 			return;
 		}
 
+		// 指定创建bean实例的回调函数
 		abd.setInstanceSupplier(supplier);
+		// 解析bean定义的注解范围
 		ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(abd);
 		abd.setScope(scopeMetadata.getScopeName());
+
 		String beanName = (name != null ? name : this.beanNameGenerator.generateBeanName(abd, this.registry));
 
 		AnnotationConfigUtils.processCommonDefinitionAnnotations(abd);

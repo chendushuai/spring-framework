@@ -39,19 +39,21 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.MultiValueMap;
 
 /**
- * Internal class used to evaluate {@link Conditional} annotations.
+ * 用于计算{@link Conditional}注解的内部类。
  *
  * @author Phillip Webb
  * @author Juergen Hoeller
  * @since 4.0
  */
 class ConditionEvaluator {
-
+	/**
+	 * 用于计算{@link Conditional}注解的实现类
+	 */
 	private final ConditionContextImpl context;
 
 
 	/**
-	 * Create a new {@link ConditionEvaluator} instance.
+	 * 创建一个新的{@link ConditionEvaluator}实例
 	 */
 	public ConditionEvaluator(@Nullable BeanDefinitionRegistry registry,
 			@Nullable Environment environment, @Nullable ResourceLoader resourceLoader) {

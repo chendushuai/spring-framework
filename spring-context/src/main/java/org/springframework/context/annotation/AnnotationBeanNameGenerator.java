@@ -32,23 +32,16 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
 /**
- * {@link org.springframework.beans.factory.support.BeanNameGenerator}
- * implementation for bean classes annotated with the
- * {@link org.springframework.stereotype.Component @Component} annotation
- * or with another annotation that is itself annotated with
- * {@link org.springframework.stereotype.Component @Component} as a
- * meta-annotation. For example, Spring's stereotype annotations (such as
- * {@link org.springframework.stereotype.Repository @Repository}) are
- * themselves annotated with
- * {@link org.springframework.stereotype.Component @Component}.
+ * {@link org.springframework.beans.factory.support.BeanNameGenerator}实现了使用
+ * {@link org.springframework.stereotype.Component @Component}注解或使用
+ * {@link org.springframework.stereotype.Component @Component}作为其元注解的注解的bean类。
+ * 例如，Spring的构造型注解（例如{@link org.springframework.stereotype.Repository @Repository}）
+ * 本身是用{@link org.springframework.stereotype.Component @Component}注解的。
  *
- * <p>Also supports Java EE 6's {@link javax.annotation.ManagedBean} and
- * JSR-330's {@link javax.inject.Named} annotations, if available. Note that
- * Spring component annotations always override such standard annotations.
+ * <p>如果可用的话，也支持Java EE 6的{@link javax.annotation.ManagedBean}和
+ * JSR-330的{@link javax.inject.Named}注解。注意Spring组件注解通常重写了这些标准注解。
  *
- * <p>If the annotation's value doesn't indicate a bean name, an appropriate
- * name will be built based on the short name of the class (with the first
- * letter lower-cased). For example:
+ * <p>如果注释的值不指示bean名称，则将根据类的短名称（第一个字母为lower-cased）构建适当的名称，也就是默认名称的由来。 例如：
  *
  * <pre class="code">com.xyz.FooServiceImpl -&gt; fooServiceImpl</pre>
  *
@@ -64,17 +57,16 @@ import org.springframework.util.StringUtils;
 public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 
 	/**
-	 * A convenient constant for a default {@code AnnotationBeanNameGenerator} instance,
-	 * as used for component scanning purposes.
+	 * 用于组件扫描的默认{@code AnnotationBeanNameGenerator}实例的简单常量。
 	 * @since 5.2
 	 */
 	public static final AnnotationBeanNameGenerator INSTANCE = new AnnotationBeanNameGenerator();
 
 	private static final String COMPONENT_ANNOTATION_CLASSNAME = "org.springframework.stereotype.Component";
 
-
 	@Override
 	public String generateBeanName(BeanDefinition definition, BeanDefinitionRegistry registry) {
+		// 判断bean定义是否是注解bean定义
 		if (definition instanceof AnnotatedBeanDefinition) {
 			String beanName = determineBeanNameFromAnnotation((AnnotatedBeanDefinition) definition);
 			if (StringUtils.hasText(beanName)) {
@@ -87,15 +79,16 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 	}
 
 	/**
-	 * Derive a bean name from one of the annotations on the class.
-	 * @param annotatedDef the annotation-aware bean definition
-	 * @return the bean name, or {@code null} if none is found
+	 * 从类中的一个注释派生bean名称。
+	 * @param annotatedDef 注释织入bean定义
+	 * @return bean 的名称，如果找不到，则返回{@code null}
 	 */
 	@Nullable
 	protected String determineBeanNameFromAnnotation(AnnotatedBeanDefinition annotatedDef) {
 		AnnotationMetadata amd = annotatedDef.getMetadata();
 		Set<String> types = amd.getAnnotationTypes();
 		String beanName = null;
+		// 遍历注解类型
 		for (String type : types) {
 			AnnotationAttributes attributes = AnnotationConfigUtils.attributesFor(amd, type);
 			if (attributes != null && isStereotypeWithNameValue(type, amd.getMetaAnnotationTypes(type), attributes)) {
