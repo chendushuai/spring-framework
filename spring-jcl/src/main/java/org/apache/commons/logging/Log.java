@@ -106,11 +106,9 @@ public interface Log {
 	boolean isDebugEnabled();
 
 	/**
-	 * Is trace logging currently enabled?
-	 * <p>Call this method to prevent having to perform expensive operations
-	 * (for example, <code>String</code> concatenation)
-	 * when the log level is more than trace.
-	 * @return true if trace is enabled in the underlying logger.
+	 * 当前是否启用跟踪日志?=
+	 * <p>调用此方法以避免在日志级别超过跟踪时执行昂贵的操作(例如，<code>String</code> concatenation)。
+	 * @return 如果在底层日志程序中启用跟踪，则为true。
 	 */
 	boolean isTraceEnabled();
 

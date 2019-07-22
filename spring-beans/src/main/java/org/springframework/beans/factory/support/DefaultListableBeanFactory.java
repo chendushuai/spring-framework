@@ -948,6 +948,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			this.beanDefinitionMap.put(beanName, beanDefinition);
 		}
 		else {
+			// 是否有正在创建过程中的bean
 			if (hasBeanCreationStarted()) {
 				// 对于稳定的迭代集合来说，不能在任何情况下修改启动时集合元素
 				synchronized (this.beanDefinitionMap) {
@@ -956,11 +957,12 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 					updatedDefinitions.addAll(this.beanDefinitionNames);
 					updatedDefinitions.add(beanName);
 					this.beanDefinitionNames = updatedDefinitions;
+					// 从内部手工单例名称集中删除指定的bean名称
 					removeManualSingletonName(beanName);
 				}
 			}
 			else {
-				// Still in startup registration phase
+				// 仍处于启动注册阶段
 				this.beanDefinitionMap.put(beanName, beanDefinition);
 				this.beanDefinitionNames.add(beanName);
 				removeManualSingletonName(beanName);
@@ -969,6 +971,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		}
 
 		if (existingDefinition != null || containsSingleton(beanName)) {
+			// 重置给定bean的所有bean定义缓存，包括派生自该bean的bean的缓存。
 			resetBeanDefinition(beanName);
 		}
 	}
@@ -1066,8 +1069,8 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	/**
-	 *
-	 * @param beanName the name of the bean
+	 * 销毁给定的bean。如果找到相应的一次性bean实例，则委托给{@code destroyBean}。
+	 * @param beanName bean的名称
 	 */
 	@Override
 	public void destroySingleton(String beanName) {
@@ -1076,6 +1079,10 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		clearByTypeCache();
 	}
 
+	/**
+	 * 从内部手工单例名称集中删除指定的bean名称
+	 * @param beanName 指定bean名称
+	 */
 	private void removeManualSingletonName(String beanName) {
 		updateManualSingletonNames(set -> set.remove(beanName), set -> set.contains(beanName));
 	}

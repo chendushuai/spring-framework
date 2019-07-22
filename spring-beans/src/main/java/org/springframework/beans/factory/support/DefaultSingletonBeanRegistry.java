@@ -601,7 +601,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 			// 在完全同步的情况下，以保证一个断开连接的集
 			containedBeans = this.containedBeanMap.remove(beanName);
 		}
-		// 如果存在从属bean集合
+		// 如果存在包含bean集合
 		if (containedBeans != null) {
 			for (String containedBeanName : containedBeans) {
 				destroySingleton(containedBeanName);
