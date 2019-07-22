@@ -556,7 +556,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				// 实例化所有剩余的(非懒加载)单例。
 				finishBeanFactoryInitialization(beanFactory);
 
-				// Last step: publish corresponding event.
+				// 最后一个步骤：发布当前事件
 				finishRefresh();
 			}
 
@@ -806,8 +806,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
-	 * Initialize the LifecycleProcessor.
-	 * Uses DefaultLifecycleProcessor if none defined in the context.
+	 * 初始化LifecycleProcessor。如果上下文中没有定义DefaultLifecycleProcessor，则使用它。
 	 * @see org.springframework.context.support.DefaultLifecycleProcessor
 	 */
 	protected void initLifecycleProcessor() {
@@ -833,8 +832,6 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 	/**
 	 * 模板方法，可以重写该方法以添加特定于上下文的刷新工作。在实例化单例之前，在初始化特殊bean时调用。
-	 * Template method which can be overridden to add context-specific refresh work.
-	 * Called on initialization of special beans, before instantiation of singletons.
 	 * <p>这个方法实现是空的
 	 * @throws BeansException 以防出错
 	 * @see #refresh()
@@ -902,24 +899,23 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
-	 * Finish the refresh of this context, invoking the LifecycleProcessor's
-	 * onRefresh() method and publishing the
-	 * {@link org.springframework.context.event.ContextRefreshedEvent}.
+	 * 完成此上下文的刷新，调用LifecycleProcessor的onRefresh()方法并发布
+	 * {@link org.springframework.context.event.ContextRefreshedEvent}。
 	 */
 	protected void finishRefresh() {
-		// Clear context-level resource caches (such as ASM metadata from scanning).
+		// 清除上下文级别的资源缓存(例如来自扫描的ASM元数据)。
 		clearResourceCaches();
 
-		// Initialize lifecycle processor for this context.
+		// 初始化此上下文的生命周期处理器。
 		initLifecycleProcessor();
 
-		// Propagate refresh to lifecycle processor first.
+		// 首先将refresh传播到生命周期处理器。
 		getLifecycleProcessor().onRefresh();
 
-		// Publish the final event.
+		// 发布最终事件。
 		publishEvent(new ContextRefreshedEvent(this));
 
-		// Participate in LiveBeansView MBean, if active.
+		// 如果处于活动状态，请注册到LiveBeansView MBean。
 		LiveBeansView.registerApplicationContext(this);
 	}
 
