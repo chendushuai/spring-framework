@@ -425,7 +425,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	}
 
 	/**
-	 * 返回这个定义中是否制定bean类
+	 * 返回这个定义中是否指定bean类
 	 * @see #getBeanClass()
 	 * @see #setBeanClass(Class)
 	 * @see #resolveBeanClass(ClassLoader)
@@ -1069,24 +1069,27 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	}
 
 	/**
-	 * Validate this bean definition.
-	 * @throws BeanDefinitionValidationException in case of validation failure
+	 * 校验这个bean定义
+	 * @throws BeanDefinitionValidationException 校验失败的情况
 	 */
 	public void validate() throws BeanDefinitionValidationException {
 		if (hasMethodOverrides() && getFactoryMethodName() != null) {
+			// 不能将静态工厂方法与方法覆盖相结合:静态工厂方法必须创建实例
 			throw new BeanDefinitionValidationException(
 					"Cannot combine static factory method with method overrides: " +
 					"the static factory method must create the instance");
 		}
 
+		// 判断是否指定了bean类
 		if (hasBeanClass()) {
+			// 校验并覆盖方法
 			prepareMethodOverrides();
 		}
 	}
 
 	/**
 	 * 验证并准备为该bean定义的方法覆盖。检查是否存在具有指定名称的方法。
-	 * @throws BeanDefinitionValidationException in case of validation failure
+	 * @throws BeanDefinitionValidationException 校验失败的情况
 	 */
 	public void prepareMethodOverrides() throws BeanDefinitionValidationException {
 		// 检查是否存在查找方法。
