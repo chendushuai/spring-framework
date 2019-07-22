@@ -539,7 +539,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 					if (allowEagerInit) {
 						throw ex;
 					}
-					// Probably some metadata with a placeholder: let's ignore it for type matching purposes.
+					// 可能是一个带有占位符的类名:出于类型匹配的目的，让我们忽略它。
 					if (logger.isTraceEnabled()) {
 						logger.trace("Ignoring unresolvable metadata in bean definition '" + beanName + "'", ex);
 					}
@@ -548,26 +548,26 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			}
 		}
 
-		// Check manually registered singletons too.
+		// 也检查手动注册的单例。
 		for (String beanName : this.manualSingletonNames) {
 			try {
-				// In case of FactoryBean, match object created by FactoryBean.
+				// 对于FactoryBean，匹配FactoryBean创建的对象。
 				if (isFactoryBean(beanName)) {
 					if ((includeNonSingletons || isSingleton(beanName)) && isTypeMatch(beanName, type)) {
 						result.add(beanName);
-						// Match found for this bean: do not match FactoryBean itself anymore.
+						// 为这个bean找到匹配:不再匹配FactoryBean本身。
 						continue;
 					}
-					// In case of FactoryBean, try to match FactoryBean itself next.
+					// 对于FactoryBean，接下来尝试匹配FactoryBean本身。
 					beanName = FACTORY_BEAN_PREFIX + beanName;
 				}
-				// Match raw bean instance (might be raw FactoryBean).
+				// 匹配原始bean实例(可能是原始FactoryBean)。
 				if (isTypeMatch(beanName, type)) {
 					result.add(beanName);
 				}
 			}
 			catch (NoSuchBeanDefinitionException ex) {
-				// Shouldn't happen - probably a result of circular reference resolution...
+				// 不应该发生-可能是循环引用解析的结果…
 				if (logger.isTraceEnabled()) {
 					logger.trace("Failed to check manually registered singleton with name '" + beanName + "'", ex);
 				}
