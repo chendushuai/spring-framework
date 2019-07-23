@@ -142,11 +142,11 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	/**
 	 * 为给定bean工厂创建一个新的{@code ClassPathBeanDefinitionScanner}，并在评估bean定义概要元数据时使用给定的{@link Environment}。
 	 * @param registry 以{@code BeanDefinitionRegistry}的形式将bean定义加载到{@code BeanFactory}中
-	 * @param useDefaultFilters 属性是否包含
+	 * @param useDefaultFilters 是否包含
 	 * {@link org.springframework.stereotype.Component @Component}、
 	 * {@link org.springframework.stereotype.Repository @Repository}、
 	 * {@link org.springframework.stereotype.Service @Service}和
-	 * {@link org.springframework.stereotype.Controller @Controller}的原型注解的默认过滤器
+	 * {@link org.springframework.stereotype.Controller @Controller}属性的原型注解的默认过滤器
 	 * @param environment 评估bean定义概要文件元数据时要使用的Spring {@link Environment}
 	 * @param resourceLoader 要使用的{@link ResourceLoader}
 	 * @since 4.3.6

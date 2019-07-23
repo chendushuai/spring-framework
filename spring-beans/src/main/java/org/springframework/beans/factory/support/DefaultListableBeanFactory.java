@@ -1075,7 +1075,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	@Override
 	public void destroySingleton(String beanName) {
 		super.destroySingleton(beanName);
+		// 从内部手工单例名称集中删除指定的bean名称
 		removeManualSingletonName(beanName);
+		// 删除关于类型映射的任何假设。
 		clearByTypeCache();
 	}
 
@@ -1112,7 +1114,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	/**
-	 * Remove any assumptions about by-type mappings.
+	 * 删除关于类型映射的任何假设。
 	 */
 	private void clearByTypeCache() {
 		this.allBeanNamesByType.clear();
