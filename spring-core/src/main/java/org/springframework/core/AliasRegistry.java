@@ -26,11 +26,10 @@ package org.springframework.core;
 public interface AliasRegistry {
 
 	/**
-	 * Given a name, register an alias for it.
-	 * @param name the canonical name
-	 * @param alias the alias to be registered
-	 * @throws IllegalStateException if the alias is already in use
-	 * and may not be overridden
+	 * 给定一个名称，为它注册一个别名。
+	 * @param name 规范的名称
+	 * @param alias 要注册的别名
+	 * @throws IllegalStateException 如果别名已经在使用中，并且可能不会被覆盖
 	 */
 	void registerAlias(String name, String alias);
 
