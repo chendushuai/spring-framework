@@ -82,7 +82,9 @@ public class SimpleAliasRegistry implements AliasRegistry {
 								registeredName + "' with new target name '" + name + "'");
 					}
 				}
+				// 判断是否存在别名和名称的循环引用关系，如果存在循环引用关系，则抛出异常
 				checkForAliasCircle(name, alias);
+				// 保存别名和规范名称的对应关系
 				this.aliasMap.put(alias, name);
 				if (logger.isTraceEnabled()) {
 					logger.trace("Alias definition '" + alias + "' registered for name '" + name + "'");
