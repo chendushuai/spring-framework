@@ -68,18 +68,20 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 	public String generateBeanName(BeanDefinition definition, BeanDefinitionRegistry registry) {
 		// 判断bean定义是否是注解bean定义
 		if (definition instanceof AnnotatedBeanDefinition) {
+			// 从类的一个注解中生成bean的名称
 			String beanName = determineBeanNameFromAnnotation((AnnotatedBeanDefinition) definition);
+			// 如果在注解中已经明确支出bean的名称，则直接返回指定的名称
 			if (StringUtils.hasText(beanName)) {
-				// Explicit bean name found.
+				// 找到显式bean名称。
 				return beanName;
 			}
 		}
-		// Fallback: generate a unique default bean name.
+		// 回退:生成唯一的缺省bean名称。
 		return buildDefaultBeanName(definition, registry);
 	}
 
 	/**
-	 * 从类中的一个注释派生bean名称。
+	 * 从类中的一个注解派生bean名称。
 	 * @param annotatedDef 注释织入bean定义
 	 * @return bean 的名称，如果找不到，则返回{@code null}
 	 */
@@ -91,11 +93,14 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 		// 遍历注解类型
 		for (String type : types) {
 			AnnotationAttributes attributes = AnnotationConfigUtils.attributesFor(amd, type);
+			// 判断是否有注解，且注解中通过value属性设置了bean的名称
 			if (attributes != null && isStereotypeWithNameValue(type, amd.getMetaAnnotationTypes(type), attributes)) {
+				// 得到属性值
 				Object value = attributes.get("value");
 				if (value instanceof String) {
 					String strVal = (String) value;
 					if (StringUtils.hasLength(strVal)) {
+						// 判断是否存在多个注解建议了bean名称，且建议的名称不一致
 						if (beanName != null && !strVal.equals(beanName)) {
 							throw new IllegalStateException("Stereotype annotations suggest inconsistent " +
 									"component names: '" + beanName + "' versus '" + strVal + "'");
@@ -109,9 +114,8 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 	}
 
 	/**
-	 * Check whether the given annotation is a stereotype that is allowed
-	 * to suggest a component name through its annotation {@code value()}.
-	 * @param annotationType the name of the annotation class to check
+	 * 检查给定的注释是否是允许通过注解{@code value()}建议组件名称的原型。
+	 * @param annotationType 要检查的注释类的名称
 	 * @param metaAnnotationTypes the names of meta-annotations on the given annotation
 	 * @param attributes the map of attributes for the given annotation
 	 * @return whether the annotation qualifies as a stereotype with component name
@@ -119,6 +123,7 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 	protected boolean isStereotypeWithNameValue(String annotationType,
 			Set<String> metaAnnotationTypes, @Nullable Map<String, Object> attributes) {
 
+		// 是否有指定bean名称的注解
 		boolean isStereotype = annotationType.equals(COMPONENT_ANNOTATION_CLASSNAME) ||
 				metaAnnotationTypes.contains(COMPONENT_ANNOTATION_CLASSNAME) ||
 				annotationType.equals("javax.annotation.ManagedBean") ||
@@ -128,25 +133,23 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 	}
 
 	/**
-	 * Derive a default bean name from the given bean definition.
-	 * <p>The default implementation delegates to {@link #buildDefaultBeanName(BeanDefinition)}.
-	 * @param definition the bean definition to build a bean name for
-	 * @param registry the registry that the given bean definition is being registered with
-	 * @return the default bean name (never {@code null})
+	 * 从给定的bean定义派生一个默认bean名称。
+	 * <p>默认的实现委托给{@link #buildDefaultBeanName(BeanDefinition)}。
+	 * @param definition 要为其构建bean名称的bean定义
+	 * @param registry 给定bean定义正在注册的注册表
+	 * @return 默认的bean名称(不会是{@code null})
 	 */
 	protected String buildDefaultBeanName(BeanDefinition definition, BeanDefinitionRegistry registry) {
 		return buildDefaultBeanName(definition);
 	}
 
 	/**
-	 * Derive a default bean name from the given bean definition.
-	 * <p>The default implementation simply builds a decapitalized version
-	 * of the short class name: e.g. "mypackage.MyJdbcDao" -> "myJdbcDao".
-	 * <p>Note that inner classes will thus have names of the form
-	 * "outerClassName.InnerClassName", which because of the period in the
-	 * name may be an issue if you are autowiring by name.
-	 * @param definition the bean definition to build a bean name for
-	 * @return the default bean name (never {@code null})
+	 * 从给定的bean定义派生一个默认bean名称。
+	 * <p>默认实现只是简单地构建一个简短类名的非斜体版本：例如。“mypackage.MyJdbcDao”- >“myJdbcDao”。
+	 * <p>注意，内部类将因此具有表单“outerClassName.InnerClassName”的名称。
+	 * 由于名称中的句点，如果按名称进行自动装配，则可能会出现问题。
+	 * @param definition 要为其构建bean名称的bean定义
+	 * @return 默认bean名称(不会是 {@code null})
 	 */
 	protected String buildDefaultBeanName(BeanDefinition definition) {
 		String beanClassName = definition.getBeanClassName();
