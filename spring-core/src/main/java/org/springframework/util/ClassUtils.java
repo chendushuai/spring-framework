@@ -77,7 +77,7 @@ public abstract class ClassUtils {
 	/** The CGLIB class separator: {@code "$$"}. */
 	public static final String CGLIB_CLASS_SEPARATOR = "$$";
 
-	/** The ".class" file suffix. */
+	/** ".class"文件后缀 */
 	public static final String CLASS_FILE_SUFFIX = ".class";
 
 

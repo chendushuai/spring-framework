@@ -116,12 +116,12 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 
 
 	/**
-	 * This implementation performs an actual refresh of this context's underlying
-	 * bean factory, shutting down the previous bean factory (if any) and
-	 * initializing a fresh bean factory for the next phase of the context's lifecycle.
+	 * 此实现对该上下文的底层bean工厂执行实际刷新，关闭前一个bean工厂(如果有的话)，
+	 * 并为上下文生命周期的下一阶段初始化一个新的bean工厂。
 	 */
 	@Override
 	protected final void refreshBeanFactory() throws BeansException {
+		// 判断此上下文是否已经包含bean工厂
 		if (hasBeanFactory()) {
 			destroyBeans();
 			closeBeanFactory();
@@ -161,8 +161,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	}
 
 	/**
-	 * Determine whether this context currently holds a bean factory,
-	 * i.e. has been refreshed at least once and not been closed yet.
+	 * 确定此上下文当前是否包含bean工厂，即至少已刷新一次且尚未关闭。
 	 */
 	protected final boolean hasBeanFactory() {
 		synchronized (this.beanFactoryMonitor) {

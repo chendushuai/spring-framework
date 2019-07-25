@@ -125,8 +125,14 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 
 	private boolean setMetadataReaderFactoryCalled = false;
 
+	/**
+	 * 已经处理完毕的注册后置处理器
+	 */
 	private final Set<Integer> registriesPostProcessed = new HashSet<>();
 
+	/**
+	 * 已经处理完毕的工厂后置处理器
+	 */
 	private final Set<Integer> factoriesPostProcessed = new HashSet<>();
 
 	@Nullable
@@ -237,7 +243,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 					"postProcessBeanFactory already called on this post-processor against " + registry);
 		}
 		this.registriesPostProcessed.add(registryId);
-
+		// 基于{@link Configuration}类的注册表构建并验证配置模型。
 		processConfigBeanDefinitions(registry);
 	}
 
@@ -276,8 +282,10 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		for (String beanName : candidateNames) {
 			// 获取该bean名称对应的bean定义
 			BeanDefinition beanDef = registry.getBeanDefinition(beanName);
+			// 如果bean定义是一个配置类
 			if (beanDef.getAttribute(ConfigurationClassUtils.CONFIGURATION_CLASS_ATTRIBUTE) != null) {
 				if (logger.isDebugEnabled()) {
+					// Bean定义已经作为配置类处理
 					logger.debug("Bean definition has already been processed as a configuration class: " + beanDef);
 				}
 			}
