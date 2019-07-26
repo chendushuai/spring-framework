@@ -151,12 +151,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	private final Set<Class<?>> ignoredDependencyInterfaces = new HashSet<>();
 
 	/**
-	 * The name of the currently created bean, for implicit dependency registration
-	 * on getBean etc invocations triggered from a user-specified Supplier callback.
+	 * 当前创建的bean的名称，用于从用户指定的供应商回调中触发的getBean等调用的隐式依赖项注册。
 	 */
 	private final NamedThreadLocal<String> currentlyCreatedBean = new NamedThreadLocal<>("Currently created bean");
 
-	/** Cache of unfinished FactoryBean instances: FactoryBean name to BeanWrapper. */
+	/** 未完成的FactoryBean实例缓存:从FactoryBean名称到BeanWrapper。 */
 	private final ConcurrentMap<String, BeanWrapper> factoryBeanInstanceCache = new ConcurrentHashMap<>();
 
 	/** Cache of candidate factory methods per factory class. */
@@ -525,16 +524,14 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 	}
 
-	/**
-	 * Actually create the specified bean. Pre-creation processing has already happened
-	 * at this point, e.g. checking {@code postProcessBeforeInstantiation} callbacks.
-	 * <p>Differentiates between default bean instantiation, use of a
-	 * factory method, and autowiring a constructor.
-	 * @param beanName the name of the bean
-	 * @param mbd the merged bean definition for the bean
-	 * @param args explicit arguments to use for constructor or factory method invocation
-	 * @return a new instance of the bean
-	 * @throws BeanCreationException if the bean could not be created
+	 /**
+	 * 实际创建指定的bean。在这一点上，预创建处理已经发生，例如检查{@code postProcessBeforeInstantiation}回调。
+	 * <p>区分默认bean实例化、使用工厂方法和自动装配构造函数。
+	 * @param beanName bean的名称
+	 * @param mbd bean的合并后的bean定义
+	 * @param args 用于构造函数或工厂方法调用的显式参数
+	 * @return bean的新实例
+	 * @throws BeanCreationException 如果bean无法创建
 	 * @see #instantiateBean
 	 * @see #instantiateUsingFactoryMethod
 	 * @see #autowireConstructor
@@ -542,12 +539,14 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	protected Object doCreateBean(final String beanName, final RootBeanDefinition mbd, final @Nullable Object[] args)
 			throws BeanCreationException {
 
-		// Instantiate the bean.
+		// 实例化bean。
 		BeanWrapper instanceWrapper = null;
 		if (mbd.isSingleton()) {
+			// 如果是单例对象，判断是否在创建中
 			instanceWrapper = this.factoryBeanInstanceCache.remove(beanName);
 		}
 		if (instanceWrapper == null) {
+			// 如果没有在创建中的对象，则创建bean实例
 			instanceWrapper = createBeanInstance(beanName, mbd, args);
 		}
 		final Object bean = instanceWrapper.getWrappedInstance();
@@ -1129,22 +1128,22 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	}
 
 	/**
-	 * Create a new instance for the specified bean, using an appropriate instantiation strategy:
-	 * factory method, constructor autowiring, or simple instantiation.
-	 * @param beanName the name of the bean
-	 * @param mbd the bean definition for the bean
-	 * @param args explicit arguments to use for constructor or factory method invocation
-	 * @return a BeanWrapper for the new instance
+	 * 使用适当的实例化策略为指定的bean创建一个新实例:工厂方法、构造函数自动装配或简单实例化。
+	 * @param beanName bean的名称
+	 * @param mbd bean的合并后的bean定义
+	 * @param args 用于构造函数或工厂方法调用的显式参数
+	 * @return 新实例的BeanWrapper
 	 * @see #obtainFromSupplier
 	 * @see #instantiateUsingFactoryMethod
 	 * @see #autowireConstructor
 	 * @see #instantiateBean
 	 */
 	protected BeanWrapper createBeanInstance(String beanName, RootBeanDefinition mbd, @Nullable Object[] args) {
-		// Make sure bean class is actually resolved at this point.
+		// 确保此时bean类已经被解析。
 		Class<?> beanClass = resolveBeanClass(mbd, beanName);
 
 		if (beanClass != null && !Modifier.isPublic(beanClass.getModifiers()) && !mbd.isNonPublicAccessAllowed()) {
+			// Bean类不是公共的，也不允许非公共访问
 			throw new BeanCreationException(mbd.getResourceDescription(), beanName,
 					"Bean class isn't public, and non-public access not allowed: " + beanClass.getName());
 		}
@@ -1196,10 +1195,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	}
 
 	/**
-	 * Obtain a bean instance from the given supplier.
-	 * @param instanceSupplier the configured supplier
-	 * @param beanName the corresponding bean name
-	 * @return a BeanWrapper for the new instance
+	 * 从给定的供应商获取bean实例。
+	 * @param instanceSupplier 配置的供应商
+	 * @param beanName 对应的bean名称
+	 * @return 新实例的BeanWrapper
 	 * @since 5.0
 	 * @see #getObjectForBeanInstance
 	 */
