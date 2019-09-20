@@ -78,15 +78,21 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 
 	private int autoGrowCollectionLimit = Integer.MAX_VALUE;
 
+	/**
+	 * 包装后的对象
+	 */
 	@Nullable
 	Object wrappedObject;
 
+	/**
+	 * 对象的嵌套路径
+	 */
 	private String nestedPath = "";
 
 	@Nullable
 	Object rootObject;
 
-	/** Map with cached nested Accessors: nested path -> Accessor instance. */
+	/** 映射缓存的嵌套访问器:嵌套路径->访问器实例。 */
 	@Nullable
 	private Map<String, AbstractNestablePropertyAccessor> nestedPropertyAccessors;
 
@@ -114,10 +120,11 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 	}
 
 	/**
-	 * Create a new accessor for the given object.
-	 * @param object object wrapped by this accessor
+	 * 为给定对象创建一个新的访问器。
+	 * @param object 由该访问器包装的对象
 	 */
 	protected AbstractNestablePropertyAccessor(Object object) {
+		// 激活此注册表实例的默认编辑器
 		registerDefaultEditors();
 		setWrappedInstance(object);
 	}
@@ -175,22 +182,21 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 	}
 
 	/**
-	 * Switch the target object, replacing the cached introspection results only
-	 * if the class of the new object is different to that of the replaced object.
-	 * @param object the new target object
+	 * 切换目标对象，只有当新对象的类与被替换对象的类不同时，才会替换缓存的自省。
+	 * @param object 新的目标对象
 	 */
 	public void setWrappedInstance(Object object) {
 		setWrappedInstance(object, "", null);
 	}
 
 	/**
-	 * Switch the target object, replacing the cached introspection results only
-	 * if the class of the new object is different to that of the replaced object.
-	 * @param object the new target object
-	 * @param nestedPath the nested path of the object
-	 * @param rootObject the root object at the top of the path
+	 * 切换目标对象，只有当新对象的类与被替换对象的类不同时，才会替换缓存的自省。
+	 * @param object 新的目标对象
+	 * @param nestedPath 对象的嵌套路径
+	 * @param rootObject 路径顶部的根对象
 	 */
 	public void setWrappedInstance(Object object, @Nullable String nestedPath, @Nullable Object rootObject) {
+		// 打开可能是{@link java.util.Optional}的给定对象。
 		this.wrappedObject = ObjectUtils.unwrapOptional(object);
 		Assert.notNull(this.wrappedObject, "Target object must not be null");
 		this.nestedPath = (nestedPath != null ? nestedPath : "");
