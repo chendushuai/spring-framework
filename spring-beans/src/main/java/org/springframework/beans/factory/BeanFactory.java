@@ -139,11 +139,9 @@ public interface BeanFactory {
 	Object getBean(String name) throws BeansException;
 
 	/**
-	 * Return an instance, which may be shared or independent, of the specified bean.
-	 * <p>Behaves the same as {@link #getBean(String)}, but provides a measure of type
-	 * safety by throwing a BeanNotOfRequiredTypeException if the bean is not of the
-	 * required type. This means that ClassCastException can't be thrown on casting
-	 * the result correctly, as can happen with {@link #getBean(String)}.
+	 * 返回指定bean的一个实例，该实例可以是共享的，也可以是独立的。
+	 * <p>其行为与{@link #getBean(String)}相同，但如果bean不是所需类型，则通过抛出BeanNotOfRequiredTypeException来提供类型安全措施。
+	 * 这意味着ClassCastException不能在正确转换结果时抛出，就像{@link #getBean(String)}所发生的那样。
 	 * <p>Translates aliases back to the corresponding canonical bean name.
 	 * Will ask the parent factory if the bean cannot be found in this factory instance.
 	 * @param name the name of the bean to retrieve
@@ -251,17 +249,15 @@ public interface BeanFactory {
 	boolean containsBean(String name);
 
 	/**
-	 * Is this bean a shared singleton? That is, will {@link #getBean} always
-	 * return the same instance?
-	 * <p>Note: This method returning {@code false} does not clearly indicate
-	 * independent instances. It indicates non-singleton instances, which may correspond
-	 * to a scoped bean as well. Use the {@link #isPrototype} operation to explicitly
-	 * check for independent instances.
-	 * <p>Translates aliases back to the corresponding canonical bean name.
-	 * Will ask the parent factory if the bean cannot be found in this factory instance.
-	 * @param name the name of the bean to query
-	 * @return whether this bean corresponds to a singleton instance
-	 * @throws NoSuchBeanDefinitionException if there is no bean with the given name
+	 * 这个bean是共享单例吗?也就是说，{@link #getBean}是否总是返回相同的实例?
+	 * <p>注意:这个返回{@code false}的方法并不清楚地指示独立的实例。
+	 * 它指出了非单例实例，这也可能对应于有作用域的bean。
+	 * 使用{@link #isPrototype}操作显式地检查独立实例。
+	 * <p>将别名转换回相应的规范bean名称。
+	 * 如果在这个工厂实例中找不到bean，将询问父工厂。
+	 * @param name 要查询的bean名称
+	 * @return 此bean是否对应于单例实例
+	 * @throws NoSuchBeanDefinitionException 找不到给定名称的bean
 	 * @see #getBean
 	 * @see #isPrototype
 	 */

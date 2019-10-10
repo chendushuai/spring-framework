@@ -62,7 +62,7 @@ import org.springframework.lang.Nullable;
  */
 public class SimpleJndiBeanFactory extends JndiLocatorSupport implements BeanFactory {
 
-	/** JNDI names of resources that are known to be shareable, i.e. can be cached */
+	/** 已知可共享资源的JNDI名称，即可以缓存的资源 */
 	private final Set<String> shareableResources = new HashSet<>();
 
 	/** Cache of shareable singleton objects: bean name to bean instance. */
@@ -111,6 +111,7 @@ public class SimpleJndiBeanFactory extends JndiLocatorSupport implements BeanFac
 	@Override
 	public <T> T getBean(String name, Class<T> requiredType) throws BeansException {
 		try {
+			// 判断是不是单例bean
 			if (isSingleton(name)) {
 				return doGetSingleton(name, requiredType);
 			}
