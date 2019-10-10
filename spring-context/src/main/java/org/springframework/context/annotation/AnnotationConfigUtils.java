@@ -236,7 +236,7 @@ public abstract class AnnotationConfigUtils {
 
 	/**
 	 * 打开获取DefaultListableBeanFactory
-	 * @param registry
+	 * @param registry bean定义注册器
 	 * @return
 	 */
 	@Nullable
@@ -252,6 +252,10 @@ public abstract class AnnotationConfigUtils {
 		}
 	}
 
+	/**
+	 * 处理基本定义注解
+	 * @param abd 注解bean定义
+	 */
 	public static void processCommonDefinitionAnnotations(AnnotatedBeanDefinition abd) {
 		processCommonDefinitionAnnotations(abd, abd.getMetadata());
 	}
@@ -267,6 +271,7 @@ public abstract class AnnotationConfigUtils {
 		if (lazy != null) {
 			abd.setLazyInit(lazy.getBoolean("value"));
 		}
+		// 如果bean定义中的元数据同给定的元数据不同，则需要在判断bean定义中的@Lazy注解内容
 		else if (abd.getMetadata() != metadata) {
 			lazy = attributesFor(abd.getMetadata(), Lazy.class);
 			if (lazy != null) {
@@ -274,9 +279,11 @@ public abstract class AnnotationConfigUtils {
 			}
 		}
 
+		// @Primary表示，当多个bean是要自动生成单值依赖项的候选bean时，应该优先考虑特定的bean。如果在候选bean中只存在一个主bean，那么它就成为autowired值。
 		if (metadata.isAnnotated(Primary.class.getName())) {
 			abd.setPrimary(true);
 		}
+		// 解析@DependsOn注解，获取参数值
 		AnnotationAttributes dependsOn = attributesFor(metadata, DependsOn.class);
 		if (dependsOn != null) {
 			abd.setDependsOn(dependsOn.getStringArray("value"));
@@ -286,6 +293,7 @@ public abstract class AnnotationConfigUtils {
 		if (role != null) {
 			abd.setRole(role.getNumber("value").intValue());
 		}
+		// 解析@Description注解内容
 		AnnotationAttributes description = attributesFor(metadata, Description.class);
 		if (description != null) {
 			abd.setDescription(description.getString("value"));
