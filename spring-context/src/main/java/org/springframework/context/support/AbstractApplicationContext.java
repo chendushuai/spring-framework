@@ -566,7 +566,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 							"cancelling refresh attempt: " + ex);
 				}
 
-				// Destroy already created singletons to avoid dangling resources.
+				// 销毁已经创建的单例，以避免挂起资源。
 				destroyBeans();
 
 				// Reset 'active' flag.
@@ -1063,13 +1063,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
-	 * Template method for destroying all beans that this context manages.
-	 * The default implementation destroy all cached singletons in this context,
-	 * invoking {@code DisposableBean.destroy()} and/or the specified
-	 * "destroy-method".
-	 * <p>Can be overridden to add context-specific bean destruction steps
-	 * right before or right after standard singleton destruction,
-	 * while the context's BeanFactory is still active.
+	 * 用于销毁此上下文管理的所有bean的模板方法。
+	 * 默认实现在这个上下文中销毁所有缓存的单例，调用{@code DisposableBean.destroy()} 和/或 指定的“destroy-method”。
+	 * <p>当上下文的BeanFactory仍然处于活动状态时，可以通过重写在标准单例销毁之前或之后添加特定于上下文的bean销毁步骤。
 	 * @see #getBeanFactory()
 	 * @see org.springframework.beans.factory.config.ConfigurableBeanFactory#destroySingletons()
 	 */
