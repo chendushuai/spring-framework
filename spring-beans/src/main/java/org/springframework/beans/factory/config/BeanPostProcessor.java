@@ -97,15 +97,11 @@ public interface BeanPostProcessor {
 	 * 后处理器可以通过相应的{@code bean instanceof FactoryBean}检查来决定是应用于FactoryBean还是应用于创建的对象，或者两者都应用。
 	 * <p>与所有其他BeanPostProcessor回调不同，这个回调也将在
 	 * {@link InstantiationAwareBeanPostProcessor#postProcessBeforeInstantiation} 方法触发短路后调用。
-	 * This callback will also be invoked after a short-circuiting triggered by a
-	 * {@link InstantiationAwareBeanPostProcessor#postProcessBeforeInstantiation} method,
-	 * in contrast to all other BeanPostProcessor callbacks.
-	 * <p>The default implementation returns the given {@code bean} as-is.
-	 * @param bean the new bean instance
-	 * @param beanName the name of the bean
-	 * @return the bean instance to use, either the original or a wrapped one;
-	 * if {@code null}, no subsequent BeanPostProcessors will be invoked
-	 * @throws org.springframework.beans.BeansException in case of errors
+	 * <p>默认实现按原样返回给定的{@code bean}。
+	 * @param bean 新的bean实例
+	 * @param beanName bean的名称
+	 * @return 要使用的bean实例，无论是原始的还是包装的实例;如果{@code null}，则不会调用后续的BeanPostProcessor
+	 * @throws org.springframework.beans.BeansException 错误的情况
 	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet
 	 * @see org.springframework.beans.factory.FactoryBean
 	 */

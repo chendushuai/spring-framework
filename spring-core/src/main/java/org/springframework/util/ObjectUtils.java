@@ -158,16 +158,16 @@ public abstract class ObjectUtils {
 	}
 
 	/**
-	 * Unwrap the given object which is potentially a {@link java.util.Optional}.
-	 * @param obj the candidate object
-	 * @return either the value held within the {@code Optional}, {@code null}
-	 * if the {@code Optional} is empty, or simply the given object as-is
+	 * 打开可能是{@link java.util.Optional}的给定对象。
+	 * @param obj 候选对象
+	 * @return 如果{@code Optional}为空，则{@code null}中包含{@code Optional}内的值，或者只是给定对象的原样
 	 * @since 5.0
 	 */
 	@Nullable
 	public static Object unwrapOptional(@Nullable Object obj) {
 		if (obj instanceof Optional) {
 			Optional<?> optional = (Optional<?>) obj;
+			// 如果存在值，返回{@code true}，否则返回{@code false}。
 			if (!optional.isPresent()) {
 				return null;
 			}

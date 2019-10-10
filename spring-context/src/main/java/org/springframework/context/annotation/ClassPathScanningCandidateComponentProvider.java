@@ -263,10 +263,8 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	}
 
 	/**
-	 * Set the {@link ResourceLoader} to use for resource locations.
-	 * This will typically be a {@link ResourcePatternResolver} implementation.
-	 * <p>Default is a {@code PathMatchingResourcePatternResolver}, also capable of
-	 * resource pattern resolving through the {@code ResourcePatternResolver} interface.
+	 * 设置{@link ResourceLoader}用于资源位置。这通常是一个{@link ResourcePatternResolver}实现。
+	 * <p>默认值是{@code PathMatchingResourcePatternResolver}，也能够通过{@code ResourcePatternResolver}接口解析资源模式。
 	 * @see org.springframework.core.io.support.ResourcePatternResolver
 	 * @see org.springframework.core.io.support.PathMatchingResourcePatternResolver
 	 */

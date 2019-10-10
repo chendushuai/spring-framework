@@ -432,12 +432,10 @@ public class AnnotationAttributes extends LinkedHashMap<String, Object> {
 
 
 	/**
-	 * Return an {@link AnnotationAttributes} instance based on the given map.
-	 * <p>If the map is already an {@code AnnotationAttributes} instance, it
-	 * will be cast and returned immediately without creating a new instance.
-	 * Otherwise a new instance will be created by passing the supplied map
-	 * to the {@link #AnnotationAttributes(Map)} constructor.
-	 * @param map original source of annotation attribute <em>key-value</em> pairs
+	 * 根据给定的映射返回一个{@link AnnotationAttributes}实例。
+	 * <p>如果映射已经是一个{@code AnnotationAttributes}实例，那么它将被强制转换并立即返回，而不需要创建一个新的实例。
+	 * 否则，将通过将提供的映射传递给{@link #AnnotationAttributes(Map)}构造函数来创建一个新实例。
+	 * @param map 注释属性<em>key-value</em>对的原始源
 	 */
 	@Nullable
 	public static AnnotationAttributes fromMap(@Nullable Map<String, Object> map) {

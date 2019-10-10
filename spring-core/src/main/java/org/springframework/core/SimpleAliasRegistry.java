@@ -43,15 +43,21 @@ public class SimpleAliasRegistry implements AliasRegistry {
 	/** Logger available to subclasses. */
 	protected final Log logger = LogFactory.getLog(getClass());
 
-	/** Map from alias to canonical name. */
+	/** 别名到规范名称的集合 */
 	private final Map<String, String> aliasMap = new ConcurrentHashMap<>(16);
 
 
+	/**
+	 * 注册别名
+	 * @param name 规范的名称
+	 * @param alias 要注册的别名
+	 */
 	@Override
 	public void registerAlias(String name, String alias) {
 		Assert.hasText(name, "'name' must not be empty");
 		Assert.hasText(alias, "'alias' must not be empty");
 		synchronized (this.aliasMap) {
+			// 如果别名同规范名称相同，则无需修改，且需要移除别名对应关系
 			if (alias.equals(name)) {
 				this.aliasMap.remove(alias);
 				if (logger.isDebugEnabled()) {
@@ -60,11 +66,13 @@ public class SimpleAliasRegistry implements AliasRegistry {
 			}
 			else {
 				String registeredName = this.aliasMap.get(alias);
+				// 如果别名表集合中已经存在此别名，则需要进行而更多判断
 				if (registeredName != null) {
 					if (registeredName.equals(name)) {
-						// An existing alias - no need to re-register
+						// 已经存在的别名 - 不需要重新注册
 						return;
 					}
+					// 如果不允许覆盖，则抛出异常
 					if (!allowAliasOverriding()) {
 						throw new IllegalStateException("Cannot define alias '" + alias + "' for name '" +
 								name + "': It is already registered for name '" + registeredName + "'.");
@@ -74,7 +82,9 @@ public class SimpleAliasRegistry implements AliasRegistry {
 								registeredName + "' with new target name '" + name + "'");
 					}
 				}
+				// 判断是否存在别名和名称的循环引用关系，如果存在循环引用关系，则抛出异常
 				checkForAliasCircle(name, alias);
+				// 保存别名和规范名称的对应关系
 				this.aliasMap.put(alias, name);
 				if (logger.isTraceEnabled()) {
 					logger.trace("Alias definition '" + alias + "' registered for name '" + name + "'");
@@ -92,9 +102,10 @@ public class SimpleAliasRegistry implements AliasRegistry {
 	}
 
 	/**
-	 * Determine whether the given name has the given alias registered.
-	 * @param name the name to check
-	 * @param alias the alias to look for
+	 * 确定给定名称是否注册了给定别名。
+	 * 递归调用判断是否存在循环引用
+	 * @param name 要检查的名称
+	 * @param alias 要查找的别名
 	 * @since 4.2.1
 	 */
 	public boolean hasAlias(String name, String alias) {
@@ -195,11 +206,10 @@ public class SimpleAliasRegistry implements AliasRegistry {
 	}
 
 	/**
-	 * Check whether the given name points back to the given alias as an alias
-	 * in the other direction already, catching a circular reference upfront
-	 * and throwing a corresponding IllegalStateException.
-	 * @param name the candidate name
-	 * @param alias the candidate alias
+	 * 检查给定名称是否已经指向另一个方向的给定别名作为别名，
+	 * 捕获前面的循环引用并抛出相应的IllegalStateException。
+	 * @param name 规范名称
+	 * @param alias 规范别名
 	 * @see #registerAlias
 	 * @see #hasAlias
 	 */

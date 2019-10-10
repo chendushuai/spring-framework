@@ -75,16 +75,18 @@ public class SimpleMetadataReaderFactory implements MetadataReaderFactory {
 	@Override
 	public MetadataReader getMetadataReader(String className) throws IOException {
 		try {
+			// 尝试使用Class文件的加载方式进行加载
 			String resourcePath = ResourceLoader.CLASSPATH_URL_PREFIX +
 					ClassUtils.convertClassNameToResourcePath(className) + ClassUtils.CLASS_FILE_SUFFIX;
 			Resource resource = this.resourceLoader.getResource(resourcePath);
 			return getMetadataReader(resource);
 		}
 		catch (FileNotFoundException ex) {
-			// Maybe an inner class name using the dot name syntax? Need to use the dollar syntax here...
-			// ClassUtils.forName has an equivalent check for resolution into Class references later on.
+			// 可能是使用点名语法的内部类名？这里需要使用$语法…
+			// ClassUtils.forName稍后将对类引用进行等效的解析检查。
 			int lastDotIndex = className.lastIndexOf('.');
 			if (lastDotIndex != -1) {
+				// 如果类名中是包含.的内部类类名，则转换.为$进行文件加载内部类
 				String innerClassName =
 						className.substring(0, lastDotIndex) + '$' + className.substring(lastDotIndex + 1);
 				String innerClassResourcePath = ResourceLoader.CLASSPATH_URL_PREFIX +

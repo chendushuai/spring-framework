@@ -30,8 +30,7 @@ package org.springframework.asm;
 public final class SpringAsmInfo {
 
 	/**
-	 * The ASM compatibility version for Spring's ASM visitor implementations:
-	 * currently {@link Opcodes#ASM7}, as of Spring Framework 5.1.
+	 * Spring的ASM访问者实现的ASM兼容性版本:目前是{@link Opcodes#ASM7}，从Spring Framework 5.1开始。
 	 */
 	public static final int ASM_VERSION = Opcodes.ASM7;
 
