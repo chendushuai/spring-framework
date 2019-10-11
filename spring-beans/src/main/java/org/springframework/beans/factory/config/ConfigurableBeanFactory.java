@@ -276,12 +276,10 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
 	AccessControlContext getAccessControlContext();
 
 	/**
-	 * Copy all relevant configuration from the given other factory.
-	 * <p>Should include all standard configuration settings as well as
-	 * BeanPostProcessors, Scopes, and factory-specific internal settings.
-	 * Should not include any metadata of actual bean definitions,
-	 * such as BeanDefinition objects and bean name aliases.
-	 * @param otherFactory the other BeanFactory to copy from
+	 * 从给定的其他工厂复制所有相关配置。
+	 * <p>应该包括所有标准配置设置以及BeanPostProcessors、作用域和特定于工厂的内部设置。
+	 * 不应该包含任何实际bean定义的元数据，例如BeanDefinition对象和bean名称别名。
+	 * @param otherFactory 另一个用于拷贝的 BeanFactory
 	 */
 	void copyConfigurationFrom(ConfigurableBeanFactory otherFactory);
 

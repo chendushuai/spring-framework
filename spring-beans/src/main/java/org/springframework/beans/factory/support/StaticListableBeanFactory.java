@@ -44,18 +44,14 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 /**
- * Static {@link org.springframework.beans.factory.BeanFactory} implementation
- * which allows to register existing singleton instances programmatically.
- * Does not have support for prototype beans or aliases.
+ * 静态{@link org.springframework.beans.factory.BeanFactory}实现，
+ * 允许以编程方式注册现有的单例实例。不支持原型bean或别名。
  *
- * <p>Serves as example for a simple implementation of the
- * {@link org.springframework.beans.factory.ListableBeanFactory} interface,
- * managing existing bean instances rather than creating new ones based on bean
- * definitions, and not implementing any extended SPI interfaces (such as
- * {@link org.springframework.beans.factory.config.ConfigurableBeanFactory}).
+ * <p>作为{@link org.springframework.beans.factory.ListableBeanFactory}接口的简单实现的示例，
+ * 管理现有的bean实例而不是基于bean定义创建新实例，并且不实现任何扩展的SPI接口(例如
+ *  {@link org.springframework.beans.factory.config.ConfigurableBeanFactory})。
  *
- * <p>For a full-fledged factory based on bean definitions, have a look
- * at {@link DefaultListableBeanFactory}.
+ * <p>对于基于bean定义的成熟工厂，请查看{@link DefaultListableBeanFactory}。
  *
  * @author Rod Johnson
  * @author Juergen Hoeller

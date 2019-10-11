@@ -142,14 +142,13 @@ public interface BeanFactory {
 	 * 返回指定bean的一个实例，该实例可以是共享的，也可以是独立的。
 	 * <p>其行为与{@link #getBean(String)}相同，但如果bean不是所需类型，则通过抛出BeanNotOfRequiredTypeException来提供类型安全措施。
 	 * 这意味着ClassCastException不能在正确转换结果时抛出，就像{@link #getBean(String)}所发生的那样。
-	 * <p>Translates aliases back to the corresponding canonical bean name.
-	 * Will ask the parent factory if the bean cannot be found in this factory instance.
-	 * @param name the name of the bean to retrieve
-	 * @param requiredType type the bean must match; can be an interface or superclass
-	 * @return an instance of the bean
-	 * @throws NoSuchBeanDefinitionException if there is no such bean definition
-	 * @throws BeanNotOfRequiredTypeException if the bean is not of the required type
-	 * @throws BeansException if the bean could not be created
+	 * <p>将别名转换回相应的规范bean名称。如果在这个工厂实例中找不到bean，将询问父工厂。
+	 * @param name 要检索的bean的名称
+	 * @param requiredType bean必须匹配的类型;可以是接口还是超类
+	 * @return bean的实例
+	 * @throws NoSuchBeanDefinitionException 如果没有这样的bean定义
+	 * @throws BeanNotOfRequiredTypeException 如果bean不是所需的类型
+	 * @throws BeansException 如果bean无法创建
 	 */
 	<T> T getBean(String name, Class<T> requiredType) throws BeansException;
 
