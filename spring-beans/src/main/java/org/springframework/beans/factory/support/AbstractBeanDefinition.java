@@ -174,9 +174,15 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	@Nullable
 	private String factoryMethodName;
 
+	/**
+	 * 构造函数参数值
+	 */
 	@Nullable
 	private ConstructorArgumentValues constructorArgumentValues;
 
+	/**
+	 * 属性值
+	 */
 	@Nullable
 	private MutablePropertyValues propertyValues;
 
@@ -205,15 +211,14 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 
 
 	/**
-	 * Create a new AbstractBeanDefinition with default settings.
+	 * 使用默认设置创建一个新的AbstractBeanDefinition。
 	 */
 	protected AbstractBeanDefinition() {
 		this(null, null);
 	}
 
 	/**
-	 * Create a new AbstractBeanDefinition with the given
-	 * constructor argument values and property values.
+	 * 使用给定的构造函数参数值和属性值创建一个新的AbstractBeanDefinition。
 	 */
 	protected AbstractBeanDefinition(@Nullable ConstructorArgumentValues cargs, @Nullable MutablePropertyValues pvs) {
 		this.constructorArgumentValues = cargs;

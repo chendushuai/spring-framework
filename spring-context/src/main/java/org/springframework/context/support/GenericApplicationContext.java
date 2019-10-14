@@ -109,8 +109,8 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 	}
 
 	/**
-	 * Create a new GenericApplicationContext with the given DefaultListableBeanFactory.
-	 * @param beanFactory the DefaultListableBeanFactory instance to use for this context
+	 * 使用给定的DefaultListableBeanFactory创建一个新的GenericApplicationContext
+	 * @param beanFactory 用于这个上下文的DefaultListableBeanFactory实例
 	 * @see #registerBeanDefinition
 	 * @see #refresh
 	 */
@@ -120,8 +120,8 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 	}
 
 	/**
-	 * Create a new GenericApplicationContext with the given parent.
-	 * @param parent the parent application context
+	 * 使用给定的父类对象创建GenericApplicationContext
+	 * @param parent 父类应用程序上下文
 	 * @see #registerBeanDefinition
 	 * @see #refresh
 	 */
@@ -131,9 +131,9 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 	}
 
 	/**
-	 * Create a new GenericApplicationContext with the given DefaultListableBeanFactory.
-	 * @param beanFactory the DefaultListableBeanFactory instance to use for this context
-	 * @param parent the parent application context
+	 * 使用给定的DefaultListableBeanFactory创建一个新的GenericApplicationContext
+	 * @param beanFactory 用于此上下文的DefaultListableBeanFactory实例
+	 * @param parent 父级应用程序上下文
 	 * @see #registerBeanDefinition
 	 * @see #refresh
 	 */
@@ -144,8 +144,7 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 
 
 	/**
-	 * Set the parent of this application context, also setting
-	 * the parent of the internal BeanFactory accordingly.
+	 * 设置这个应用程序上下文的父级, 相应的设置了内部BeanFactory的父类
 	 * @see org.springframework.beans.factory.config.ConfigurableBeanFactory#setParentBeanFactory
 	 */
 	@Override
@@ -290,12 +289,10 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 	}
 
 	/**
-	 * Return the underlying bean factory of this context,
-	 * available for registering bean definitions.
-	 * <p><b>NOTE:</b> You need to call {@link #refresh()} to initialize the
-	 * bean factory and its contained beans with application context semantics
-	 * (autodetecting BeanFactoryPostProcessors, etc).
-	 * @return the internal bean factory (as DefaultListableBeanFactory)
+	 * 返回此上下文的基础bean工厂，可用来注册bean定义。
+	 * <p><b>注意:</b> 您需要调用{@link #refresh()}来使用应用程序上下文语义(自动检测BeanFactoryPostProcessors，等等)
+	 * 初始化bean工厂及其包含的bean。
+	 * @return 内部bean工厂(作为DefaultListableBeanFactory)
 	 */
 	public final DefaultListableBeanFactory getDefaultListableBeanFactory() {
 		return this.beanFactory;

@@ -129,7 +129,7 @@ class ConditionEvaluator {
 
 
 	/**
-	 * Implementation of a {@link ConditionContext}.
+	 * {@link ConditionContext}的实现
 	 */
 	private static class ConditionContextImpl implements ConditionContext {
 

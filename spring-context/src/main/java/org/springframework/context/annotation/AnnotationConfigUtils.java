@@ -237,7 +237,7 @@ public abstract class AnnotationConfigUtils {
 	/**
 	 * 打开获取DefaultListableBeanFactory
 	 * @param registry bean定义注册器
-	 * @return
+	 * @return 返回DefaultListableBeanFactory
 	 */
 	@Nullable
 	private static DefaultListableBeanFactory unwrapDefaultListableBeanFactory(BeanDefinitionRegistry registry) {
