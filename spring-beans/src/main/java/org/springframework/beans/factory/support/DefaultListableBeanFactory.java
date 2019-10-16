@@ -139,7 +139,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	@Nullable
 	private String serializationId;
 
-	/** 是否允许重新注册具有相同名称的不同定义。 */
+	/** 是否允许重新注册具有相同名称的不同定义。默认为true */
 	private boolean allowBeanDefinitionOverriding = true;
 
 	/** 是否允许即时加载类，即使是延迟初始化bean。 */
@@ -918,6 +918,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			}
 		}
 
+		/**
+		 * 使用bean名称查询bean定义集合中，该bean定义是否已存在
+		 */
 		BeanDefinition existingDefinition = this.beanDefinitionMap.get(beanName);
 		if (existingDefinition != null) {
 			if (!isAllowBeanDefinitionOverriding()) {

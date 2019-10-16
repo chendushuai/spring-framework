@@ -98,12 +98,9 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 
 	/**
 	 * 返回此bean定义的当前bean类名
-	 * <p>Note that this does not have to be the actual class name used at runtime, in
-	 * case of a child definition overriding/inheriting the class name from its parent.
-	 * Also, this may just be the class that a factory method is called on, or it may
-	 * even be empty in case of a factory bean reference that a method is called on.
-	 * Hence, do <i>not</i> consider this to be the definitive bean type at runtime but
-	 * rather only use it for parsing purposes at the individual bean definition level.
+	 * <p>注意，这不必是运行时使用的实际类名，以防子定义覆盖/继承其父类名。
+	 * 另外，这可能只是调用工厂方法的类，或者在调用方法的工厂bean引用的情况下，它甚至可能是空的。
+	 * 因此，<i>不要</i>认为这是运行时的最终bean类型，而应该仅在各个bean定义级别使用它进行解析。
 	 * @see #getParentName()
 	 * @see #getFactoryBeanName()
 	 * @see #getFactoryMethodName()
@@ -119,22 +116,19 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 	void setScope(@Nullable String scope);
 
 	/**
-	 * Return the name of the current target scope for this bean,
-	 * or {@code null} if not known yet.
+	 * 返回此bean的当前目标范围的名称，如果还不知道，则返回{@code null}。
 	 */
 	@Nullable
 	String getScope();
 
 	/**
-	 * Set whether this bean should be lazily initialized.
-	 * <p>If {@code false}, the bean will get instantiated on startup by bean
-	 * factories that perform eager initialization of singletons.
+	 * 设置此bean是否应延迟初始化。
+	 * <p>如果{@code false}， bean将在启动时被执行单例初始化的bean工厂实例化。
 	 */
 	void setLazyInit(boolean lazyInit);
 
 	/**
-	 * Return whether this bean should be lazily initialized, i.e. not
-	 * eagerly instantiated on startup. Only applicable to a singleton bean.
+	 * 返回该bean是否应该延迟初始化，即在启动时不急于实例化。<strong>仅适用于单例bean。</strong>
 	 */
 	boolean isLazyInit();
 
