@@ -133,8 +133,8 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 	boolean isLazyInit();
 
 	/**
-	 * Set the names of the beans that this bean depends on being initialized.
-	 * The bean factory will guarantee that these beans get initialized first.
+	 * 设置此bean依赖于被初始化的bean的名称。bean工厂将确保首先初始化这些bean。
+	 * 设置类将在当前类实例化之前进行实例化
 	 */
 	void setDependsOn(@Nullable String... dependsOn);
 
@@ -171,8 +171,11 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 	boolean isPrimary();
 
 	/**
-	 * Specify the factory bean to use, if any.
-	 * This the name of the bean to call the specified factory method on.
+	 * 指定要使用的Factorybean(如果有的话)。
+	 * 这是调用指定工厂方法的bean的名称。
+	 *
+	 * 如果该bean是一个FactoryBean，则该名称为FactoryBean的名称
+	 *
 	 * @see #setFactoryMethodName
 	 */
 	void setFactoryBeanName(@Nullable String factoryBeanName);
@@ -200,13 +203,15 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 	String getFactoryMethodName();
 
 	/**
-	 * Return the constructor argument values for this bean.
-	 * <p>The returned instance can be modified during bean factory post-processing.
+	 * 存储构造方法的参数值
+	 * 返回此bean的构造函数参数值
+	 * <p>在bean工厂的后期处理过程中可以修改返回的实例。
 	 * @return the ConstructorArgumentValues object (never {@code null})
 	 */
 	ConstructorArgumentValues getConstructorArgumentValues();
 
 	/**
+	 * 判断构造方法有没有传参数值
 	 * Return if there are constructor argument values defined for this bean.
 	 * @since 5.0.2
 	 */
@@ -215,6 +220,7 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 	}
 
 	/**
+	 * XML中Set方法的值
 	 * Return the property values to be applied to a new instance of the bean.
 	 * <p>The returned instance can be modified during bean factory post-processing.
 	 * @return the MutablePropertyValues object (never {@code null})
@@ -230,7 +236,7 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 	}
 
 	/**
-	 * Set the name of the initializer method.
+	 * 设置初始化方法的名称。
 	 * @since 5.1
 	 */
 	void setInitMethodName(@Nullable String initMethodName);
@@ -277,7 +283,7 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 	int getRole();
 
 	/**
-	 * Set a human-readable description of this bean definition.
+	 * 设置此bean定义的可读描述。
 	 * @since 5.1
 	 */
 	void setDescription(@Nullable String description);

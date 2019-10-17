@@ -32,10 +32,10 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
 
 /**
- * Holder for constructor argument values, typically as part of a bean definition.
+ * 构造函数参数值的Holder，通常作为bean定义的一部分。
+ * XML中的constructor-arg参数
  *
- * <p>Supports values for a specific index in the constructor argument list
- * as well as for generic argument matches by type.
+ * <p>支持构造函数参数列表中特定索引的值，以及按类型匹配的泛型参数的值。
  *
  * @author Juergen Hoeller
  * @since 09.11.2003
