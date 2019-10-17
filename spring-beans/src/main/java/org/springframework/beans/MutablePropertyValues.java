@@ -32,9 +32,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
 /**
- * The default implementation of the {@link PropertyValues} interface.
- * Allows simple manipulation of properties, and provides constructors
- * to support deep copy and construction from a Map.
+ * {@link PropertyValues}接口的默认实现。
+ * 允许对属性进行简单的操作，并提供构造函数来支持映射的深度复制和构造。
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
@@ -44,8 +43,14 @@ import org.springframework.util.StringUtils;
 @SuppressWarnings("serial")
 public class MutablePropertyValues implements PropertyValues, Serializable {
 
+	/**
+	 * 属性值列表
+	 */
 	private final List<PropertyValue> propertyValueList;
 
+	/**
+	 * 处理完成的属性集合
+	 */
 	@Nullable
 	private Set<String> processedProperties;
 
@@ -53,8 +58,8 @@ public class MutablePropertyValues implements PropertyValues, Serializable {
 
 
 	/**
-	 * Creates a new empty MutablePropertyValues object.
-	 * <p>Property values can be added with the {@code add} method.
+	 * 创建一个新的空的MutablePropertyValues对象。
+	 * <p>属性值可以使用{@code add}方法添加
 	 * @see #add(String, Object)
 	 */
 	public MutablePropertyValues() {

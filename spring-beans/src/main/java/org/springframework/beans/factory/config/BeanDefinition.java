@@ -295,11 +295,10 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 	String getDescription();
 
 
-	// Read-only attributes
+	// 只读属性
 
 	/**
-	 * Return whether this a <b>Singleton</b>, with a single, shared instance
-	 * returned on all calls.
+	 * 返回这是否是一个<b>单例</b>，在所有调用中返回一个共享实例。
 	 * @see #SCOPE_SINGLETON
 	 */
 	boolean isSingleton();
@@ -313,13 +312,13 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 	boolean isPrototype();
 
 	/**
-	 * Return whether this bean is "abstract", that is, not meant to be instantiated.
+	 * 判断这个类是不是抽象的
+	 * 返回这个bean是不是“abstract”的，也就是说，它不是要实例化的。
 	 */
 	boolean isAbstract();
 
 	/**
-	 * Return a description of the resource that this bean definition
-	 * came from (for the purpose of showing context in case of errors).
+	 * 返回此bean定义来自的资源的描述(用于在出现错误时显示上下文)。
 	 */
 	@Nullable
 	String getResourceDescription();

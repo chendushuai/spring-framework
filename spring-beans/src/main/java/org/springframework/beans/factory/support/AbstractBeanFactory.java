@@ -1305,7 +1305,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 							pbd = getMergedBeanDefinition(parentBeanName);
 						}
 						else {
+							// 得到父级bean工厂
 							BeanFactory parent = getParentBeanFactory();
+							// 如果父级bean工厂是配置bean工厂，则转换为对应工厂类型进行合并beand定义
 							if (parent instanceof ConfigurableBeanFactory) {
 								pbd = ((ConfigurableBeanFactory) parent).getMergedBeanDefinition(parentBeanName);
 							}
