@@ -158,6 +158,11 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		}
 	}
 
+	/**
+	 * 返回给定名称的bean的单例对象
+	 * @param beanName 要查找的bean的名称
+	 * @return
+	 */
 	@Override
 	@Nullable
 	public Object getSingleton(String beanName) {
