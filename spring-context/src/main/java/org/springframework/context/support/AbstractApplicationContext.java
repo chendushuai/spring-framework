@@ -83,18 +83,15 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
 
 /**
- * Abstract implementation of the {@link org.springframework.context.ApplicationContext}
- * interface. Doesn't mandate the type of storage used for configuration; simply
- * implements common context functionality. Uses the Template Method design pattern,
- * requiring concrete subclasses to implement abstract methods.
+ * {@link org.springframework.context.ApplicationContext}接口的抽象实现。
+ * 不要求配置使用的存储类型;简单地实现通用的上下文功能。
+ * 使用模板方法设计模式，需要具体的子类来实现抽象方法。
  *
- * <p>In contrast to a plain BeanFactory, an ApplicationContext is supposed
- * to detect special beans defined in its internal bean factory:
- * Therefore, this class automatically registers
- * {@link org.springframework.beans.factory.config.BeanFactoryPostProcessor BeanFactoryPostProcessors},
- * {@link org.springframework.beans.factory.config.BeanPostProcessor BeanPostProcessors},
- * and {@link org.springframework.context.ApplicationListener ApplicationListeners}
- * which are defined as beans in the context.
+ * <p>与普通的BeanFactory不同，ApplicationContext应该检测其内部bean工厂中定义的特殊bean:
+ * 因此，这个类在上下文中定义为bean时自动注册
+ * {@link org.springframework.beans.factory.config.BeanFactoryPostProcessor BeanFactoryPostProcessors}，
+ * {@link org.springframework.beans.factory.config.BeanPostProcessor BeanPostProcessors}
+ * 和{@link org.springframework.context.ApplicationListener ApplicationListeners}。
  *
  * <p>A {@link org.springframework.context.MessageSource} may also be supplied
  * as a bean in the context, with the name "messageSource"; otherwise, message
