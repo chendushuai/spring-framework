@@ -309,10 +309,11 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 	// Implementation of BeanDefinitionRegistry
 	//---------------------------------------------------------------------
 
+
 	@Override
 	public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition)
 			throws BeanDefinitionStoreException {
-
+		// 在这里修改了beanFactory中的bd集合，注册了bean定义
 		this.beanFactory.registerBeanDefinition(beanName, beanDefinition);
 	}
 

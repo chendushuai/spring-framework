@@ -131,11 +131,34 @@ public abstract class AnnotationConfigUtils {
 
 	/**
 	 * 在给定注册表中注册所有相关的注释后处理器。
+	 *
+	 * 在这个方法中，向注册器中的beanFactory中的beanDefinition列表中添加常规后置处理器，如下五种
+	 * org.springframework.context.annotation.internalConfigurationAnnotationProcessor
+	 * RootBeanDefinition
+	 * Root bean: class [org.springframework.context.annotation.ConfigurationClassPostProcessor]
+	 *
+	 * org.springframework.context.event.internalEventListenerFactory
+	 * RootBeanDefinition
+	 * Root bean: class [org.springframework.context.event.DefaultEventListenerFactory]
+	 *
+	 * org.springframework.context.event.internalEventListenerProcessor
+	 * RootBeanDefinition
+	 * Root bean: class [org.springframework.context.event.EventListenerMethodProcessor]
+	 *
+	 * org.springframework.context.annotation.internalAutowiredAnnotationProcessor
+	 * RootBeanDefinition
+	 * Root bean: class [org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor]
+	 *
+	 * org.springframework.context.annotation.internalCommonAnnotationProcessor
+	 * RootBeanDefinition
+	 * Root bean: class [org.springframework.context.annotation.CommonAnnotationBeanPostProcessor]
+	 *
 	 * @param registry 要操作的注册表
 	 */
 	public static void registerAnnotationConfigProcessors(BeanDefinitionRegistry registry) {
 		// 在给定注册表中注册所有相关的注解后处理器。
 		registerAnnotationConfigProcessors(registry, null);
+		// TODO 补充说明后置处理器的用途
 	}
 
 	/**
