@@ -532,6 +532,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				// 调用上下文中注册为bean的工厂处理器。
 				// 在spring的环境中去执行已经被注册的 factory processor 工厂后置处理器
 				// 设置执行自定义的ProcessBeanFactory 和spring内部自己定义的
+				// 这个时候还是只注册了了配置类对象，没有注册其他注解类的定义
 				invokeBeanFactoryPostProcessors(beanFactory);
 
 				// 注册 拦截bean创建 的bean处理器。

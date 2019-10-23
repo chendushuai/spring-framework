@@ -3,6 +3,7 @@ package com.chenss.test;
 import com.chenss.config.Appconfig;
 import com.chenss.dao.ChenssFactoryBean;
 import com.chenss.dao.UserDao;
+import com.chenss.processor.ChenssRegisterBeanFactoryPostProcessor;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -14,6 +15,7 @@ public class Test {
 		//bean标签、@Service等标签、JavaConfig的@bean标签
 		AnnotationConfigApplicationContext annotationConfigApplicationContext = new AnnotationConfigApplicationContext();
 		annotationConfigApplicationContext.register(Appconfig.class);
+		annotationConfigApplicationContext.addBeanFactoryPostProcessor(new ChenssRegisterBeanFactoryPostProcessor());
 		annotationConfigApplicationContext.refresh();
 		//annotationConfigApplicationContext.start();
 		UserDao userDao = (UserDao) annotationConfigApplicationContext.getBean("userDao");

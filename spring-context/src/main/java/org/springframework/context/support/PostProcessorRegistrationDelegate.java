@@ -76,6 +76,9 @@ final class PostProcessorRegistrationDelegate {
 					BeanDefinitionRegistryPostProcessor registryProcessor =
 							(BeanDefinitionRegistryPostProcessor) postProcessor;
 					// 在上下文初始化，bean定义加载完成，但尚未初始化之前，执行处理
+					// 自定义的BeanDefinitionRegistryPostProcessor接口的实现后置处理器，
+					// 通过org.springframework.context.support.AbstractApplicationContext.addBeanFactoryPostProcessor
+					// 注册到后置处理器列表中后，就会在此处进行调用postProcessBeanDefinitionRegistry方法，执行bean定义注册处理。
 					registryProcessor.postProcessBeanDefinitionRegistry(registry);
 					registryProcessors.add(registryProcessor);
 				}
@@ -302,6 +305,8 @@ final class PostProcessorRegistrationDelegate {
 	 * 调用给定的BeanDefinitionRegistryPostProcessor beans.
 	 * 注意对比下面这个方法
 	 * BeanDefinitionRegistryPostProcessor和BeanFactoryPostProcessor
+	 *
+	 * 处理并调用ConfigurationClassPostProcessor后置处理器的postProcessBeanDefinitionRegistry的方法
 	 */
 	private static void invokeBeanDefinitionRegistryPostProcessors(
 			Collection<? extends BeanDefinitionRegistryPostProcessor> postProcessors, BeanDefinitionRegistry registry) {

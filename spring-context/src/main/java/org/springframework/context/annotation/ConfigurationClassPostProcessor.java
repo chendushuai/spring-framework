@@ -230,6 +230,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 
 	/**
 	 * 从注册表中的配置类派生进一步的bean定义。
+	 * 在bean工厂创建完成之后就开始执行
 	 */
 	@Override
 	public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) {
