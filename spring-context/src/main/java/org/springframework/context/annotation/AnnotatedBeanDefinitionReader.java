@@ -254,6 +254,7 @@ public class AnnotatedBeanDefinitionReader {
 			@Nullable BeanDefinitionCustomizer[] customizers) {
 
 		// 生成注解bean定义，这时候Appconfig的bd还没有添加到BeanFactory中
+		// 这里很重要，配合后面对于配置类的判断，这里在注册配置类时，直接将配置类创建为AnnotatedGenericBeanDefinition
 		AnnotatedGenericBeanDefinition abd = new AnnotatedGenericBeanDefinition(annotatedClass);
 		if (this.conditionEvaluator.shouldSkip(abd.getMetadata())) {
 			return;

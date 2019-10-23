@@ -126,9 +126,11 @@ abstract class ConfigurationClassUtils {
 		}
 
 		Map<String, Object> config = metadata.getAnnotationAttributes(Configuration.class.getName());
+		// 如果设置了@Configuration注解，并且proxyBeanMethods属性值指定为非FALSE，则设置CONFIGURATION_CLASS_ATTRIBUTE为full
 		if (config != null && !Boolean.FALSE.equals(config.get("proxyBeanMethods"))) {
 			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_FULL);
 		}
+		// 只要设置了@Configuration注解，或者设置了@Component、@ComponentScan、@Import、@ImportResource注解，或在其中指定了@bean的方法，都会设置CONFIGURATION_CLASS_ATTRIBUTE为lite
 		else if (config != null || isConfigurationCandidate(metadata)) {
 			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_LITE);
 		}
@@ -136,7 +138,7 @@ abstract class ConfigurationClassUtils {
 			return false;
 		}
 
-		// It's a full or lite configuration candidate... Let's determine the order value, if any.
+		// 运行到这里的时候，配置对象一定是full或lite的配置候选... 那如果类指定了@Order的属性值，将该值保存到ORDER_ATTRIBUTE属性中
 		Integer order = getOrder(metadata);
 		if (order != null) {
 			beanDef.setAttribute(ORDER_ATTRIBUTE, order);
@@ -146,26 +148,25 @@ abstract class ConfigurationClassUtils {
 	}
 
 	/**
-	 * Check the given metadata for a configuration class candidate
-	 * (or nested component class declared within a configuration/component class).
-	 * @param metadata the metadata of the annotated class
-	 * @return {@code true} if the given class is to be registered for
-	 * configuration class processing; {@code false} otherwise
+	 * 检查配置类候选(或在configuration/component类中声明的嵌套组件类)的给定元数据。
+	 * @param metadata 注解类的元数据
+	 * @return 如果给定的类需要注册成configuration类来处理，则返回{@code true}；否则返回{@code false}
 	 */
 	public static boolean isConfigurationCandidate(AnnotationMetadata metadata) {
-		// Do not consider an interface or an annotation...
+		// 不要考虑接口或注释…
 		if (metadata.isInterface()) {
 			return false;
 		}
 
-		// Any of the typical annotations found?
+		// 判断有没有添加典型的注解
+		// 这里的典型注解指的是@Component、@ComponentScan、@Import、@ImportResource
 		for (String indicator : candidateIndicators) {
 			if (metadata.isAnnotated(indicator)) {
 				return true;
 			}
 		}
 
-		// Finally, let's look for @Bean methods...
+		// 最后，让我们寻找@Bean方法……判断在config中是否主动声明了Bean
 		try {
 			return metadata.hasAnnotatedMethods(Bean.class.getName());
 		}

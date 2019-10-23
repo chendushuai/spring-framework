@@ -280,10 +280,14 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		String[] candidateNames = registry.getBeanDefinitionNames();
 
 		// 循环遍历处理
+		/**
+		 * 在这里，beanDefinitionNames中的数据仍然只有6个，其中五个为初始注入，一个AppConfig是我们自己注入的
+		 */
 		for (String beanName : candidateNames) {
 			// 获取该bean名称对应的bean定义
 			BeanDefinition beanDef = registry.getBeanDefinition(beanName);
 			// 如果bean定义是一个配置类
+			// 这里的getAttribute获取的是对象的this.attributes属性值，该属性值在初次处理时是空的，包括appConfig
 			if (beanDef.getAttribute(ConfigurationClassUtils.CONFIGURATION_CLASS_ATTRIBUTE) != null) {
 				if (logger.isDebugEnabled()) {
 					// Bean定义已经作为配置类处理
