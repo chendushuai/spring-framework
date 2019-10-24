@@ -161,10 +161,15 @@ class ConfigurationClassParser {
 	}
 
 
+	/**
+	 * 遍历配置类集合，解析配置类
+	 * @param configCandidates
+	 */
 	public void parse(Set<BeanDefinitionHolder> configCandidates) {
 		for (BeanDefinitionHolder holder : configCandidates) {
 			BeanDefinition bd = holder.getBeanDefinition();
 			try {
+				// 注册的配置类走这个方法
 				if (bd instanceof AnnotatedBeanDefinition) {
 					parse(((AnnotatedBeanDefinition) bd).getMetadata(), holder.getBeanName());
 				}
@@ -197,6 +202,12 @@ class ConfigurationClassParser {
 		processConfigurationClass(new ConfigurationClass(clazz, beanName));
 	}
 
+	/**
+	 * 解析AnnotatedBeanDefinition定义类型的注册配置类
+	 * @param metadata
+	 * @param beanName
+	 * @throws IOException
+	 */
 	protected final void parse(AnnotationMetadata metadata, String beanName) throws IOException {
 		processConfigurationClass(new ConfigurationClass(metadata, beanName));
 	}
@@ -215,7 +226,11 @@ class ConfigurationClassParser {
 		return this.configurationClasses.keySet();
 	}
 
-
+	/**
+	 * 处理配置类
+	 * @param configClass
+	 * @throws IOException
+	 */
 	protected void processConfigurationClass(ConfigurationClass configClass) throws IOException {
 		if (this.conditionEvaluator.shouldSkip(configClass.getMetadata(), ConfigurationPhase.PARSE_CONFIGURATION)) {
 			return;
@@ -227,18 +242,17 @@ class ConfigurationClassParser {
 				if (existingClass.isImported()) {
 					existingClass.mergeImportedBy(configClass);
 				}
-				// Otherwise ignore new imported config class; existing non-imported class overrides it.
+				// 否则忽略新导入的配置类;现有的非导入类会覆盖它。
 				return;
 			}
 			else {
-				// Explicit bean definition found, probably replacing an import.
-				// Let's remove the old one and go with the new one.
+				// 找到显式bean定义，可能替换导入。我们把旧的拿掉，换上新的吧。
 				this.configurationClasses.remove(configClass);
 				this.knownSuperclasses.values().removeIf(configClass::equals);
 			}
 		}
 
-		// Recursively process the configuration class and its superclass hierarchy.
+		// 递归地处理配置类及其超类层次结构。
 		SourceClass sourceClass = asSourceClass(configClass);
 		do {
 			sourceClass = doProcessConfigurationClass(configClass, sourceClass);
@@ -249,23 +263,21 @@ class ConfigurationClassParser {
 	}
 
 	/**
-	 * Apply processing and build a complete {@link ConfigurationClass} by reading the
-	 * annotations, members and methods from the source class. This method can be called
-	 * multiple times as relevant sources are discovered.
-	 * @param configClass the configuration class being build
-	 * @param sourceClass a source class
-	 * @return the superclass, or {@code null} if none found or previously processed
+	 * 通过从源类中读取注释、成员和方法，应用处理并构建一个完整的{@link ConfigurationClass}。当发现相关源时，可以多次调用此方法。
+	 * @param configClass 正在构建的配置类
+	 * @param sourceClass 源类
+	 * @return 超类，或{@code null}(如果没有找到或以前处理过)
 	 */
 	@Nullable
 	protected final SourceClass doProcessConfigurationClass(ConfigurationClass configClass, SourceClass sourceClass)
 			throws IOException {
 
 		if (configClass.getMetadata().isAnnotated(Component.class.getName())) {
-			// Recursively process any member (nested) classes first
+			// 首先递归地处理任何成员(嵌套的)类
 			processMemberClasses(configClass, sourceClass);
 		}
 
-		// Process any @PropertySource annotations
+		// 处理任何@PropertySource 注解
 		for (AnnotationAttributes propertySource : AnnotationConfigUtils.attributesForRepeatable(
 				sourceClass.getMetadata(), PropertySources.class,
 				org.springframework.context.annotation.PropertySource.class)) {
@@ -340,7 +352,7 @@ class ConfigurationClassParser {
 	}
 
 	/**
-	 * Register member (nested) classes that happen to be configuration classes themselves.
+	 * 注册碰巧是配置类本身的成员(嵌套的)类。
 	 */
 	private void processMemberClasses(ConfigurationClass configClass, SourceClass sourceClass) throws IOException {
 		Collection<SourceClass> memberClasses = sourceClass.getMemberClasses();
@@ -426,9 +438,9 @@ class ConfigurationClassParser {
 
 
 	/**
-	 * Process the given <code>@PropertySource</code> annotation metadata.
-	 * @param propertySource metadata for the <code>@PropertySource</code> annotation found
-	 * @throws IOException if loading a property source failed
+	 * 处理给定的<code>@PropertySource</code>注解元数据
+	 * @param propertySource <code>@PropertySource</code>注解找到的元数据
+	 * @throws IOException 如果加载属性源失败
 	 */
 	private void processPropertySource(AnnotationAttributes propertySource) throws IOException {
 		String name = propertySource.getString("name");
@@ -467,6 +479,10 @@ class ConfigurationClassParser {
 		}
 	}
 
+	/**
+	 * 添加属性支援
+	 * @param propertySource
+	 */
 	private void addPropertySource(PropertySource<?> propertySource) {
 		String name = propertySource.getName();
 		MutablePropertySources propertySources = ((ConfigurableEnvironment) this.environment).getPropertySources();
@@ -623,7 +639,7 @@ class ConfigurationClassParser {
 
 
 	/**
-	 * Factory method to obtain a {@link SourceClass} from a {@link ConfigurationClass}.
+	 * 从{@link ConfigurationClass}获取{@link SourceClass}的工厂方法。
 	 */
 	private SourceClass asSourceClass(ConfigurationClass configurationClass) throws IOException {
 		AnnotationMetadata metadata = configurationClass.getMetadata();
@@ -666,14 +682,14 @@ class ConfigurationClassParser {
 	}
 
 	/**
-	 * Factory method to obtain a {@link SourceClass} from a class name.
+	 * 工厂方法从类名获取{@link SourceClass}。
 	 */
 	SourceClass asSourceClass(@Nullable String className) throws IOException {
 		if (className == null || className.startsWith("java.lang.annotation.")) {
 			return this.objectSourceClass;
 		}
 		if (className.startsWith("java")) {
-			// Never use ASM for core java types
+			// 不要对核心java类型使用ASM
 			try {
 				return new SourceClass(ClassUtils.forName(className,
 						this.resourceLoader.getClassLoader()));

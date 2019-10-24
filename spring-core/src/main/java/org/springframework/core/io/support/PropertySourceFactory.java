@@ -22,7 +22,7 @@ import org.springframework.core.env.PropertySource;
 import org.springframework.lang.Nullable;
 
 /**
- * Strategy interface for creating resource-based {@link PropertySource} wrappers.
+ * 用于创建基于资源的{@link PropertySource}包装器的策略接口。
  *
  * @author Juergen Hoeller
  * @since 4.3

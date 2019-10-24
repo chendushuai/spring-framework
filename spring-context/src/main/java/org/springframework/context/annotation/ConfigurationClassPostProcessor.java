@@ -294,6 +294,8 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 					logger.debug("Bean definition has already been processed as a configuration class: " + beanDef);
 				}
 			}
+			// 注册的AppConfig类在这位置被判断为配置类，添加到configCandidates中，
+			// 认为他是配置类的依据是因为他在注册时候，生成的bean定义是AnnotatedBeanDefinition的
 			else if (ConfigurationClassUtils.checkConfigurationClassCandidate(beanDef, this.metadataReaderFactory)) {
 				configCandidates.add(new BeanDefinitionHolder(beanDef, beanName));
 			}
@@ -338,6 +340,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		Set<BeanDefinitionHolder> candidates = new LinkedHashSet<>(configCandidates);
 		Set<ConfigurationClass> alreadyParsed = new HashSet<>(configCandidates.size());
 		do {
+			// 解析配置类
 			parser.parse(candidates);
 			parser.validate();
 

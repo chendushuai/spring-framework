@@ -168,7 +168,7 @@ final class ConfigurationClass {
 	}
 
 	/**
-	 * Merge the imported-by declarations from the given configuration class into this one.
+	 * 将通过声明从给定的配置类导入的内容合并到这个配置类中。
 	 * @since 4.0.5
 	 */
 	public void mergeImportedBy(ConfigurationClass otherConfigClass) {
