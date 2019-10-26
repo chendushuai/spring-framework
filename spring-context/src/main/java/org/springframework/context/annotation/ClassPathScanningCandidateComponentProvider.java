@@ -172,14 +172,14 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	}
 
 	/**
-	 * Add an include type filter to the <i>end</i> of the inclusion list.
+	 * 添加一个包括类型过滤器到包含列表的<i>末尾</i>
 	 */
 	public void addIncludeFilter(TypeFilter includeFilter) {
 		this.includeFilters.add(includeFilter);
 	}
 
 	/**
-	 * Add an exclude type filter to the <i>front</i> of the exclusion list.
+	 * 添加一个排除类型过滤器到排除列表的<i>列首</i>
 	 */
 	public void addExcludeFilter(TypeFilter excludeFilter) {
 		this.excludeFilters.add(0, excludeFilter);
@@ -312,9 +312,9 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 
 
 	/**
-	 * Scan the class path for candidate components.
-	 * @param basePackage the package to check for annotated classes
-	 * @return a corresponding Set of autodetected bean definitions
+	 * 扫描类路径以查找候选组件。
+	 * @param basePackage 检查带注解的类的包
+	 * @return 一组相应的自动检测bean定义
 	 */
 	public Set<BeanDefinition> findCandidateComponents(String basePackage) {
 		if (this.componentsIndex != null && indexSupportsIncludeFilters()) {
@@ -326,9 +326,8 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	}
 
 	/**
-	 * Determine if the index can be used by this instance.
-	 * @return {@code true} if the index is available and the configuration of this
-	 * instance is supported by it, {@code false} otherwise
+	 * 确定此实例是否可以使用索引。
+	 * @return 如果该索引可用且该实例的配置受其支持，则返回{@code true}；否则返回{@code false}
 	 * @since 5.0
 	 */
 	private boolean indexSupportsIncludeFilters() {
@@ -341,9 +340,9 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	}
 
 	/**
-	 * Determine if the specified include {@link TypeFilter} is supported by the index.
-	 * @param filter the filter to check
-	 * @return whether the index supports this include filter
+	 * 确定索引是否支持指定的include {@link TypeFilter}类型过滤器。
+	 * @param filter 要检查的过滤器
+	 * @return 索引是否支持这个include过滤器
 	 * @since 5.0
 	 * @see #extractStereotype(TypeFilter)
 	 */
