@@ -72,8 +72,15 @@ class ComponentScanAnnotationParser {
 		this.registry = registry;
 	}
 
-
+	/**
+	 * 解析@ComponentScan注解内容
+	 * @param componentScan
+	 * @param declaringClass
+	 * @return
+	 */
 	public Set<BeanDefinitionHolder> parse(AnnotationAttributes componentScan, final String declaringClass) {
+		// 创建用于@ComponentScan的类的扫描器，这个算是内部的扫描器
+		// 与在创建AnnotationConfigApplicationContext时创建的扫描器不一样，当时创建的扫描器用于程序员使用
 		ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner(this.registry,
 				componentScan.getBoolean("useDefaultFilters"), this.environment, this.resourceLoader);
 

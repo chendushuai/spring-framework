@@ -53,6 +53,11 @@ final class PostProcessorRegistrationDelegate {
 
 	/**
 	 * 请求BeanFactoryPostProcessor集合处理
+	 *
+	 * beanFactoryPostProcessors
+	 * 1. 没有元素
+	 * 2. 有元素。 来自于程序员提供的BeanFactoryPostProcessor
+	 * 		addBeanFactoryPostProcessor
 	 * @param beanFactory bean工厂
 	 * @param beanFactoryPostProcessors bean工厂后置处理器集合
 	 */
@@ -73,6 +78,7 @@ final class PostProcessorRegistrationDelegate {
 			for (BeanFactoryPostProcessor postProcessor : beanFactoryPostProcessors) {
 				// 如果后置处理器的类型是bean定义注册后置处理器BeanDefinitionRegistryPostProcessor
 				if (postProcessor instanceof BeanDefinitionRegistryPostProcessor) {
+					// 有可能给定的对象的类型是BeanDefinitionRegistryPostProcessor的子类
 					BeanDefinitionRegistryPostProcessor registryProcessor =
 							(BeanDefinitionRegistryPostProcessor) postProcessor;
 					// 在上下文初始化，bean定义加载完成，但尚未初始化之前，执行处理
@@ -90,7 +96,8 @@ final class PostProcessorRegistrationDelegate {
 			// 不要在这里初始化FactoryBean：
 			// 我们需要不初始化所有常规bean，让bean工厂的后处理程序应用于它们！
 			// 将实现优先排序、有序的BeanDefinitionRegistryPostProcessor与其他处理器分开。
-			// 这个currentRegistryProcessors 放的是spring内部自己实现了BeanDefinitionRegistryPostProcessor接口的对象
+			// 这个currentRegistryProcessors 放的是spring内部自己实现了BeanDefinitionRegistryPostProcessor接口的对象。
+			// 或者是自己注册的后置处理器
 			List<BeanDefinitionRegistryPostProcessor> currentRegistryProcessors = new ArrayList<>();
 
 			// 首先，调用实现PriorityOrdered的BeanDefinitionRegistryPostProcessors。
