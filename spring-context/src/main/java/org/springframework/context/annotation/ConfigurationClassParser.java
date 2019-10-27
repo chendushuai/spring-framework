@@ -192,6 +192,13 @@ class ConfigurationClassParser {
 		this.deferredImportSelectorHandler.process();
 	}
 
+
+	/**
+	 * 解析配置类
+	 * @param className 类名
+	 * @param beanName bean名称
+	 * @throws IOException
+	 */
 	protected final void parse(@Nullable String className, String beanName) throws IOException {
 		Assert.notNull(className, "No bean class name for configuration class bean definition");
 		MetadataReader reader = this.metadataReaderFactory.getMetadataReader(className);

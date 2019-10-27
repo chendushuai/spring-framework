@@ -136,7 +136,9 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 */
 	public static final String INFER_METHOD = "(inferred)";
 
-
+	/**
+	 * Bean类名称
+	 */
 	@Nullable
 	private volatile Object beanClass;
 
@@ -361,8 +363,8 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	}
 
 	/**
-	 * Apply the provided default values to this bean.
-	 * @param defaults the default settings to apply
+	 * 将提供的默认值应用到此bean。
+	 * @param defaults 要应用的默认设置
 	 * @since 2.5
 	 */
 	public void applyDefaults(BeanDefinitionDefaults defaults) {
@@ -380,7 +382,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 
 
 	/**
-	 * Specify the bean class name of this bean definition.
+	 * 指定bean定义的bean类名称
 	 */
 	@Override
 	public void setBeanClassName(@Nullable String beanClassName) {

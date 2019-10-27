@@ -34,13 +34,11 @@ import org.springframework.core.type.classreading.MetadataReaderFactory;
 public interface TypeFilter {
 
 	/**
-	 * Determine whether this filter matches for the class described by
-	 * the given metadata.
-	 * @param metadataReader the metadata reader for the target class
-	 * @param metadataReaderFactory a factory for obtaining metadata readers
-	 * for other classes (such as superclasses and interfaces)
-	 * @return whether this filter matches
-	 * @throws IOException in case of I/O failure when reading metadata
+	 * 确定此筛选器是否与给定元数据所描述的类匹配。
+	 * @param metadataReader 目标类的元数据读取器
+	 * @param metadataReaderFactory 获取其他类(如超类和接口)元数据读取器的工厂
+	 * @return 此筛选器是否匹配
+	 * @throws IOException 在读取元数据时，万一I/O失败
 	 */
 	boolean match(MetadataReader metadataReader, MetadataReaderFactory metadataReaderFactory)
 			throws IOException;
