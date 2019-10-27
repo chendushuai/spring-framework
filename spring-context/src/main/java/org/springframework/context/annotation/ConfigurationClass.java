@@ -62,6 +62,9 @@ final class ConfigurationClass {
 	private final Map<String, Class<? extends BeanDefinitionReader>> importedResources =
 			new LinkedHashMap<>();
 
+	/**
+	 * 导入bean定义注册器集合
+	 */
 	private final Map<ImportBeanDefinitionRegistrar, AnnotationMetadata> importBeanDefinitionRegistrars =
 			new LinkedHashMap<>();
 
