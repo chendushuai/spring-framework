@@ -169,7 +169,7 @@ class ConfigurationClassParser {
 		for (BeanDefinitionHolder holder : configCandidates) {
 			BeanDefinition bd = holder.getBeanDefinition();
 			try {
-				// 注册的配置类走这个方法
+				// 注册的配置类走这个方法，进行配置类的处理
 				if (bd instanceof AnnotatedBeanDefinition) {
 					parse(((AnnotatedBeanDefinition) bd).getMetadata(), holder.getBeanName());
 				}
@@ -189,6 +189,7 @@ class ConfigurationClassParser {
 			}
 		}
 
+		// 处理注册的演出导入选择器处理器
 		this.deferredImportSelectorHandler.process();
 	}
 
@@ -219,7 +220,7 @@ class ConfigurationClassParser {
 	}
 
 	/**
-	 * Validate each {@link ConfigurationClass} object.
+	 * 校验每个{@link ConfigurationClass}对象
 	 * @see ConfigurationClass#validate
 	 */
 	public void validate() {
@@ -261,10 +262,12 @@ class ConfigurationClassParser {
 		// 递归地处理配置类及其超类层次结构。
 		SourceClass sourceClass = asSourceClass(configClass);
 		do {
+			// 处理类，并返回超类进行递归处理
 			sourceClass = doProcessConfigurationClass(configClass, sourceClass);
 		}
 		while (sourceClass != null);
 
+		// 将配置类添加到配置类集合中
 		this.configurationClasses.put(configClass, configClass);
 	}
 
@@ -337,26 +340,29 @@ class ConfigurationClassParser {
 		}
 
 		// 处理单个@Bean方法
+		// 获取使用了@Bean注解的方法元数据
 		Set<MethodMetadata> beanMethods = retrieveBeanMethodMetadata(sourceClass);
 		for (MethodMetadata methodMetadata : beanMethods) {
 			configClass.addBeanMethod(new BeanMethod(methodMetadata, configClass));
 		}
 
-		// Process default methods on interfaces
+		// 处理接口上的默认方法
 		processInterfaces(configClass, sourceClass);
 
-		// Process superclass, if any
+		// 如果有的话，处理超类
 		if (sourceClass.getMetadata().hasSuperClass()) {
+			// 得到超类名称
 			String superclass = sourceClass.getMetadata().getSuperClassName();
+			// 如果超类不是JDK的内置类，并且，在已知的超类集合中不存在，则将该类添加到已知的超类集合中
 			if (superclass != null && !superclass.startsWith("java") &&
 					!this.knownSuperclasses.containsKey(superclass)) {
 				this.knownSuperclasses.put(superclass, configClass);
-				// Superclass found, return its annotation metadata and recurse
+				// 找到超类，返回其注释元数据并递归
 				return sourceClass.getSuperClass();
 			}
 		}
 
-		// No superclass -> processing is complete
+		// 没有超类 -> 处理完成
 		return null;
 	}
 
@@ -392,17 +398,22 @@ class ConfigurationClassParser {
 	}
 
 	/**
-	 * Register default methods on interfaces implemented by the configuration class.
+	 * 在配置类实现的接口上注册默认方法。
 	 */
 	private void processInterfaces(ConfigurationClass configClass, SourceClass sourceClass) throws IOException {
+		// 遍历源类的接口类
 		for (SourceClass ifc : sourceClass.getInterfaces()) {
+			// 获取接口类中使用@Bean注解的方法集合
 			Set<MethodMetadata> beanMethods = retrieveBeanMethodMetadata(ifc);
+			// 遍历方法集合
 			for (MethodMetadata methodMetadata : beanMethods) {
+				// 如果方法不是抽象方法
 				if (!methodMetadata.isAbstract()) {
-					// A default method or other concrete method on a Java 8+ interface...
+					// Java 8+接口上的默认方法或其他具体方法…
 					configClass.addBeanMethod(new BeanMethod(methodMetadata, configClass));
 				}
 			}
+			// 递归遍历上级接口
 			processInterfaces(configClass, ifc);
 		}
 	}
@@ -420,8 +431,11 @@ class ConfigurationClassParser {
 			try {
 				AnnotationMetadata asm =
 						this.metadataReaderFactory.getMetadataReader(original.getClassName()).getAnnotationMetadata();
+				// 使用ASM方式获取@Bean主机的方法元数据
 				Set<MethodMetadata> asmMethods = asm.getAnnotatedMethods(Bean.class.getName());
+				// 如果使用ASM方式获取到的注解方法数量大于直接获取的注解方法主梁
 				if (asmMethods.size() >= beanMethods.size()) {
+					// 则通过循环比较，添加使用注解方法直接获取到的方法
 					Set<MethodMetadata> selectedMethods = new LinkedHashSet<>(asmMethods.size());
 					for (MethodMetadata asmMethod : asmMethods) {
 						for (MethodMetadata beanMethod : beanMethods) {
@@ -431,8 +445,9 @@ class ConfigurationClassParser {
 							}
 						}
 					}
+					// 如果ASM方法获取的方法数量包含所有使用注解直接获取的方法数量
 					if (selectedMethods.size() == beanMethods.size()) {
-						// All reflection-detected methods found in ASM method set -> proceed
+						// 在ASM方法集中找到的所有反射检测方法 -> 继续执行
 						beanMethods = selectedMethods;
 					}
 				}
@@ -811,10 +826,15 @@ class ConfigurationClassParser {
 			}
 		}
 
+		/**
+		 * 进行导入选择器的处理
+		 */
 		public void process() {
 			List<DeferredImportSelectorHolder> deferredImports = this.deferredImportSelectors;
+			// 进入处理，置空集合
 			this.deferredImportSelectors = null;
 			try {
+				// 如果有延迟导入处理器
 				if (deferredImports != null) {
 					DeferredImportSelectorGroupingHandler handler = new DeferredImportSelectorGroupingHandler();
 					deferredImports.sort(DEFERRED_IMPORT_COMPARATOR);
@@ -836,6 +856,10 @@ class ConfigurationClassParser {
 
 		private final Map<AnnotationMetadata, ConfigurationClass> configurationClasses = new HashMap<>();
 
+		/**
+		 * 进行注册
+		 * @param deferredImport
+		 */
 		public void register(DeferredImportSelectorHolder deferredImport) {
 			Class<? extends Group> group = deferredImport.getImportSelector()
 					.getImportGroup();
@@ -847,6 +871,9 @@ class ConfigurationClassParser {
 					deferredImport.getConfigurationClass());
 		}
 
+		/**
+		 * 处理组导入
+		 */
 		public void processGroupImports() {
 			for (DeferredImportSelectorGrouping grouping : this.groupings.values()) {
 				grouping.getImports().forEach(entry -> {

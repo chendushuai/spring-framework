@@ -342,8 +342,10 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		do {
 			// 解析配置类
 			parser.parse(candidates);
+			// 校验解析完成的配置类
 			parser.validate();
 
+			// 从配置类集合中移除已经解析完毕的配置类
 			Set<ConfigurationClass> configClasses = new LinkedHashSet<>(parser.getConfigurationClasses());
 			configClasses.removeAll(alreadyParsed);
 
@@ -355,9 +357,11 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 			}
 			// 从配置类加载bean定义
 			this.reader.loadBeanDefinitions(configClasses);
+			// 如果配置类已经被加载成bean定义了，则认为配置类已经完成解析，保存到完成解析的集合中
 			alreadyParsed.addAll(configClasses);
-
+			// 清除候选对象集合
 			candidates.clear();
+			// 如果读取到的bean定义数量大于候选bean名称的数量
 			if (registry.getBeanDefinitionCount() > candidateNames.length) {
 				String[] newCandidateNames = registry.getBeanDefinitionNames();
 				Set<String> oldCandidateNames = new HashSet<>(Arrays.asList(candidateNames));

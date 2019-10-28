@@ -87,15 +87,14 @@ public interface ClassMetadata {
 	String getEnclosingClassName();
 
 	/**
-	 * Return whether the underlying class has a super class.
+	 * 返回基础类是否有超类。
 	 */
 	default boolean hasSuperClass() {
 		return (getSuperClassName() != null);
 	}
 
 	/**
-	 * Return the name of the super class of the underlying class,
-	 * or {@code null} if there is no super class defined.
+	 * 返回基础类的超类的名称，如果没有定义超类，则返回{@code null}。
 	 */
 	@Nullable
 	String getSuperClassName();
