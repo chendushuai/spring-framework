@@ -145,7 +145,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 * 如果需要，添加用于构建指定单例的给定单例工厂。
 	 * <p>要求快速注册单例，例如能够解析循环引用。
 	 * @param beanName bean名称
-	 * @param singletonFactory 单例对象的工厂
+	 * @param singletonFactory 单例对象工厂，用于产生半成品。提前暴露工厂
 	 */
 	protected void addSingletonFactory(String beanName, ObjectFactory<?> singletonFactory) {
 		Assert.notNull(singletonFactory, "Singleton factory must not be null");
@@ -166,6 +166,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	@Override
 	@Nullable
 	public Object getSingleton(String beanName) {
+		// 默认开启循环依赖的另一个表现
 		return getSingleton(beanName, true);
 	}
 
@@ -191,9 +192,11 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					ObjectFactory<?> singletonFactory = this.singletonFactories.get(beanName);
 					if (singletonFactory != null) {
 						singletonObject = singletonFactory.getObject();
-						// 保存创建的早期引用对象
+						// 保存创建的早期引用对象 保存到三级缓存
+						// 主要是为了提高效率
 						this.earlySingletonObjects.put(beanName, singletonObject);
-						// 移除单例工厂中的该对象
+						// 移除单例工厂中的该对象 从二级缓存中移除
+						// 从工厂缓存中获取对象比较麻烦，且需要生产才能得到
 						this.singletonFactories.remove(beanName);
 					}
 				}
