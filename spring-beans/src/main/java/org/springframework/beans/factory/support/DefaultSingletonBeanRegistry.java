@@ -192,9 +192,11 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					ObjectFactory<?> singletonFactory = this.singletonFactories.get(beanName);
 					if (singletonFactory != null) {
 						singletonObject = singletonFactory.getObject();
-						// 保存创建的早期引用对象
+						// 保存创建的早期引用对象 保存到三级缓存
+						// 主要是为了提高效率
 						this.earlySingletonObjects.put(beanName, singletonObject);
-						// 移除单例工厂中的该对象
+						// 移除单例工厂中的该对象 从二级缓存中移除
+						// 从工厂缓存中获取对象比较麻烦，且需要生产才能得到
 						this.singletonFactories.remove(beanName);
 					}
 				}
