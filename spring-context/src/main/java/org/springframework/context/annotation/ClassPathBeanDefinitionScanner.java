@@ -63,6 +63,9 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	// 指定bean定义注册器
 	private final BeanDefinitionRegistry registry;
 
+	/**
+	 * 默认bean定义
+	 */
 	private BeanDefinitionDefaults beanDefinitionDefaults = new BeanDefinitionDefaults();
 
 	@Nullable
@@ -260,29 +263,35 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	}
 
 	/**
-	 * Perform a scan within the specified base packages,
-	 * returning the registered bean definitions.
-	 * <p>This method does <i>not</i> register an annotation config processor
-	 * but rather leaves this up to the caller.
-	 * @param basePackages the packages to check for annotated classes
-	 * @return set of beans registered if any for tooling registration purposes (never {@code null})
+	 * 在指定的基本包中执行扫描，返回注册的bean定义。
+	 * <p>此方法<i>不</i>注册注释配置处理器，而是将此任务留给调用者。
+	 * @param basePackages 检查带注解的类的包
+	 * @return 为工具注册而注册的bean集合(如果有的话)(永远不会是 {@code null} )
 	 */
 	protected Set<BeanDefinitionHolder> doScan(String... basePackages) {
 		Assert.notEmpty(basePackages, "At least one base package must be specified");
 		Set<BeanDefinitionHolder> beanDefinitions = new LinkedHashSet<>();
 		for (String basePackage : basePackages) {
+			// 在指定包下面查找候选组件
 			Set<BeanDefinition> candidates = findCandidateComponents(basePackage);
+			// 遍历查询到的候选组件
 			for (BeanDefinition candidate : candidates) {
+				// 设置范围
 				ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(candidate);
 				candidate.setScope(scopeMetadata.getScopeName());
+				// 生成bean名称
 				String beanName = this.beanNameGenerator.generateBeanName(candidate, this.registry);
+				// 如果继承自AbstractBeanDefinition，则设置默认bean定义属性
 				if (candidate instanceof AbstractBeanDefinition) {
 					postProcessBeanDefinition((AbstractBeanDefinition) candidate, beanName);
 				}
+				// 如果继承自AnnotatedBeanDefinition，则处理其常用注解，使用常用注解设置对应值
 				if (candidate instanceof AnnotatedBeanDefinition) {
 					AnnotationConfigUtils.processCommonDefinitionAnnotations((AnnotatedBeanDefinition) candidate);
 				}
+				//检查给定的bean定义是否与现有的bean定义冲突
 				if (checkCandidate(beanName, candidate)) {
+					// 如果不冲突，则创建新的bean定义，并进行注册
 					BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(candidate, beanName);
 					definitionHolder =
 							AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry);
@@ -295,10 +304,10 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	}
 
 	/**
-	 * Apply further settings to the given bean definition,
-	 * beyond the contents retrieved from scanning the component class.
-	 * @param beanDefinition the scanned bean definition
-	 * @param beanName the generated bean name for the given bean
+	 * 如果bean定义类型实现了AbstractBeanDefinition
+	 * 在扫描组件类检索到的内容之外，对给定的bean定义应用更多的设置。
+	 * @param beanDefinition 扫描到的bean定义
+	 * @param beanName 为给定bean生成的bean名称
 	 */
 	protected void postProcessBeanDefinition(AbstractBeanDefinition beanDefinition, String beanName) {
 		beanDefinition.applyDefaults(this.beanDefinitionDefaults);
@@ -308,11 +317,10 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	}
 
 	/**
-	 * Register the specified bean with the given registry.
-	 * <p>Can be overridden in subclasses, e.g. to adapt the registration
-	 * process or to register further bean definitions for each scanned bean.
-	 * @param definitionHolder the bean definition plus bean name for the bean
-	 * @param registry the BeanDefinitionRegistry to register the bean with
+	 * 使用给定的注册表注册指定的bean。
+	 * <p>可以在子类中重写，例如，修改注册过程或为每个扫描bean注册进一步的bean定义。
+	 * @param definitionHolder bean的定义加上bean的名称
+	 * @param registry 用来注册bean的BeanDefinitionRegistry
 	 */
 	protected void registerBeanDefinition(BeanDefinitionHolder definitionHolder, BeanDefinitionRegistry registry) {
 		BeanDefinitionReaderUtils.registerBeanDefinition(definitionHolder, registry);
@@ -320,15 +328,11 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 
 
 	/**
-	 * Check the given candidate's bean name, determining whether the corresponding
-	 * bean definition needs to be registered or conflicts with an existing definition.
-	 * @param beanName the suggested name for the bean
-	 * @param beanDefinition the corresponding bean definition
-	 * @return {@code true} if the bean can be registered as-is;
-	 * {@code false} if it should be skipped because there is an
-	 * existing, compatible bean definition for the specified name
-	 * @throws ConflictingBeanDefinitionException if an existing, incompatible
-	 * bean definition has been found for the specified name
+	 * 检查给定候选bean的名称，确定是否需要注册对应的bean定义，或者是否与现有定义冲突。
+	 * @param beanName bean的建议名称
+	 * @param beanDefinition 对应的bean定义
+	 * @return 如果bean可以按原样注册，则{@code true};{@code false}如果它应该被跳过，因为对于指定的名称有一个现有的、兼容的bean定义
+	 * @throws ConflictingBeanDefinitionException 如果已为指定名称找到现有的、不兼容的bean定义
 	 */
 	protected boolean checkCandidate(String beanName, BeanDefinition beanDefinition) throws IllegalStateException {
 		if (!this.registry.containsBeanDefinition(beanName)) {
@@ -339,6 +343,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 		if (originatingDef != null) {
 			existingDef = originatingDef;
 		}
+		// 返回新的bean定义是否与原有的bean定义兼容
 		if (isCompatible(beanDefinition, existingDef)) {
 			return false;
 		}
@@ -348,20 +353,16 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	}
 
 	/**
-	 * Determine whether the given new bean definition is compatible with
-	 * the given existing bean definition.
-	 * <p>The default implementation considers them as compatible when the existing
-	 * bean definition comes from the same source or from a non-scanning source.
-	 * @param newDefinition the new bean definition, originated from scanning
-	 * @param existingDefinition the existing bean definition, potentially an
-	 * explicitly defined one or a previously generated one from scanning
-	 * @return whether the definitions are considered as compatible, with the
-	 * new definition to be skipped in favor of the existing definition
+	 * 确定给定的新bean定义是否与给定的现有bean定义兼容。
+	 * <p>当现有bean定义来自同一源或非扫描源时，默认实现认为它们是兼容的。
+	 * @param newDefinition 新的bean定义源于扫描
+	 * @param existingDefinition 现有的bean定义，可能是显式定义的bean，也可能是以前通过扫描生成的bean
+	 * @return 定义是否被认为是兼容的，新定义是否被现有定义跳过
 	 */
 	protected boolean isCompatible(BeanDefinition newDefinition, BeanDefinition existingDefinition) {
-		return (!(existingDefinition instanceof ScannedGenericBeanDefinition) ||  // explicitly registered overriding bean
-				(newDefinition.getSource() != null && newDefinition.getSource().equals(existingDefinition.getSource())) ||  // scanned same file twice
-				newDefinition.equals(existingDefinition));  // scanned equivalent class twice
+		return (!(existingDefinition instanceof ScannedGenericBeanDefinition) ||  // 显式注册的覆盖bean
+				(newDefinition.getSource() != null && newDefinition.getSource().equals(existingDefinition.getSource())) ||  // 同一文件扫描两次
+				newDefinition.equals(existingDefinition));  // 扫描等价类两次
 	}
 
 

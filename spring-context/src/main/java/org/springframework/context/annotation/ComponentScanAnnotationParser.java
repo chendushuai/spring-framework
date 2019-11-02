@@ -72,8 +72,16 @@ class ComponentScanAnnotationParser {
 		this.registry = registry;
 	}
 
-
+	/**
+	 * 解析@ComponentScan注解内容
+	 * @param componentScan @ComponentScan注解属性值
+	 * @param declaringClass 原属性声明类名称
+	 * @return
+	 */
 	public Set<BeanDefinitionHolder> parse(AnnotationAttributes componentScan, final String declaringClass) {
+		// 创建用于@ComponentScan的类的扫描器，这个算是内部的扫描器
+		// 与在创建AnnotationConfigApplicationContext时创建的扫描器不一样，当时创建的扫描器用于程序员使用
+		// this.scanner = new ClassPathBeanDefinitionScanner(this);
 		ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner(this.registry,
 				componentScan.getBoolean("useDefaultFilters"), this.environment, this.resourceLoader);
 
@@ -91,31 +99,37 @@ class ComponentScanAnnotationParser {
 			scanner.setScopeMetadataResolver(BeanUtils.instantiateClass(resolverClass));
 		}
 
+		// 资源模式
 		scanner.setResourcePattern(componentScan.getString("resourcePattern"));
 
+		// 保存包含类型过滤器 this.includeFilters
 		for (AnnotationAttributes filter : componentScan.getAnnotationArray("includeFilters")) {
 			for (TypeFilter typeFilter : typeFiltersFor(filter)) {
 				scanner.addIncludeFilter(typeFilter);
 			}
 		}
+		// 保存排除类型过滤器 this.excludeFilters
 		for (AnnotationAttributes filter : componentScan.getAnnotationArray("excludeFilters")) {
 			for (TypeFilter typeFilter : typeFiltersFor(filter)) {
 				scanner.addExcludeFilter(typeFilter);
 			}
 		}
 
+		// 设置是否需要懒加载
 		boolean lazyInit = componentScan.getBoolean("lazyInit");
 		if (lazyInit) {
 			scanner.getBeanDefinitionDefaults().setLazyInit(true);
 		}
 
 		Set<String> basePackages = new LinkedHashSet<>();
+		// 获取基础包数组，保存到基础包名称集合中
 		String[] basePackagesArray = componentScan.getStringArray("basePackages");
 		for (String pkg : basePackagesArray) {
 			String[] tokenized = StringUtils.tokenizeToStringArray(this.environment.resolvePlaceholders(pkg),
 					ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS);
 			Collections.addAll(basePackages, tokenized);
 		}
+		// 获取基础基础包类的包名，保存到基础包名称集合中
 		for (Class<?> clazz : componentScan.getClassArray("basePackageClasses")) {
 			basePackages.add(ClassUtils.getPackageName(clazz));
 		}
@@ -129,6 +143,7 @@ class ComponentScanAnnotationParser {
 				return declaringClass.equals(className);
 			}
 		});
+		// 执行扫描
 		return scanner.doScan(StringUtils.toStringArray(basePackages));
 	}
 

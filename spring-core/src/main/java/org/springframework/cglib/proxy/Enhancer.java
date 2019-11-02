@@ -857,13 +857,10 @@ public class Enhancer extends AbstractClassGenerator {
 	}
 
 	/**
-	 * Similar to {@link #registerCallbacks}, but suitable for use
-	 * when multiple threads will be creating instances of the generated class.
-	 * The thread-level callbacks will always override the static callbacks.
-	 * Static callbacks are never cleared.
-	 * @param generatedClass a class previously created by {@link Enhancer}
-	 * @param callbacks the array of callbacks to use when instances of the generated
-	 * class are created
+	 * 类似于{@link #registerCallbacks}，但适合在多个线程创建生成的类的实例时使用。
+	 * 线程级回调将始终覆盖静态回调。静态回调永远不会被清除。
+	 * @param generatedClass 以前由{@link Enhancer}创建的类
+	 * @param callbacks 创建生成的类的实例时使用的回调数组
 	 */
 	public static void registerStaticCallbacks(Class generatedClass, Callback[] callbacks) {
 		setCallbacksHelper(generatedClass, callbacks, SET_STATIC_CALLBACKS_NAME);
@@ -888,6 +885,12 @@ public class Enhancer extends AbstractClassGenerator {
 		setCallbacksHelper(type, callbacks, SET_THREAD_CALLBACKS_NAME);
 	}
 
+	/**
+	 * 设置回调方法
+	 * @param type 以前由{@link Enhancer}创建的类
+	 * @param callbacks 创建生成的类的实例时使用的回调数组
+	 * @param methodName 静态回调方法名称
+	 */
 	private static void setCallbacksHelper(Class type, Callback[] callbacks, String methodName) {
 		// TODO: optimize
 		try {
@@ -905,6 +908,13 @@ public class Enhancer extends AbstractClassGenerator {
 		}
 	}
 
+	/**
+	 * 得到回调设置的方法
+	 * @param type 以前由{@link Enhancer}创建的类
+	 * @param methodName 静态回调方法名称
+	 * @return
+	 * @throws NoSuchMethodException
+	 */
 	private static Method getCallbacksSetter(Class type, String methodName) throws NoSuchMethodException {
 		return type.getDeclaredMethod(methodName, new Class[]{Callback[].class});
 	}

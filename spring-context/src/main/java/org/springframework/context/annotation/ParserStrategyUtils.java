@@ -28,8 +28,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 
 /**
- * Common delegate code for the handling of parser strategies, e.g.
- * {@code TypeFilter}, {@code ImportSelector}, {@code ImportBeanDefinitionRegistrar}
+ * 用于处理解析器策略的公共委托代码，例如{@code TypeFilter}、{@code ImportSelector}、{@code ImportBeanDefinitionRegistrar}
  *
  * @author Juergen Hoeller
  * @since 4.3.3
@@ -37,9 +36,8 @@ import org.springframework.core.io.ResourceLoader;
 abstract class ParserStrategyUtils {
 
 	/**
-	 * Invoke {@link BeanClassLoaderAware}, {@link BeanFactoryAware},
-	 * {@link EnvironmentAware}, and {@link ResourceLoaderAware} contracts
-	 * if implemented by the given object.
+	 * 如果由给定对象实现，则调用{@link BeanClassLoaderAware}、{@link BeanFactoryAware}、
+	 * {@link EnvironmentAware}和{@link ResourceLoaderAware}约定。
 	 */
 	public static void invokeAwareMethods(Object parserStrategyBean, Environment environment,
 			ResourceLoader resourceLoader, BeanDefinitionRegistry registry) {

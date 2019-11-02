@@ -342,8 +342,10 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		do {
 			// 解析配置类
 			parser.parse(candidates);
+			// 校验解析完成的配置类
 			parser.validate();
 
+			// 从配置类集合中移除已经解析完毕的配置类
 			Set<ConfigurationClass> configClasses = new LinkedHashSet<>(parser.getConfigurationClasses());
 			configClasses.removeAll(alreadyParsed);
 
@@ -355,9 +357,11 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 			}
 			// 从配置类加载bean定义
 			this.reader.loadBeanDefinitions(configClasses);
+			// 如果配置类已经被加载成bean定义了，则认为配置类已经完成解析，保存到完成解析的集合中
 			alreadyParsed.addAll(configClasses);
-
+			// 清除候选对象集合
 			candidates.clear();
+			// 如果读取到的bean定义数量大于候选bean名称的数量
 			if (registry.getBeanDefinitionCount() > candidateNames.length) {
 				String[] newCandidateNames = registry.getBeanDefinitionNames();
 				Set<String> oldCandidateNames = new HashSet<>(Arrays.asList(candidateNames));
@@ -408,8 +412,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 				methodMetadata = ((AnnotatedBeanDefinition) beanDef).getFactoryMethodMetadata();
 			}
 			if ((configClassAttr != null || methodMetadata != null) && beanDef instanceof AbstractBeanDefinition) {
-				// Configuration class (full or lite) or a configuration-derived @Bean method
-				// -> resolve bean class at this point...
+				// 配置类(full or lite)或者一个配置驱动的@Bean方法 -> 在这里解析bean类...
 				AbstractBeanDefinition abd = (AbstractBeanDefinition) beanDef;
 				if (!abd.hasBeanClass()) {
 					try {
@@ -436,23 +439,25 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 			}
 		}
 		if (configBeanDefs.isEmpty()) {
-			// nothing to enhance -> return immediately
+			// 没有需要增强的 -> 立即返回
 			return;
 		}
 
 		ConfigurationClassEnhancer enhancer = new ConfigurationClassEnhancer();
 		for (Map.Entry<String, AbstractBeanDefinition> entry : configBeanDefs.entrySet()) {
 			AbstractBeanDefinition beanDef = entry.getValue();
-			// If a @Configuration class gets proxied, always proxy the target class
+			// 如果代理了@Configuration类，则始终代理目标类
 			beanDef.setAttribute(AutoProxyUtils.PRESERVE_TARGET_CLASS_ATTRIBUTE, Boolean.TRUE);
-			// Set enhanced subclass of the user-specified bean class
+			// 设置用户指定bean类的增强子类
 			Class<?> configClass = beanDef.getBeanClass();
+			// 创建增强后的子类
 			Class<?> enhancedClass = enhancer.enhance(configClass, this.beanClassLoader);
 			if (configClass != enhancedClass) {
 				if (logger.isTraceEnabled()) {
 					logger.trace(String.format("Replacing bean definition '%s' existing class '%s' with " +
 							"enhanced class '%s'", entry.getKey(), configClass.getName(), enhancedClass.getName()));
 				}
+				// 修改bean定义中的类为子类
 				beanDef.setBeanClass(enhancedClass);
 			}
 		}

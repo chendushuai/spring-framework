@@ -62,6 +62,9 @@ final class ConfigurationClass {
 	private final Map<String, Class<? extends BeanDefinitionReader>> importedResources =
 			new LinkedHashMap<>();
 
+	/**
+	 * 导入bean定义注册器集合
+	 */
 	private final Map<ImportBeanDefinitionRegistrar, AnnotationMetadata> importBeanDefinitionRegistrars =
 			new LinkedHashMap<>();
 
@@ -209,14 +212,20 @@ final class ConfigurationClass {
 		return this.importedResources;
 	}
 
+	/**
+	 * 进行校验
+	 * @param problemReporter
+	 */
 	public void validate(ProblemReporter problemReporter) {
-		// A configuration class may not be final (CGLIB limitation) unless it declares proxyBeanMethods=false
+		// 配置类可能不是final (CGLIB限制)，除非它声明proxyBeanMethods=false
+		// 得到@Configuration注解属性
 		Map<String, Object> attributes = this.metadata.getAnnotationAttributes(Configuration.class.getName());
 		if (attributes != null && (Boolean) attributes.get("proxyBeanMethods")) {
 			if (this.metadata.isFinal()) {
 				problemReporter.error(new FinalConfigurationProblem());
 			}
 			for (BeanMethod beanMethod : this.beanMethods) {
+				// 进行bean方法校验
 				beanMethod.validate(problemReporter);
 			}
 		}
