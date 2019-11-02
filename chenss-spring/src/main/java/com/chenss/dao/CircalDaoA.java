@@ -8,6 +8,6 @@ public class CircalDaoA {
 	@Autowired
 	private CircalDaoB circalDaoB;
 	public CircalDaoA() {
-		System.out.println("CircalDaoA 中 打印的 " + circalDaoB.hashCode());
+		System.out.println("CircalDaoA 中 打印的 ");
 	}
 }
