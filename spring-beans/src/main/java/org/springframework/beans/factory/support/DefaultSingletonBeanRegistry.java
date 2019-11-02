@@ -145,7 +145,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 * 如果需要，添加用于构建指定单例的给定单例工厂。
 	 * <p>要求快速注册单例，例如能够解析循环引用。
 	 * @param beanName bean名称
-	 * @param singletonFactory 单例对象的工厂
+	 * @param singletonFactory 单例对象工厂，用于产生半成品。提前暴露工厂
 	 */
 	protected void addSingletonFactory(String beanName, ObjectFactory<?> singletonFactory) {
 		Assert.notNull(singletonFactory, "Singleton factory must not be null");
