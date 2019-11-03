@@ -369,6 +369,9 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 				for (ConfigurationClass configurationClass : alreadyParsed) {
 					alreadyParsedClasses.add(configurationClass.getMetadata().getClassName());
 				}
+
+				// 这一段的意思是因为在解析Configuration类的过程中，可能会引入或扫描出其他的Configuration类，
+				// 如果是Configuration类，则还需要再次进行处理，直到扫描出的所有bean定义都不是Configuration类为止。
 				for (String candidateName : newCandidateNames) {
 					if (!oldCandidateNames.contains(candidateName)) {
 						BeanDefinition bd = registry.getBeanDefinition(candidateName);

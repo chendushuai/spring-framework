@@ -173,6 +173,7 @@ class ConfigurationClassParser {
 				if (bd instanceof AnnotatedBeanDefinition) {
 					parse(((AnnotatedBeanDefinition) bd).getMetadata(), holder.getBeanName());
 				}
+				// 如果是AbstractBeanDefinition，且内部包含@Bean方法
 				else if (bd instanceof AbstractBeanDefinition && ((AbstractBeanDefinition) bd).hasBeanClass()) {
 					parse(((AbstractBeanDefinition) bd).getBeanClass(), holder.getBeanName());
 				}
@@ -243,6 +244,10 @@ class ConfigurationClassParser {
 			return;
 		}
 
+		// 判断给定的配置对象在配置类集合中是否存在，
+		// 如果已经存在
+		//     判断给定的配置对象是否是被@Import进来的，如果不是，则需要从配置类对象中移除该对象，
+		//     如果是，则还需要判断已经存在的对象是否是@Import进来的，如果不是，直接返回，如果也是，则合并导入信息
 		ConfigurationClass existingClass = this.configurationClasses.get(configClass);
 		if (existingClass != null) {
 			if (configClass.isImported()) {
