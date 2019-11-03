@@ -1763,15 +1763,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 
 	/**
-	 * Initialize the given bean instance, applying factory callbacks
-	 * as well as init methods and bean post processors.
-	 * <p>Called from {@link #createBean} for traditionally defined beans,
-	 * and from {@link #initializeBean} for existing bean instances.
-	 * @param beanName the bean name in the factory (for debugging purposes)
-	 * @param bean the new bean instance we may need to initialize
-	 * @param mbd the bean definition that the bean was created with
-	 * (can also be {@code null}, if given an existing bean instance)
-	 * @return the initialized bean instance (potentially wrapped)
+	 * 初始化给定的bean实例，应用工厂回调以及init方法和bean后处理器。
+	 * <p>对于传统定义的bean，从{@link #createBean}调用，对于现有的bean实例，从{@link #initializeBean}调用。
+	 * @param beanName 工厂中的bean名称(用于调试)
+	 * @param bean 我们可能需要初始化新的bean实例
+	 * @param mbd 创建bean的bean定义(也可以是{@code null}，如果给定一个现有的bean实例)
+	 * @return 初始化的bean实例(可能被包装)
 	 * @see BeanNameAware
 	 * @see BeanClassLoaderAware
 	 * @see BeanFactoryAware
@@ -1804,6 +1801,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					beanName, "Invocation of init method failed", ex);
 		}
 		if (mbd == null || !mbd.isSynthetic()) {
+			// 在这里最终完成了AOP
 			wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
 		}
 
