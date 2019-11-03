@@ -515,8 +515,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			return beanInstance;
 		}
 		catch (BeanCreationException | ImplicitlyAppearedSingletonException ex) {
-			// A previously detected exception with proper bean creation context already,
-			// or illegal singleton state to be communicated up to DefaultSingletonBeanRegistry.
+			// 一个先前检测到的异常，已经有合适的bean创建上下文，或者非法的单例状态被传递到DefaultSingletonBeanRegistry。
 			throw ex;
 		}
 		catch (Throwable ex) {
@@ -1111,11 +1110,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	}
 
 	/**
-	 * Apply InstantiationAwareBeanPostProcessors to the specified bean definition
-	 * (by class and name), invoking their {@code postProcessBeforeInstantiation} methods.
-	 * <p>Any returned object will be used as the bean instead of actually instantiating
-	 * the target bean. A {@code null} return value from the post-processor will
-	 * result in the target bean being instantiated.
+	 * 将InstantiationAwareBeanPostProcessors应用到指定的bean定义(通过类和名称)，
+	 * 调用它们的{@code postProcessBeforeInstantiation}方法。
+	 * <p>任何返回的对象都将被用作bean，而不是实际实例化目标bean。
+	 * 来自后处理器的{@code null}返回值将导致目标bean被实例化。
 	 * @param beanClass the class of the bean to be instantiated
 	 * @param beanName the name of the bean
 	 * @return the bean object to use instead of a default instance of the target bean, or {@code null}
