@@ -74,40 +74,28 @@ import org.springframework.util.StringUtils;
 import org.springframework.util.StringValueResolver;
 
 /**
- * {@link org.springframework.beans.factory.config.BeanPostProcessor} implementation
- * that supports common Java annotations out of the box, in particular the JSR-250
- * annotations in the {@code javax.annotation} package. These common Java
- * annotations are supported in many Java EE 5 technologies (e.g. JSF 1.2),
- * as well as in Java 6's JAX-WS.
+ * 支持通用Java注解开箱即用的{@link org.springframework.beans.factory.config.BeanPostProcessor}实现，
+ * 特别是{@code javax.annotation}包内的JSR-250注解。
+ * 许多Java EE 5技术(如JSF 1.2)以及Java 6的JAX-WS都支持这些常见的Java注解。、
  *
- * <p>This post-processor includes support for the {@link javax.annotation.PostConstruct}
- * and {@link javax.annotation.PreDestroy} annotations - as init annotation
- * and destroy annotation, respectively - through inheriting from
- * {@link InitDestroyAnnotationBeanPostProcessor} with pre-configured annotation types.
+ * <p>这个后处理器包括对{@link javax.annotation.PostConstruct}和{@link javax.annotation.PreDestroy}注解的支持。
+ * 通过继承{@link InitDestroyAnnotationBeanPostProcessor}和预配置的注解类型，可以分别使用init注解和destroy注解。
  *
- * <p>The central element is the {@link javax.annotation.Resource} annotation
- * for annotation-driven injection of named beans, by default from the containing
- * Spring BeanFactory, with only {@code mappedName} references resolved in JNDI.
- * The {@link #setAlwaysUseJndiLookup "alwaysUseJndiLookup" flag} enforces JNDI lookups
- * equivalent to standard Java EE 5 resource injection for {@code name} references
- * and default names as well. The target beans can be simple POJOs, with no special
- * requirements other than the type having to match.
+ * <p>中心元素是用于命名bean的注释驱动注入的{@link javax.annotation.Resource}注解，
+ * 默认情况下来自包含Spring BeanFactory，仅在JNDI中解析{@code mappedName}引用。
+ * {@link #setAlwaysUseJndiLookup "alwaysUseJndiLookup" flag}对{@code name}引用和默认名称进行JNDI查找，这相当于标准的Java EE 5资源注入。
+ * 目标bean可以是简单的POJO，除了必须匹配的类型外，没有其他特殊要求。
  *
- * <p>The JAX-WS {@link javax.xml.ws.WebServiceRef} annotation is supported too,
- * analogous to {@link javax.annotation.Resource} but with the capability of creating
- * specific JAX-WS service endpoints. This may either point to an explicitly defined
- * resource by name or operate on a locally specified JAX-WS service class. Finally,
- * this post-processor also supports the EJB 3 {@link javax.ejb.EJB} annotation,
- * analogous to {@link javax.annotation.Resource} as well, with the capability to
- * specify both a local bean name and a global JNDI name for fallback retrieval.
- * The target beans can be plain POJOs as well as EJB 3 Session Beans in this case.
+ * <p>也支持JAX-WS {@link javax.xml.ws.WebServiceRef}注解，
+ * 类似于{@link javax.annotation.Resource}，但具有创建特定JAX-WS服务端点的功能。
+ * 这可以通过名称指向显式定义的资源，也可以对本地指定的JAX-WS服务类进行操作。
+ * 最后，这个后处理器还支持EJB 3 {@link javax.ejb.EJB}注解，类似于{@link javax.annotation.Resource}，
+ * 具有为回退检索指定本地bean名称和全局JNDI名称的功能。
+ * 在这种情况下，目标bean可以是普通的POJO，也可以是EJB 3会话bean。
  *
- * <p>The common annotations supported by this post-processor are available in
- * Java 6 (JDK 1.6) as well as in Java EE 5/6 (which provides a standalone jar for
- * its common annotations as well, allowing for use in any Java 5 based application).
+ * <p>这个后处理器支持的公共注释在Java 6 (JDK 1.6)和Java EE 5/6中都可用(Java EE 5/6也为其公共注释提供了一个独立的jar，允许在任何基于Java 5的应用程序中使用)。
  *
- * <p>For default usage, resolving resource names as Spring bean names,
- * simply define the following in your application context:
+ * <p>对于默认使用，将资源名称解析为Spring bean名称，只需在应用程序上下文中定义以下内容:
  *
  * <pre class="code">
  * &lt;bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"/&gt;</pre>
@@ -115,11 +103,13 @@ import org.springframework.util.StringValueResolver;
  * For direct JNDI access, resolving resource names as JNDI resource references
  * within the Java EE application's "java:comp/env/" namespace, use the following:
  *
- * <pre class="code">
- * &lt;bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"&gt;
+ * <pre class="code">、。0.。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。32
+1
+     151-* &lt;bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"&gt;
  *   &lt;property name="alwaysUseJndiLookup" value="true"/&gt;
  * &lt;/bean&gt;</pre>
  *
+ * {@code mappedName}引用将始终在JNDI中解析，同时允许全局JNDI名称(包括“java:”前缀)。“alwaysUseJndiLookup”标志只影响{@code name}引用和默认名称(从字段名/属性名推断)。
  * {@code mappedName} references will always be resolved in JNDI,
  * allowing for global JNDI names (including "java:" prefix) as well. The
  * "alwaysUseJndiLookup" flag just affects {@code name} references and
