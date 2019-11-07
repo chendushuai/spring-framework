@@ -1169,18 +1169,22 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		// 重新创建相同的bean时的快捷方式…
+		// 解析这个bean如何创建，使用反射创建对象，必须要调用构造方法，
+		// 将resolved值为false标识构造方法没有被解析过
 		boolean resolved = false;
 		boolean autowireNecessary = false;
 		if (args == null) {
 			synchronized (mbd.constructorArgumentLock) {
+				// 表示已经找到了创建对象的方式，原型方式会使用
+				// 不需要进行构造方法解析
 				if (mbd.resolvedConstructorOrFactoryMethod != null) {
 					resolved = true;
-					// 是否有必要自动装备
+					// 是否有必要自动装配
 					autowireNecessary = mbd.constructorArgumentsResolved;
 				}
 			}
 		}
-		// 如果已经解析了
+		// 如果已经解析了，单例模式永远不会成立，原型模式会成立
 		if (resolved) {
 			// 如果有必要进行自动装配
 			if (autowireNecessary) {
