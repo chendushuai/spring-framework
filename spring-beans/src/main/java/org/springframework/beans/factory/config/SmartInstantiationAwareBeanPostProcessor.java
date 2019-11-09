@@ -22,8 +22,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.lang.Nullable;
 
 /**
- * Extension of the {@link InstantiationAwareBeanPostProcessor} interface,
- * adding a callback for predicting the eventual type of a processed bean.
+ * 扩展{@link InstantiationAwareBeanPostProcessor}接口，添加一个回调来预测最终处理bean的类型。
  *
  * <p><b>NOTE:</b> This interface is a special purpose interface, mainly for
  * internal use within the framework. In general, application-provided
@@ -52,12 +51,12 @@ public interface SmartInstantiationAwareBeanPostProcessor extends InstantiationA
 	}
 
 	/**
-	 * Determine the candidate constructors to use for the given bean.
-	 * <p>The default implementation returns {@code null}.
-	 * @param beanClass the raw class of the bean (never {@code null})
-	 * @param beanName the name of the bean
-	 * @return the candidate constructors, or {@code null} if none specified
-	 * @throws org.springframework.beans.BeansException in case of errors
+	 * 确定要为给定bean使用的候选构造函数。
+	 * <p>默认实现返回{@code null}。
+	 * @param beanClass bean的原始类(从不是{@code null})
+	 * @param beanName bean的名称
+	 * @return 如果没有指定候选构造函数，则使用{@code null}
+	 * @throws org.springframework.beans.BeansException 以防出错
 	 */
 	@Nullable
 	default Constructor<?>[] determineCandidateConstructors(Class<?> beanClass, String beanName)

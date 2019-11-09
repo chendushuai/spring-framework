@@ -285,15 +285,13 @@ public interface AutowireCapableBeanFactory extends BeanFactory {
 	Object initializeBean(Object existingBean, String beanName) throws BeansException;
 
 	/**
-	 * Apply {@link BeanPostProcessor BeanPostProcessors} to the given existing bean
-	 * instance, invoking their {@code postProcessBeforeInitialization} methods.
-	 * The returned bean instance may be a wrapper around the original.
-	 * @param existingBean the existing bean instance
-	 * @param beanName the name of the bean, to be passed to it if necessary
-	 * (only passed to {@link BeanPostProcessor BeanPostProcessors};
-	 * can follow the {@link #ORIGINAL_INSTANCE_SUFFIX} convention in order to
-	 * enforce the given instance to be returned, i.e. no proxies etc)
-	 * @return the bean instance to use, either the original or a wrapped one
+	 * 将{@link BeanPostProcessor BeanPostProcessors}应用于给定的现有bean实例，
+	 * 调用它们的{@code postProcessBeforeInitialization}方法。
+	 * 返回的bean实例可能是原始bean的包装器。
+	 * @param existingBean 现有的bean实例
+	 * @param beanName bean的名称，必要时传递给它(仅传递给{@link BeanPostProcessor BeanPostProcessors};
+	 *                 可以遵循{@link #ORIGINAL_INSTANCE_SUFFIX}约定来强制返回给定实例，即没有代理等)
+	 * @return 要使用的bean实例，不管是原始的还是包装的
 	 * @throws BeansException if any post-processing failed
 	 * @see BeanPostProcessor#postProcessBeforeInitialization
 	 * @see #ORIGINAL_INSTANCE_SUFFIX

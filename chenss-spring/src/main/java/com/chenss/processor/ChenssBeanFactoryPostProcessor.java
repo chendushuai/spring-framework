@@ -22,7 +22,7 @@ public class ChenssBeanFactoryPostProcessor implements BeanFactoryPostProcessor 
 		defaultListableBeanFactory.registerBeanDefinition("noAnnotationDao",genericBeanDefinition);
 
 		// 修改已经注册完成的bean定义
-		BeanDefinition existBeanDefinition = defaultListableBeanFactory.getBeanDefinition("userDao");
-		existBeanDefinition.setBeanClassName(TaggerDao.class.getName());
+		//BeanDefinition existBeanDefinition = defaultListableBeanFactory.getBeanDefinition("userDao");
+		//existBeanDefinition.setBeanClassName(TaggerDao.class.getName());
 	}
 }
