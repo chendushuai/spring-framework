@@ -499,7 +499,7 @@ public class ResolvableType implements Serializable {
 	}
 
 	/**
-	 * Return {@code true} if this type contains generic parameters.
+	 * 如果该类型包含泛型参数，则返回{@code true}。
 	 * @see #getGeneric(int...)
 	 * @see #getGenerics()
 	 */

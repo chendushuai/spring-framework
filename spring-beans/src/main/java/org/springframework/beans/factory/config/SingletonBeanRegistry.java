@@ -67,23 +67,19 @@ public interface SingletonBeanRegistry {
 	Object getSingleton(String beanName);
 
 	/**
-	 * Check if this registry contains a singleton instance with the given name.
-	 * <p>Only checks already instantiated singletons; does not return {@code true}
-	 * for singleton bean definitions which have not been instantiated yet.
-	 * <p>The main purpose of this method is to check manually registered singletons
-	 * (see {@link #registerSingleton}). Can also be used to check whether a
-	 * singleton defined by a bean definition has already been created.
-	 * <p>To check whether a bean factory contains a bean definition with a given name,
-	 * use ListableBeanFactory's {@code containsBeanDefinition}. Calling both
-	 * {@code containsBeanDefinition} and {@code containsSingleton} answers
-	 * whether a specific bean factory contains a local bean instance with the given name.
-	 * <p>Use BeanFactory's {@code containsBean} for general checks whether the
-	 * factory knows about a bean with a given name (whether manually registered singleton
-	 * instance or created by bean definition), also checking ancestor factories.
-	 * <p><b>NOTE:</b> This lookup method is not aware of FactoryBean prefixes or aliases.
-	 * You need to resolve the canonical bean name first before checking the singleton status.
-	 * @param beanName the name of the bean to look for
-	 * @return if this bean factory contains a singleton instance with the given name
+	 * 检查此注册表是否包含具有给定名称的单例实例。
+	 * <p>只检查已经实例化的单例对象;对于尚未实例化的单例bean定义，不返回{@code true}。
+	 * <p>这个方法的主要目的是检查手动注册的单例对象(参见{@link #registerSingleton})。
+	 * 还可以用来检查由bean定义定义的单例是否已经创建。
+	 * <p>要检查bean工厂是否包含具有给定名称的bean定义，请使用ListableBeanFactory的{@code containsBeanDefinition}。
+	 * 调用{@code containsBeanDefinition}和{@code containsSingleton}
+	 * 可以回答特定的bean工厂是否包含具有给定名称的本地bean实例。
+	 * <p>使用BeanFactory的{@code containsBean}用于常规检查工厂是否知道具有给定名称的bean
+	 * (无论是手动注册的单例实例还是由bean定义创建的)，也检查祖先工厂。
+	 * <p><b>注意:</b> 此查找方法不知道FactoryBean前缀或别名。
+	 * 在检查单例状态之前，需要先解析规范bean名。
+	 * @param beanName 要查找的bean的名称
+	 * @return 如果此bean工厂包含具有给定名称的单例实例
 	 * @see #registerSingleton
 	 * @see org.springframework.beans.factory.ListableBeanFactory#containsBeanDefinition
 	 * @see org.springframework.beans.factory.BeanFactory#containsBean

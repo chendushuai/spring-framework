@@ -92,20 +92,14 @@ public interface ListableBeanFactory extends BeanFactory {
 	 * <p><b>注意:此方法仅内省顶级bean。</b> 它也<i>不检查</i>可能匹配指定类型的嵌套bean。
 	 * <p>确实考虑了FactoryBean创建的对象，这意味着FactoryBean将被初始化。
 	 * 如果FactoryBean创建的对象不匹配，原始的FactoryBean本身将根据类型进行匹配。
-	 * <p>不考虑本工厂可能参与的任何层级。使用BeanFactoryUtils的{@code beannamesfortypeincludes ingancestry}在祖先工厂中包含bean。
-	 * Does not consider any hierarchy this factory may participate in.
-	 * Use BeanFactoryUtils' {@code beanNamesForTypeIncludingAncestors}
-	 * to include beans in ancestor factories too.
-	 * <p>Note: Does <i>not</i> ignore singleton beans that have been registered
-	 * by other means than bean definitions.
-	 * <p>This version of {@code getBeanNamesForType} matches all kinds of beans,
-	 * be it singletons, prototypes, or FactoryBeans. In most implementations, the
-	 * result will be the same as for {@code getBeanNamesForType(type, true, true)}.
-	 * <p>Bean names returned by this method should always return bean names <i>in the
-	 * order of definition</i> in the backend configuration, as far as possible.
-	 * @param type the generically typed class or interface to match
-	 * @return the names of beans (or objects created by FactoryBeans) matching
-	 * the given object type (including subclasses), or an empty array if none
+	 * <p>不考虑本工厂可能参与的任何层级。
+	 * 使用BeanFactoryUtils的{@code beanNamesForTypeIncludingAncestors}在祖先工厂中包含bean。
+	 * <p>注意:<i>不要</i>忽略通过bean定义以外的其他方式注册的单例bean。
+	 * <p>这个版本的 {@code getBeanNamesForType}匹配所有类型的bean，无论是单例bean、原型bean还是FactoryBean。
+	 * 在大多数实现中，结果与{@code getBeanNamesForType(type, true, true)}相同。
+	 * <p>此方法返回的Bean名称应尽可能<i>按后端配置中定义的顺序</i>返回。
+	 * @param type 要匹配的泛型类型的类或接口
+	 * @return 与给定对象类型(包括子类)匹配的bean(或FactoryBeans创建的对象)的名称，如果没有，则为空数组
 	 * @since 4.2
 	 * @see #isTypeMatch(String, ResolvableType)
 	 * @see FactoryBean#getObjectType

@@ -460,7 +460,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 	@Override
 	public String[] getBeanNamesForType(ResolvableType type) {
+		// 获取请求bean类型对应的类
 		Class<?> resolved = type.resolve();
+		// 如果获取的类不为空且解析类型中不包括泛型参数
 		if (resolved != null && !type.hasGenerics()) {
 			return getBeanNamesForType(resolved, true, true);
 		}
@@ -476,16 +478,22 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 	@Override
 	public String[] getBeanNamesForType(@Nullable Class<?> type, boolean includeNonSingletons, boolean allowEagerInit) {
+		// 如果这个工厂的bean定义没有被冻结，或者类型为null，或者不允许预先初始化
 		if (!isConfigurationFrozen() || type == null || !allowEagerInit) {
+			// 执行根据类型获取bean名称集合
 			return doGetBeanNamesForType(ResolvableType.forRawClass(type), includeNonSingletons, allowEagerInit);
 		}
+		// 如果获取的类型中包括非单例的bean，则返回所有bean名称集合，否则返回单例bean名称集合
 		Map<Class<?>, String[]> cache =
 				(includeNonSingletons ? this.allBeanNamesByType : this.singletonBeanNamesByType);
+		// 从bean名称集合中，获取指定类型的bean名称集合，如果不为空，则直接返回
 		String[] resolvedBeanNames = cache.get(type);
 		if (resolvedBeanNames != null) {
 			return resolvedBeanNames;
 		}
+		// 否则根据bean类型获取bean对象，相较于上面的入口来说，这里设置允许提前初始化对象
 		resolvedBeanNames = doGetBeanNamesForType(ResolvableType.forRawClass(type), includeNonSingletons, true);
+		// 将创建的bean名称保存到bean名称集合中
 		if (ClassUtils.isCacheSafe(type, getBeanClassLoader())) {
 			cache.put(type, resolvedBeanNames);
 		}
@@ -1140,6 +1148,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	@Override
 	public <T> NamedBeanHolder<T> resolveNamedBean(Class<T> requiredType) throws BeansException {
 		Assert.notNull(requiredType, "Required type must not be null");
+		// 解析得到bean名称集合
 		NamedBeanHolder<T> namedBean = resolveNamedBean(ResolvableType.forRawClass(requiredType), null, false);
 		if (namedBean != null) {
 			return namedBean;
@@ -1166,28 +1175,42 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			ResolvableType requiredType, @Nullable Object[] args, boolean nonUniqueAsNull) throws BeansException {
 
 		Assert.notNull(requiredType, "Required type must not be null");
+		// 获取指定类型的bean名称集合
 		String[] candidateNames = getBeanNamesForType(requiredType);
 
+		// 如果返回符合条件的bean个数大于1
 		if (candidateNames.length > 1) {
+			// 符合条件的自动装配候选对象
 			List<String> autowireCandidates = new ArrayList<>(candidateNames.length);
+			// 遍历符合条件的候选bean名称集合
 			for (String beanName : candidateNames) {
+				// 如果指定名称的bean定义在已有的bean名称和定义集合中不存在，
+				// 或该bean允许被自动装配到其他bean中
 				if (!containsBeanDefinition(beanName) || getBeanDefinition(beanName).isAutowireCandidate()) {
+					// 则将该bean名称作为符合条件的自动装配候选bean名称
 					autowireCandidates.add(beanName);
 				}
 			}
+			// 如果最终找到的符合条件的自动装配候选bean名称不为空
 			if (!autowireCandidates.isEmpty()) {
+				// 设置候选bean名称数组为得到的自动装配候选bean名称集合
 				candidateNames = StringUtils.toStringArray(autowireCandidates);
 			}
 		}
 
+		// 如果找到一个符合条件的bean名称候选对象，则直接返回该bean名称及对应的bean
 		if (candidateNames.length == 1) {
 			String beanName = candidateNames[0];
 			return new NamedBeanHolder<>(beanName, (T) getBean(beanName, requiredType.toClass(), args));
 		}
+		// 如果符合条件的bean名称候选对象不止一个
 		else if (candidateNames.length > 1) {
+			// 符合条件的候选名称及实例映射关系
 			Map<String, Object> candidates = new LinkedHashMap<>(candidateNames.length);
 			for (String beanName : candidateNames) {
+				// 判断已经实例化的单例对象集合中是否已经包含了指定名称的bean，且给定的参数值为null
 				if (containsSingleton(beanName) && args == null) {
+					// 从已注册的实例化的单例bean集合中获取bean实例，并将其放入候选对象集合中
 					Object beanInstance = getBean(beanName);
 					candidates.put(beanName, (beanInstance instanceof NullBean ? null : beanInstance));
 				}

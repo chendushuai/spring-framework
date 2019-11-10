@@ -157,6 +157,9 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	@Nullable
 	private String[] dependsOn;
 
+	/**
+	 * 设置该bean是否可以被自动装配到其他bean中，默认为true
+	 */
 	private boolean autowireCandidate = true;
 
 	private boolean primary = false;
@@ -659,7 +662,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	}
 
 	/**
-	 * Return whether this bean is a candidate for getting autowired into some other bean.
+	 * 返回该bean是否可以被自动装配到其他bean中。
 	 */
 	@Override
 	public boolean isAutowireCandidate() {
