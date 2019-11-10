@@ -88,15 +88,12 @@ public interface ListableBeanFactory extends BeanFactory {
 	String[] getBeanDefinitionNames();
 
 	/**
-	 * Return the names of beans matching the given type (including subclasses),
-	 * judging from either bean definitions or the value of {@code getObjectType}
-	 * in the case of FactoryBeans.
-	 * <p><b>NOTE: This method introspects top-level beans only.</b> It does <i>not</i>
-	 * check nested beans which might match the specified type as well.
-	 * <p>Does consider objects created by FactoryBeans, which means that FactoryBeans
-	 * will get initialized. If the object created by the FactoryBean doesn't match,
-	 * the raw FactoryBean itself will be matched against the type.
-	 * <p>Does not consider any hierarchy this factory may participate in.
+	 * 根据bean定义或FactoryBean中{@code getObjectType}的值判断，返回与给定类型(包括子类)匹配的bean的名称。
+	 * <p><b>注意:此方法仅内省顶级bean。</b> 它也<i>不检查</i>可能匹配指定类型的嵌套bean。
+	 * <p>确实考虑了FactoryBean创建的对象，这意味着FactoryBean将被初始化。
+	 * 如果FactoryBean创建的对象不匹配，原始的FactoryBean本身将根据类型进行匹配。
+	 * <p>不考虑本工厂可能参与的任何层级。使用BeanFactoryUtils的{@code beannamesfortypeincludes ingancestry}在祖先工厂中包含bean。
+	 * Does not consider any hierarchy this factory may participate in.
 	 * Use BeanFactoryUtils' {@code beanNamesForTypeIncludingAncestors}
 	 * to include beans in ancestor factories too.
 	 * <p>Note: Does <i>not</i> ignore singleton beans that have been registered

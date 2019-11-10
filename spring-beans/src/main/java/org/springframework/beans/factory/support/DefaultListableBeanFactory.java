@@ -392,6 +392,14 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		};
 	}
 
+	/**
+	 * 解析bean
+	 * @param requiredType 请求的bean类型
+	 * @param args 参数值，仅在创建时使用，不能在检索时使用
+	 * @param nonUniqueAsNull 是否不唯一就是空
+	 * @param <T>
+	 * @return
+	 */
 	@Nullable
 	private <T> T resolveBean(ResolvableType requiredType, @Nullable Object[] args, boolean nonUniqueAsNull) {
 		NamedBeanHolder<T> namedBean = resolveNamedBean(requiredType, args, nonUniqueAsNull);
@@ -1143,6 +1151,15 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		throw new NoSuchBeanDefinitionException(requiredType);
 	}
 
+	/**
+	 * 解析命名bean
+	 * @param requiredType 请求的bean的类型
+	 * @param args 指定参数值
+	 * @param nonUniqueAsNull 是否不唯一就是null
+	 * @param <T>
+	 * @return
+	 * @throws BeansException
+	 */
 	@SuppressWarnings("unchecked")
 	@Nullable
 	private <T> NamedBeanHolder<T> resolveNamedBean(

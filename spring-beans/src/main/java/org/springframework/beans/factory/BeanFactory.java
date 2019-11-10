@@ -167,37 +167,32 @@ public interface BeanFactory {
 	Object getBean(String name, Object... args) throws BeansException;
 
 	/**
-	 * Return the bean instance that uniquely matches the given object type, if any.
-	 * <p>This method goes into {@link ListableBeanFactory} by-type lookup territory
-	 * but may also be translated into a conventional by-name lookup based on the name
-	 * of the given type. For more extensive retrieval operations across sets of beans,
-	 * use {@link ListableBeanFactory} and/or {@link BeanFactoryUtils}.
-	 * @param requiredType type the bean must match; can be an interface or superclass
-	 * @return an instance of the single bean matching the required type
-	 * @throws NoSuchBeanDefinitionException if no bean of the given type was found
-	 * @throws NoUniqueBeanDefinitionException if more than one bean of the given type was found
-	 * @throws BeansException if the bean could not be created
+	 * 返回唯一匹配给定对象类型的bean实例(如果有的话)。
+	 * <p>此方法进入{@link ListableBeanFactory}的类型查找区域，但也可以根据给定类型的名称转换为常规的名称查找。
+	 * 对于跨bean集的更广泛的检索操作，可以使用{@link ListableBeanFactory}和/或{@link BeanFactoryUtils}。
+	 * @param requiredType bean必须匹配的类型;可以是接口还是超类
+	 * @return 匹配所需类型的单个bean的实例
+	 * @throws NoSuchBeanDefinitionException 如果没有找到给定类型的bean
+	 * @throws NoUniqueBeanDefinitionException 如果发现给定类型的多个bean
+	 * @throws BeansException 如果不能创建bean
 	 * @since 3.0
 	 * @see ListableBeanFactory
 	 */
 	<T> T getBean(Class<T> requiredType) throws BeansException;
 
 	/**
-	 * Return an instance, which may be shared or independent, of the specified bean.
-	 * <p>Allows for specifying explicit constructor arguments / factory method arguments,
-	 * overriding the specified default arguments (if any) in the bean definition.
-	 * <p>This method goes into {@link ListableBeanFactory} by-type lookup territory
-	 * but may also be translated into a conventional by-name lookup based on the name
-	 * of the given type. For more extensive retrieval operations across sets of beans,
-	 * use {@link ListableBeanFactory} and/or {@link BeanFactoryUtils}.
-	 * @param requiredType type the bean must match; can be an interface or superclass
-	 * @param args arguments to use when creating a bean instance using explicit arguments
-	 * (only applied when creating a new instance as opposed to retrieving an existing one)
-	 * @return an instance of the bean
-	 * @throws NoSuchBeanDefinitionException if there is no such bean definition
-	 * @throws BeanDefinitionStoreException if arguments have been given but
-	 * the affected bean isn't a prototype
-	 * @throws BeansException if the bean could not be created
+	 * 返回指定bean的一个实例，该实例可以是共享的，也可以是独立的。
+	 * <p>允许指定显式构造函数参数/工厂方法参数，覆盖bean定义中指定的默认参数(如果有的话)。
+	 *
+	 * <p>此方法进入{@link ListableBeanFactory}的类型查找区域，但也可以根据给定类型的名称转换为常规的名称查找。
+	 * 对于跨bean集的更广泛的检索操作，可以使用{@link ListableBeanFactory}和/或{@link BeanFactoryUtils}。
+	 *
+	 * @param requiredType bean必须匹配的类型;可以是接口还是超类
+	 * @param args 使用显式参数创建bean实例时使用的参数(仅在创建新实例时应用，而不是检索现有实例时)
+	 * @return bean的实例
+	 * @throws NoSuchBeanDefinitionException 如果没有匹配的bean定义
+	 * @throws BeanDefinitionStoreException 如果已经给出了参数，但是受影响的bean不是原型
+	 * @throws BeansException 如果不能创建bean
 	 * @since 4.1
 	 */
 	<T> T getBean(Class<T> requiredType, Object... args) throws BeansException;

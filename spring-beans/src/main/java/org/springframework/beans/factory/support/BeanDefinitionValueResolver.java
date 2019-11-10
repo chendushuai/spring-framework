@@ -306,12 +306,15 @@ class BeanDefinitionValueResolver {
 			if (ref.isToParent()) {
 				// 如果是，则获取父工厂对象
 				BeanFactory parent = this.beanFactory.getParentBeanFactory();
+				// 如果是父工厂对象的应用，而父工厂又是空的，则直接抛出异常内容：没有可用的bean工厂
 				if (parent == null) {
 					throw new BeanCreationException(
 							this.beanDefinition.getResourceDescription(), this.beanName,
 							"Cannot resolve reference to bean " + ref +
 									" in parent factory: no parent factory available");
 				}
+
+				// 如果获取到父工厂对象，且在已知bean类型的情况下，直接从父工厂中获取bean
 				if (beanType != null) {
 					bean = parent.getBean(beanType);
 				}
