@@ -136,6 +136,7 @@ class BeanDefinitionValueResolver {
 		}
 		else if (value instanceof DependencyDescriptor) {
 			Set<String> autowiredBeanNames = new LinkedHashSet<>(4);
+			// 解析依赖关系，并保存依赖关系
 			Object result = this.beanFactory.resolveDependency(
 					(DependencyDescriptor) value, this.beanName, autowiredBeanNames, this.typeConverter);
 			for (String autowiredBeanName : autowiredBeanNames) {
@@ -146,7 +147,7 @@ class BeanDefinitionValueResolver {
 			return result;
 		}
 		else if (value instanceof ManagedArray) {
-			// May need to resolve contained runtime references.
+			// 可能需要解析包含的运行时引用。
 			ManagedArray array = (ManagedArray) value;
 			Class<?> elementType = array.resolvedElementType;
 			if (elementType == null) {
@@ -170,15 +171,15 @@ class BeanDefinitionValueResolver {
 			return resolveManagedArray(argName, (List<?>) value, elementType);
 		}
 		else if (value instanceof ManagedList) {
-			// May need to resolve contained runtime references.
+			// 可能需要解析包含的运行时引用。
 			return resolveManagedList(argName, (List<?>) value);
 		}
 		else if (value instanceof ManagedSet) {
-			// May need to resolve contained runtime references.
+			// 可能需要解析包含的运行时引用。
 			return resolveManagedSet(argName, (Set<?>) value);
 		}
 		else if (value instanceof ManagedMap) {
-			// May need to resolve contained runtime references.
+			// 可能需要解析包含的运行时引用。
 			return resolveManagedMap(argName, (Map<?, ?>) value);
 		}
 		else if (value instanceof ManagedProperties) {

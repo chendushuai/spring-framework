@@ -299,8 +299,8 @@ public class ConstructorArgumentValues {
 	}
 
 	/**
-	 * Return the list of generic argument values.
-	 * @return unmodifiable List of ValueHolders
+	 * 返回泛型参数值的列表。
+	 * @return 不可更改的ValueHolder列表
 	 * @see ValueHolder
 	 */
 	public List<ValueHolder> getGenericArgumentValues() {
@@ -541,8 +541,7 @@ public class ConstructorArgumentValues {
 		}
 
 		/**
-		 * Return whether this holder contains a converted value already ({@code true}),
-		 * or whether the value still needs to be converted ({@code false}).
+		 * 返回该容器是否已经包含转换后的值({@code true})，或者该值是否仍然需要转换({@code false})。
 		 */
 		public synchronized boolean isConverted() {
 			return this.converted;

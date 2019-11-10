@@ -210,22 +210,33 @@ class ConstructorResolver {
 				// 得到bean定义中的构造方法参数值
 				ConstructorArgumentValues cargs = mbd.getConstructorArgumentValues();
 				resolvedValues = new ConstructorArgumentValues();
+				// 设置minNrOfArgs为解析构造函数参数值后得到的参数个数
 				minNrOfArgs = resolveConstructorArguments(beanName, mbd, bw, cargs, resolvedValues);
 			}
 
+			// 构造函数方法排序，排序方式从公开到非公开，从参数数量最多到参数数量最少
 			AutowireUtils.sortConstructors(candidates);
+			// 设置最小类型差异值为最大整数值
 			int minTypeDiffWeight = Integer.MAX_VALUE;
+			// 模糊不行的构造函数集合
 			Set<Constructor<?>> ambiguousConstructors = null;
+			// 不满足依赖的异常集合
 			LinkedList<UnsatisfiedDependencyException> causes = null;
 
+			// 遍历符合条件的构造方法集合
 			for (Constructor<?> candidate : candidates) {
+				// 得到构造方法参数类型集合
 				Class<?>[] paramTypes = candidate.getParameterTypes();
 
+				// 如果已经找到适合的构造方法，且找到了适合构造函数参数，
+				// 且找到的构造函数参数个数比当前的构造函数参数个数还要多，则直接跳出循环
 				if (constructorToUse != null && argsToUse != null && argsToUse.length > paramTypes.length) {
+					// 已经找到可以满足的贪婪的构造函数了->不用继续寻找了，只有较少的贪婪构造函数留下。
 					// Already found greedy constructor that can be satisfied ->
 					// do not look any further, there are only less greedy constructors left.
 					break;
 				}
+				// 如果构造方法的参数个数，比bean定义中给定的构造方法参数值的个数要少，则跳过该构造方法
 				if (paramTypes.length < minNrOfArgs) {
 					continue;
 				}
@@ -707,8 +718,10 @@ class ConstructorResolver {
 				resolvedValues.addIndexedArgumentValue(index, valueHolder);
 			}
 			else {
+				// 如果需要的话，解析构造函数的参数值为对象
 				Object resolvedValue =
 						valueResolver.resolveValueIfNecessary("constructor argument", valueHolder.getValue());
+				// 保存到猴枣函数参数值集合中
 				ConstructorArgumentValues.ValueHolder resolvedValueHolder =
 						new ConstructorArgumentValues.ValueHolder(resolvedValue, valueHolder.getType(), valueHolder.getName());
 				resolvedValueHolder.setSource(valueHolder);
@@ -716,11 +729,14 @@ class ConstructorResolver {
 			}
 		}
 
+		// 遍历构造方法参数值
 		for (ConstructorArgumentValues.ValueHolder valueHolder : cargs.getGenericArgumentValues()) {
+			// 如果参数已经转换完成，则直接添加常规参数值到已解析的参数值中
 			if (valueHolder.isConverted()) {
 				resolvedValues.addGenericArgumentValue(valueHolder);
 			}
 			else {
+				// 否则解析并保存解析后的参数值对象
 				Object resolvedValue =
 						valueResolver.resolveValueIfNecessary("constructor argument", valueHolder.getValue());
 				ConstructorArgumentValues.ValueHolder resolvedValueHolder = new ConstructorArgumentValues.ValueHolder(
