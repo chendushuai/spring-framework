@@ -102,18 +102,14 @@ class ConstructorResolver {
 
 
 	/**
-	 * "autowire constructor" (with constructor arguments by type) behavior.
-	 * Also applied if explicit constructor argument values are specified,
-	 * matching all remaining arguments with beans from the bean factory.
-	 * <p>This corresponds to constructor injection: In this mode, a Spring
-	 * bean factory is able to host components that expect constructor-based
-	 * dependency resolution.
-	 * @param beanName the name of the bean
-	 * @param mbd the merged bean definition for the bean
-	 * @param chosenCtors chosen candidate constructors (or {@code null} if none)
-	 * @param explicitArgs argument values passed in programmatically via the getBean method,
-	 * or {@code null} if none (-> use constructor argument values from bean definition)
-	 * @return a BeanWrapper for the new instance
+	 * “自动装配构造函数”(按类型提供构造函数参数)行为。
+	 * 如果指定了显式构造函数参数值，将所有剩余参数与bean工厂中的bean匹配，也可以应用。
+	 * <p>这与构造函数注入相对应:在这种模式下，Spring bean工厂能够承载期望基于构造函数的依赖项解析的组件。
+	 * @param beanName bean的名称
+	 * @param mbd bean的合并bean定义
+	 * @param chosenCtors 选择的候选构造函数(如果没有，则为{@code null})
+	 * @param explicitArgs 参数值通过getBean方法以编程方式传递，如果没有参数值，则为{@code null}(->使用来自bean定义的构造函数参数值)
+	 * @return 新实例的BeanWrapper
 	 */
 	public BeanWrapper autowireConstructor(String beanName, RootBeanDefinition mbd,
 			@Nullable Constructor<?>[] chosenCtors, @Nullable Object[] explicitArgs) {
@@ -121,19 +117,25 @@ class ConstructorResolver {
 		BeanWrapperImpl bw = new BeanWrapperImpl();
 		this.beanFactory.initBeanWrapper(bw);
 
+		// 最终要使用的构造方法
 		Constructor<?> constructorToUse = null;
+		// 最终要使用的构造方法对应的参数集合
 		ArgumentsHolder argsHolderToUse = null;
+		// 要使用的参数集合
 		Object[] argsToUse = null;
 
+		// 如果提供了参数，则使用提供的参数集合
 		if (explicitArgs != null) {
 			argsToUse = explicitArgs;
 		}
 		else {
+			// 解析出来的参数
 			Object[] argsToResolve = null;
+			// 添加bean定义地构造函数参数锁
 			synchronized (mbd.constructorArgumentLock) {
 				constructorToUse = (Constructor<?>) mbd.resolvedConstructorOrFactoryMethod;
 				if (constructorToUse != null && mbd.constructorArgumentsResolved) {
-					// Found a cached constructor...
+					// 找到一个已缓存的构造函数constructor...
 					argsToUse = mbd.resolvedConstructorArguments;
 					if (argsToUse == null) {
 						argsToResolve = mbd.preparedConstructorArguments;
@@ -902,7 +904,7 @@ class ConstructorResolver {
 
 
 	/**
-	 * Private inner class for holding argument combinations.
+	 * 持有参数组合的私有内部类。
 	 */
 	private static class ArgumentsHolder {
 
