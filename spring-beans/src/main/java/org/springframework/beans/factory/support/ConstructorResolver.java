@@ -133,7 +133,9 @@ class ConstructorResolver {
 			Object[] argsToResolve = null;
 			// 添加bean定义地构造函数参数锁
 			synchronized (mbd.constructorArgumentLock) {
+				// 如果明确指定了构造函数或者工厂方法，则获取指定的构造函数或工厂方法
 				constructorToUse = (Constructor<?>) mbd.resolvedConstructorOrFactoryMethod;
+				// 明确指定了，且参数已经完成了解析，则认为已经找到了构造方法
 				if (constructorToUse != null && mbd.constructorArgumentsResolved) {
 					// 找到一个已缓存的构造函数constructor...
 					argsToUse = mbd.resolvedConstructorArguments;
@@ -142,17 +144,23 @@ class ConstructorResolver {
 					}
 				}
 			}
+			// 如果解析出来的构造函数参数不为空，则解析准备好的参数
 			if (argsToResolve != null) {
 				argsToUse = resolvePreparedArguments(beanName, mbd, bw, constructorToUse, argsToResolve, true);
 			}
 		}
 
+		// 如果没有解析出可用的构造函数或者构造函数参数
 		if (constructorToUse == null || argsToUse == null) {
-			// Take specified constructors, if any.
+			// 如果有的话，设定指定的构造函数，该值来源于给定的候选构造函数集合
 			Constructor<?>[] candidates = chosenCtors;
+			// 如果没有指定候选构造函数
 			if (candidates == null) {
+				// 得到bean类
 				Class<?> beanClass = mbd.getBeanClass();
 				try {
+					// 判断该对象是否允许访问非公开的构造函数，默认为true，
+					// 如果允许访问非公开的构造函数，则返回声明构造函数集合，否则返回公开的构造函数集合
 					candidates = (mbd.isNonPublicAccessAllowed() ?
 							beanClass.getDeclaredConstructors() : beanClass.getConstructors());
 				}
@@ -163,8 +171,11 @@ class ConstructorResolver {
 				}
 			}
 
+			// 如果只有一个构造函数，且指定的参数为空，且没有给bean定义指定构造函数参数值，则可以认为没有选择
 			if (candidates.length == 1 && explicitArgs == null && !mbd.hasConstructorArgumentValues()) {
+				// 获取这个唯一的候选构造函数对象
 				Constructor<?> uniqueCandidate = candidates[0];
+				// 如果这个唯一的候选构造函数也没有参数，则可以直接使用该构造函数初始化对象
 				if (uniqueCandidate.getParameterCount() == 0) {
 					synchronized (mbd.constructorArgumentLock) {
 						mbd.resolvedConstructorOrFactoryMethod = uniqueCandidate;
@@ -289,6 +300,14 @@ class ConstructorResolver {
 		return bw;
 	}
 
+	/**
+	 * 初始化对象方法
+	 * @param beanName bean名称
+	 * @param mbd bean的合并定义
+	 * @param constructorToUse 用于实例化的构造函数
+	 * @param argsToUse 构造函数的参数集合
+	 * @return 返回实例化之后的对象
+	 */
 	private Object instantiate(
 			String beanName, RootBeanDefinition mbd, Constructor<?> constructorToUse, Object[] argsToUse) {
 
@@ -797,7 +816,7 @@ class ConstructorResolver {
 	}
 
 	/**
-	 * Resolve the prepared arguments stored in the given bean definition.
+	 * 解析存储在给定bean定义中的准备好的参数。
 	 */
 	private Object[] resolvePreparedArguments(String beanName, RootBeanDefinition mbd, BeanWrapper bw,
 			Executable executable, Object[] argsToResolve, boolean fallback) {

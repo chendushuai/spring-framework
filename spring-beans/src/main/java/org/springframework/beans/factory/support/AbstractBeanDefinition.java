@@ -166,6 +166,9 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	@Nullable
 	private Supplier<?> instanceSupplier;
 
+	/**
+	 * 是否允许访问非公开的构造函数，默认为true
+	 */
 	private boolean nonPublicAccessAllowed = true;
 
 	private boolean lenientConstructorResolution = true;
@@ -759,7 +762,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	}
 
 	/**
-	 * Return whether to allow access to non-public constructors and methods.
+	 * 返回是否允许访问非公共构造函数和方法。默认为true
 	 */
 	public boolean isNonPublicAccessAllowed() {
 		return this.nonPublicAccessAllowed;
@@ -842,7 +845,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	}
 
 	/**
-	 * Return if there are constructor argument values defined for this bean.
+	 * 如果有为这个bean定义的构造函数参数值，则返回。、
 	 */
 	@Override
 	public boolean hasConstructorArgumentValues() {

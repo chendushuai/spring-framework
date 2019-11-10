@@ -85,27 +85,23 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
 /**
- * Abstract bean factory superclass that implements default bean creation,
- * with the full capabilities specified by the {@link RootBeanDefinition} class.
- * Implements the {@link org.springframework.beans.factory.config.AutowireCapableBeanFactory}
- * interface in addition to AbstractBeanFactory's {@link #createBean} method.
+ * 实现默认bean创建的抽象bean工厂超类，具有{@link RootBeanDefinition}类指定的全部功能。
+ * 除了实现{@link org.springframework.beans.factory.config.AutowireCapableBeanFactory}接口外，
+ * 还实现了AbstractBeanFactory的{@link #createBean}方法外。
  *
- * <p>Provides bean creation (with constructor resolution), property population,
- * wiring (including autowiring), and initialization. Handles runtime bean
- * references, resolves managed collections, calls initialization methods, etc.
- * Supports autowiring constructors, properties by name, and properties by type.
+ * <p>提供bean创建(通过构造函数解析)、属性填充、连接(包括自动装配)和初始化。
+ * 处理运行时bean引用、解析托管集合、调用初始化方法等。
+ * 支持自动装配构造函数、按名称的属性和按类型的属性。
  *
- * <p>The main template method to be implemented by subclasses is
- * {@link #resolveDependency(DependencyDescriptor, String, Set, TypeConverter)},
- * used for autowiring by type. In case of a factory which is capable of searching
- * its bean definitions, matching beans will typically be implemented through such
- * a search. For other factory styles, simplified matching algorithms can be implemented.
+ * <p>子类实现的主要模板方法是
+ * {@link #resolveDependency(DependencyDescriptor, String, Set, TypeConverter)}，用于按类型自动装配。
+ * 对于能够搜索其bean定义的工厂，通常通过这样的搜索实现匹配的bean。
+ * 对于其他工厂样式，可以实现简化的匹配算法。
  *
- * <p>Note that this class does <i>not</i> assume or implement bean definition
- * registry capabilities. See {@link DefaultListableBeanFactory} for an implementation
- * of the {@link org.springframework.beans.factory.ListableBeanFactory} and
- * {@link BeanDefinitionRegistry} interfaces, which represent the API and SPI
- * view of such a factory, respectively.
+ * <p>请注意，该类<i>不假定</i>或实现bean定义注册表功能。
+ * 参见{@link org.springframework.beans.factory.ListableBeanFactory}和{@link BeanDefinitionRegistry}
+ * 接口的{@link DefaultListableBeanFactory}实现，
+ * 它们分别表示此类工厂的API和SPI视图。
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
@@ -122,7 +118,7 @@ import org.springframework.util.StringUtils;
 public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory
 		implements AutowireCapableBeanFactory {
 
-	/** Strategy for creating bean instances. */
+	/** 用于创建bean实例的策略。 */
 	private InstantiationStrategy instantiationStrategy = new CglibSubclassingInstantiationStrategy();
 
 	/** Resolver strategy for method parameter names. */
@@ -195,7 +191,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	}
 
 	/**
-	 * Return the instantiation strategy to use for creating bean instances.
+	 * 返回用于创建bean实例的实例化策略。
 	 */
 	protected InstantiationStrategy getInstantiationStrategy() {
 		return this.instantiationStrategy;
