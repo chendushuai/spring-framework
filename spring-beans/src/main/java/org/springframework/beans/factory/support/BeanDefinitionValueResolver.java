@@ -126,10 +126,12 @@ class BeanDefinitionValueResolver {
 			return resolveInnerBean(argName, bdHolder.getBeanName(), bdHolder.getBeanDefinition());
 		}
 		else if (value instanceof BeanDefinition) {
-			// Resolve plain BeanDefinition, without contained name: use dummy name.
+			// 解析不包含名称的普通bean定义:使用虚拟名称。、
 			BeanDefinition bd = (BeanDefinition) value;
+			// 生成唯一名称
 			String innerBeanName = "(inner bean)" + BeanFactoryUtils.GENERATED_BEAN_NAME_SEPARATOR +
 					ObjectUtils.getIdentityHexString(bd);
+			// 生成内部bean对象并返回
 			return resolveInnerBean(argName, innerBeanName, bd);
 		}
 		else if (value instanceof DependencyDescriptor) {

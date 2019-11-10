@@ -614,9 +614,9 @@ public abstract class ObjectUtils {
 	}
 
 	/**
-	 * Return a hex String form of an object's identity hash code.
-	 * @param obj the object
-	 * @return the object's identity code in hex notation
+	 * 返回对象标识哈希码的十六进制字符串形式。
+	 * @param obj 对象
+	 * @return 对象的十六进制标识码
 	 */
 	public static String getIdentityHexString(Object obj) {
 		return Integer.toHexString(System.identityHashCode(obj));
