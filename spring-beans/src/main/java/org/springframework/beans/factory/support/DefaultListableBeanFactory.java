@@ -1148,11 +1148,13 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	@Override
 	public <T> NamedBeanHolder<T> resolveNamedBean(Class<T> requiredType) throws BeansException {
 		Assert.notNull(requiredType, "Required type must not be null");
-		// 解析得到bean名称集合
+		// 解析得到bean名称集合，找到最符合的bean对象
 		NamedBeanHolder<T> namedBean = resolveNamedBean(ResolvableType.forRawClass(requiredType), null, false);
+		// 如果得到的bean对象不为空，则直接返回
 		if (namedBean != null) {
 			return namedBean;
 		}
+		// 否则，委托给父工厂进行解析
 		BeanFactory parent = getParentBeanFactory();
 		if (parent instanceof AutowireCapableBeanFactory) {
 			return ((AutowireCapableBeanFactory) parent).resolveNamedBean(requiredType);
@@ -1219,18 +1221,23 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 					candidates.put(beanName, getType(beanName));
 				}
 			}
-			// 从候选bean名称集合中找到最适合于请求bean类型的bean名称
+			// 从候选bean名称集合中找到最适合于请求bean类型的主bean名称
 			String candidateName = determinePrimaryCandidate(candidates, requiredType.toClass());
+			// 如果没有找到适合的bean名称
 			if (candidateName == null) {
+				// 使用@Priority注解来判断优先权，找到最优先使用的bean名称
 				candidateName = determineHighestPriorityCandidate(candidates, requiredType.toClass());
 			}
+			// 如果找到了最适合的bean名称
 			if (candidateName != null) {
+				// 则从候选对象集合中找到该bean定义的内容，如果为空或是一个类，则需要获取bean实例，否则直接返回bean实例
 				Object beanInstance = candidates.get(candidateName);
 				if (beanInstance == null || beanInstance instanceof Class) {
 					beanInstance = getBean(candidateName, requiredType.toClass(), args);
 				}
 				return new NamedBeanHolder<>(candidateName, (T) beanInstance);
 			}
+			// 如果不允许在不唯一的时候返回null，则抛出异常
 			if (!nonUniqueAsNull) {
 				throw new NoUniqueBeanDefinitionException(requiredType, candidates.keySet());
 			}
@@ -1647,33 +1654,37 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	/**
-	 * Determine the candidate with the highest priority in the given set of beans.
-	 * <p>Based on {@code @javax.annotation.Priority}. As defined by the related
-	 * {@link org.springframework.core.Ordered} interface, the lowest value has
-	 * the highest priority.
-	 * @param candidates a Map of candidate names and candidate instances
-	 * (or candidate classes if not created yet) that match the required type
-	 * @param requiredType the target dependency type to match against
-	 * @return the name of the candidate with the highest priority,
-	 * or {@code null} if none found
+	 * 确定给定bean集中具有最高优先级的候选。
+	 * <p>基于{@code @javax.annotation.Priority}。
+	 * 由相关的{@link org.springframework.core.Ordered}接口，最低的值具有最高的优先级。
+	 * @param candidates 与所需类型匹配的候选名称和候选实例(或候选类，如果尚未创建)的映射
+	 * @param requiredType 要匹配的目标依赖项类型
+	 * @return 具有最高优先级的候选的名称，如果没有找到，则为{@code null}
 	 * @see #getPriority(Object)
 	 */
 	@Nullable
 	protected String determineHighestPriorityCandidate(Map<String, Object> candidates, Class<?> requiredType) {
+		// 最高优先级的bean的名称
 		String highestPriorityBeanName = null;
+		// 最高优先级别
 		Integer highestPriority = null;
 		for (Map.Entry<String, Object> entry : candidates.entrySet()) {
 			String candidateBeanName = entry.getKey();
 			Object beanInstance = entry.getValue();
 			if (beanInstance != null) {
+				// 得到候选优先级别
 				Integer candidatePriority = getPriority(beanInstance);
+				// 如果得到的候选优先级别不为null
 				if (candidatePriority != null) {
+					// 在已经找到一个满足条件的也优先bean名称的情况下，该值不为null
 					if (highestPriorityBeanName != null) {
+						// 如果候选优先级别相同，则抛出异常
 						if (candidatePriority.equals(highestPriority)) {
 							throw new NoUniqueBeanDefinitionException(requiredType, candidates.size(),
 									"Multiple beans found with the same priority ('" + highestPriority +
 									"') among candidates: " + candidates.keySet());
 						}
+						// 如果当前的候选优先于已找到的候选，则更新
 						else if (candidatePriority < highestPriority) {
 							highestPriorityBeanName = candidateBeanName;
 							highestPriority = candidatePriority;
@@ -1708,16 +1719,13 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	/**
-	 * Return the priority assigned for the given bean instance by
-	 * the {@code javax.annotation.Priority} annotation.
-	 * <p>The default implementation delegates to the specified
-	 * {@link #setDependencyComparator dependency comparator}, checking its
-	 * {@link OrderComparator#getPriority method} if it is an extension of
-	 * Spring's common {@link OrderComparator} - typically, an
-	 * {@link org.springframework.core.annotation.AnnotationAwareOrderComparator}.
-	 * If no such comparator is present, this implementation returns {@code null}.
-	 * @param beanInstance the bean instance to check (can be {@code null})
-	 * @return the priority assigned to that bean or {@code null} if none is set
+	 * 返回由{@code javax.annotation.Priority}注解为给定bean实例分配的优先级。
+	 * <p>默认实现代表指定的{@link #setDependencyComparator dependency comparator},
+	 * 如果它是一个扩展Spring的常见的{@link OrderComparator}，检查其{@link OrderComparator#getPriority method} -
+	 * 通常情况下,一个{@link org.springframework.core.annotation.AnnotationAwareOrderComparator}。
+	 * 如果不存在这样的比较器，这个实现将返回{@code null}。
+	 * @param beanInstance 要检查的bean实例(可以是{@code null})
+	 * @return 如果没有设置，则为该bean分配优先级,或{@code null}
 	 */
 	@Nullable
 	protected Integer getPriority(Object beanInstance) {
