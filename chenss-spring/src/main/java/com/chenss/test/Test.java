@@ -1,6 +1,8 @@
 package com.chenss.test;
 
 import com.chenss.config.Appconfig;
+import com.chenss.dao.AopAspectJDao;
+import com.chenss.dao.AopPrototypeAspectJDao;
 import com.chenss.dao.ChenssFactoryBean;
 import com.chenss.dao.UserDao;
 import com.chenss.processor.ChenssRegisterBeanFactoryPostProcessor;
@@ -22,7 +24,15 @@ public class Test {
 		UserDao userDao1 = (UserDao) annotationConfigApplicationContext.getBean("userDao");
 		System.out.println(userDao);
 		System.out.println(userDao1);
-//
-//		annotationConfigApplicationContext.scan("");
+
+		AopAspectJDao aopAspectJDao = (AopAspectJDao) annotationConfigApplicationContext.getBean("aopAspectJDao");
+		aopAspectJDao.print("aopTest1");
+		aopAspectJDao = (AopAspectJDao) annotationConfigApplicationContext.getBean("aopAspectJDao");
+		aopAspectJDao.print("aopTest2");
+
+		AopPrototypeAspectJDao aopPrototypeAspectJDao = (AopPrototypeAspectJDao) annotationConfigApplicationContext.getBean("aopPrototypeAspectJDao");
+		aopPrototypeAspectJDao.print("aopTest1");
+		aopPrototypeAspectJDao = (AopPrototypeAspectJDao) annotationConfigApplicationContext.getBean("aopPrototypeAspectJDao");
+		aopPrototypeAspectJDao.print("aopTest2");
 	}
 }

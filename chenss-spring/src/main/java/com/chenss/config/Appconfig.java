@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 @Component
 @ComponentScan("com.chenss")
 @EnableAspectJAutoProxy
-@Import(CustomAopBeanPostProcessor.class)
 //@ImportResource("classpath:spring.xml")
 public class Appconfig {
 	@Bean
