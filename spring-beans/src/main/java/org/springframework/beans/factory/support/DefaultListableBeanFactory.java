@@ -320,6 +320,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 	@Override
 	public <T> T getBean(Class<T> requiredType) throws BeansException {
+		// 返回依照给定类型找到的符合条件的bean对象的实例
 		return getBean(requiredType, (Object[]) null);
 	}
 
@@ -327,10 +328,13 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	@Override
 	public <T> T getBean(Class<T> requiredType, @Nullable Object... args) throws BeansException {
 		Assert.notNull(requiredType, "Required type must not be null");
+		// 根据需要的bean对象的参数类型、参数解析得到bean的实例
 		Object resolved = resolveBean(ResolvableType.forRawClass(requiredType), args, false);
+		// 如果实例为空，则抛出找不到匹配的bean定义的异常
 		if (resolved == null) {
 			throw new NoSuchBeanDefinitionException(requiredType);
 		}
+		// 否则返回找到的bean对象实例
 		return (T) resolved;
 	}
 
@@ -402,10 +406,13 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 */
 	@Nullable
 	private <T> T resolveBean(ResolvableType requiredType, @Nullable Object[] args, boolean nonUniqueAsNull) {
+		// 通过解析需要的bean的类型和根据给定的参照找到最适合的bean的实例
 		NamedBeanHolder<T> namedBean = resolveNamedBean(requiredType, args, nonUniqueAsNull);
+		// 如果可以找到，则直接返回bean实例
 		if (namedBean != null) {
 			return namedBean.getBeanInstance();
 		}
+		// 找到其父工厂，将解析bean的工作委托给其父工厂来做
 		BeanFactory parent = getParentBeanFactory();
 		if (parent instanceof DefaultListableBeanFactory) {
 			return ((DefaultListableBeanFactory) parent).resolveBean(requiredType, args, nonUniqueAsNull);

@@ -384,12 +384,10 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	}
 
 	/**
-	 * Register a containment relationship between two beans,
-	 * e.g. between an inner bean and its containing outer bean.
-	 * <p>Also registers the containing bean as dependent on the contained bean
-	 * in terms of destruction order.
-	 * @param containedBeanName the name of the contained (inner) bean
-	 * @param containingBeanName the name of the containing (outer) bean
+	 * 在两个bean之间注册一个包容关系，例如在一个内部bean和它包含的外部bean之间。
+	 * <p>还根据销毁顺序将包含的bean注册为依赖于包含的bean。
+	 * @param containedBeanName 包含(内部)bean的名称
+	 * @param containingBeanName 包含(外部)bean的名称
 	 * @see #registerDependentBean
 	 */
 	public void registerContainedBean(String containedBeanName, String containingBeanName) {
@@ -474,8 +472,8 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	}
 
 	/**
-	 * Determine whether a dependent bean has been registered for the given name.
-	 * @param beanName the name of the bean to check
+	 * 确定是否为给定名称注册了从属bean。
+	 * @param beanName 要检查的bean的名称
 	 */
 	protected boolean hasDependentBean(String beanName) {
 		return this.dependentBeanMap.containsKey(beanName);

@@ -332,15 +332,13 @@ public interface AutowireCapableBeanFactory extends BeanFactory {
 	//-------------------------------------------------------------------------
 
 	/**
-	 * Resolve the bean instance that uniquely matches the given object type, if any,
-	 * including its bean name.
-	 * <p>This is effectively a variant of {@link #getBean(Class)} which preserves the
-	 * bean name of the matching instance.
-	 * @param requiredType type the bean must match; can be an interface or superclass
-	 * @return the bean name plus bean instance
-	 * @throws NoSuchBeanDefinitionException if no matching bean was found
-	 * @throws NoUniqueBeanDefinitionException if more than one matching bean was found
-	 * @throws BeansException if the bean could not be created
+	 * 解析唯一匹配给定对象类型(如果有的话)的bean实例，包括它的bean名称。
+	 * <p>这实际上是{@link #getBean(Class)}的变体，它保留了匹配实例的bean名称。
+	 * @param requiredType bean必须匹配的类型;可以是接口还是超类
+	 * @return bean名称加bean实例
+	 * @throws NoSuchBeanDefinitionException 如果没有找到匹配的bean
+	 * @throws NoUniqueBeanDefinitionException 如果找到多个符合匹配的bean
+	 * @throws BeansException 如果bean无法创建
 	 * @since 4.3.3
 	 * @see #getBean(Class)
 	 */

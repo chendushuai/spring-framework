@@ -47,8 +47,7 @@ import org.springframework.util.StringUtils;
 public abstract class BeanFactoryUtils {
 
 	/**
-	 * Separator for generated bean names. If a class name or parent name is not
-	 * unique, "#1", "#2" etc will be appended, until the name becomes unique.
+	 * 生成的bean名称的分隔符。如果一个类名或父类名不是唯一的，“#1”、“#2”等将被追加，直到名称变得惟一。
 	 */
 	public static final String GENERATED_BEAN_NAME_SEPARATOR = "#";
 
