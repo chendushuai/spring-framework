@@ -821,8 +821,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	}
 
 	/**
-	 * Return the custom TypeConverter to use, if any.
-	 * @return the custom TypeConverter, or {@code null} if none specified
+	 * 返回要使用的自定义TypeConverter(如果有的话)。
+	 * @return 自定义TypeConverter，或者{@code null}(如果没有指定)
 	 */
 	@Nullable
 	protected TypeConverter getCustomTypeConverter() {

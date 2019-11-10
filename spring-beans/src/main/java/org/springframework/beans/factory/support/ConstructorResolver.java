@@ -133,7 +133,8 @@ class ConstructorResolver {
 			Object[] argsToResolve = null;
 			// 添加bean定义地构造函数参数锁
 			synchronized (mbd.constructorArgumentLock) {
-				// 如果明确指定了构造函数或者工厂方法，则获取指定的构造函数或工厂方法
+				// 如果明确指定了构造函数或者工厂方法，则获取指定的构造函数或工厂方法，
+				// 原型方法在第一次判断之后，会提供对应的结果
 				constructorToUse = (Constructor<?>) mbd.resolvedConstructorOrFactoryMethod;
 				// 明确指定了，且参数已经完成了解析，则认为已经找到了构造方法
 				if (constructorToUse != null && mbd.constructorArgumentsResolved) {
@@ -178,25 +179,35 @@ class ConstructorResolver {
 				// 如果这个唯一的候选构造函数也没有参数，则可以直接使用该构造函数初始化对象
 				if (uniqueCandidate.getParameterCount() == 0) {
 					synchronized (mbd.constructorArgumentLock) {
+						// 记录找到的构造函数对象，避免下次再次判断
+						// 原型模式就非常必须，不需要每次获取最适合的构造方法
 						mbd.resolvedConstructorOrFactoryMethod = uniqueCandidate;
+						// 记录构造函数解析状态为已解析true
 						mbd.constructorArgumentsResolved = true;
+						// 因为是默认无参构造函数，所以设置已设置的构造方法参数为无参数
 						mbd.resolvedConstructorArguments = EMPTY_ARGS;
 					}
+					// 使用默认构造函数创建实例
 					bw.setBeanInstance(instantiate(beanName, mbd, uniqueCandidate, EMPTY_ARGS));
 					return bw;
 				}
 			}
 
-			// Need to resolve the constructor.
+			// 如果构造函数过多或者没有构造函数，则需要继续去解析构造函数
+			// 如果给定的构造函数不为空，或者bean定义的解析自动装配模式为构造函数自动装配
 			boolean autowiring = (chosenCtors != null ||
 					mbd.getResolvedAutowireMode() == AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR);
+			// 设置构造函数参数值为空
 			ConstructorArgumentValues resolvedValues = null;
 
+			// 参数的最小个数
 			int minNrOfArgs;
+			// 如果指定了构造方法参数值，则设置参数的最小个数为给定的参数数量
 			if (explicitArgs != null) {
 				minNrOfArgs = explicitArgs.length;
 			}
 			else {
+				// 得到bean定义中的构造方法参数值
 				ConstructorArgumentValues cargs = mbd.getConstructorArgumentValues();
 				resolvedValues = new ConstructorArgumentValues();
 				minNrOfArgs = resolveConstructorArguments(beanName, mbd, bw, cargs, resolvedValues);
@@ -312,6 +323,7 @@ class ConstructorResolver {
 			String beanName, RootBeanDefinition mbd, Constructor<?> constructorToUse, Object[] argsToUse) {
 
 		try {
+			// 获取bean工厂中的实例化策略
 			InstantiationStrategy strategy = this.beanFactory.getInstantiationStrategy();
 			if (System.getSecurityManager() != null) {
 				return AccessController.doPrivileged((PrivilegedAction<Object>) () ->
@@ -662,20 +674,23 @@ class ConstructorResolver {
 	}
 
 	/**
-	 * Resolve the constructor arguments for this bean into the resolvedValues object.
-	 * This may involve looking up other beans.
-	 * <p>This method is also used for handling invocations of static factory methods.
+	 * 将此bean的构造函数参数解析为resolvedValues对象。这可能涉及到查找其他bean。
+	 * <p>此方法还用于处理静态工厂方法的调用。
 	 */
 	private int resolveConstructorArguments(String beanName, RootBeanDefinition mbd, BeanWrapper bw,
 			ConstructorArgumentValues cargs, ConstructorArgumentValues resolvedValues) {
-
+		// 获取bean工厂的自定义类型解析器
 		TypeConverter customConverter = this.beanFactory.getCustomTypeConverter();
+		// 如果没有自定义类型解析器，则使用给定的BeanWrapper对象
 		TypeConverter converter = (customConverter != null ? customConverter : bw);
+		// 创建bean定义值解析器
 		BeanDefinitionValueResolver valueResolver =
 				new BeanDefinitionValueResolver(this.beanFactory, beanName, mbd, converter);
 
+		// 得到给定的构造方法的参数个数
 		int minNrOfArgs = cargs.getArgumentCount();
 
+		// 遍历给定的构造方法的参数对象
 		for (Map.Entry<Integer, ConstructorArgumentValues.ValueHolder> entry : cargs.getIndexedArgumentValues().entrySet()) {
 			int index = entry.getKey();
 			if (index < 0) {
@@ -685,8 +700,10 @@ class ConstructorResolver {
 			if (index > minNrOfArgs) {
 				minNrOfArgs = index + 1;
 			}
+			// 得到参数值的值对象
 			ConstructorArgumentValues.ValueHolder valueHolder = entry.getValue();
 			if (valueHolder.isConverted()) {
+				// 添加参数到参数集合中的指定位置
 				resolvedValues.addIndexedArgumentValue(index, valueHolder);
 			}
 			else {

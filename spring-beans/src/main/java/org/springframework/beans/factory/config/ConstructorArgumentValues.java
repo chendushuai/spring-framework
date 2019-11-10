@@ -102,9 +102,9 @@ public class ConstructorArgumentValues {
 	}
 
 	/**
-	 * Add an argument value for the given index in the constructor argument list.
-	 * @param index the index in the constructor argument list
-	 * @param newValue the argument value in the form of a ValueHolder
+	 * 在构造函数参数列表中为给定的索引添加一个参数值。
+	 * @param index 构造函数参数列表中的索引
+	 * @param newValue 参数值的形式为ValueHolder
 	 */
 	public void addIndexedArgumentValue(int index, ValueHolder newValue) {
 		Assert.isTrue(index >= 0, "Index must not be negative");
@@ -113,11 +113,10 @@ public class ConstructorArgumentValues {
 	}
 
 	/**
-	 * Add an argument value for the given index in the constructor argument list,
-	 * merging the new value (typically a collection) with the current value
-	 * if demanded: see {@link org.springframework.beans.Mergeable}.
-	 * @param key the index in the constructor argument list
-	 * @param newValue the argument value in the form of a ValueHolder
+	 * 在构造函数参数列表中为给定的索引添加一个参数值，如果需要，将新值(通常是一个集合)与当前值合并:
+	 * 参见{@link org.springframework.beans.Mergeable}.
+	 * @param key 构造函数参数列表中的索引
+	 * @param newValue 参数值的形式为ValueHolder
 	 */
 	private void addOrMergeIndexedArgumentValue(Integer key, ValueHolder newValue) {
 		ValueHolder currentValue = this.indexedArgumentValues.get(key);

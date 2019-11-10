@@ -87,27 +87,23 @@ class BeanDefinitionValueResolver {
 
 
 	/**
-	 * Given a PropertyValue, return a value, resolving any references to other
-	 * beans in the factory if necessary. The value could be:
-	 * <li>A BeanDefinition, which leads to the creation of a corresponding
-	 * new bean instance. Singleton flags and names of such "inner beans"
-	 * are always ignored: Inner beans are anonymous prototypes.
-	 * <li>A RuntimeBeanReference, which must be resolved.
-	 * <li>A ManagedList. This is a special collection that may contain
-	 * RuntimeBeanReferences or Collections that will need to be resolved.
-	 * <li>A ManagedSet. May also contain RuntimeBeanReferences or
-	 * Collections that will need to be resolved.
-	 * <li>A ManagedMap. In this case the value may be a RuntimeBeanReference
-	 * or Collection that will need to be resolved.
-	 * <li>An ordinary object or {@code null}, in which case it's left alone.
-	 * @param argName the name of the argument that the value is defined for
-	 * @param value the value object to resolve
-	 * @return the resolved object
+	 * 给定一个PropertyValue，返回一个值，必要时解析对工厂中其他bean的任何引用。值可以是:
+	 * <ol>
+	 * <li>一个BeanDefinition，它将创建一个相应的新bean实例。
+	 * 这种“内部bean”的单例标志和名称总是被忽略:内部bean是匿名原型。</li>
+	 * <li>一个RuntimeBeanReference，必须是已经解析的</li>
+	 * <li>一个ManagedList。这是一个特殊的集合，它可能包含需要解析的RuntimeBeanReferences或集合。</li>
+	 * <li>一个ManagedSet。</li>
+	 * <li>一个ManagedMap。在这种情况下，值可能是需要解析的RuntimeBeanReference或集合。</li>
+	 * <li>一个普通对象或{@code null}，在这种情况下，它不受影响。</li>
+	 * </ol>
+	 * @param argName 为其定义值的参数的名称
+	 * @param value 要解析的值对象
+	 * @return 已解析的对象
 	 */
 	@Nullable
 	public Object resolveValueIfNecessary(Object argName, @Nullable Object value) {
-		// We must check each value to see whether it requires a runtime reference
-		// to another bean to be resolved.
+		// 我们必须检查每个值，以确定是否需要解析另一个bean的运行时引用。
 		if (value instanceof RuntimeBeanReference) {
 			RuntimeBeanReference ref = (RuntimeBeanReference) value;
 			return resolveReference(argName, ref);
@@ -296,14 +292,19 @@ class BeanDefinitionValueResolver {
 	}
 
 	/**
-	 * Resolve a reference to another bean in the factory.
+	 * 解析对工厂中另一个bean的引用。
+	 * @param argName 为其定义值的参数的名称
+	 * @param ref 运行时bean引用
 	 */
 	@Nullable
 	private Object resolveReference(Object argName, RuntimeBeanReference ref) {
 		try {
 			Object bean;
+			// 得到运行时bean引用的类型
 			Class<?> beanType = ref.getBeanType();
+			// 判断是否是对父bean工厂中的bean的显式引用
 			if (ref.isToParent()) {
+				// 如果是，则获取父工厂对象
 				BeanFactory parent = this.beanFactory.getParentBeanFactory();
 				if (parent == null) {
 					throw new BeanCreationException(

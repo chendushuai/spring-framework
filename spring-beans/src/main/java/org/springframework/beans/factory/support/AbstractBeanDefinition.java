@@ -834,7 +834,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	}
 
 	/**
-	 * Return constructor argument values for this bean (never {@code null}).
+	 * 返回此bean的构造函数参数值(绝不是{@code null})。
 	 */
 	@Override
 	public ConstructorArgumentValues getConstructorArgumentValues() {
