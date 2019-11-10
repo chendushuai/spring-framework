@@ -614,9 +614,10 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	public Class<?> getType(String name) throws NoSuchBeanDefinitionException {
 		String beanName = transformedBeanName(name);
 
-		// Check manually registered singletons.
+		// 检查手动注册的单例。获取已经注册的单例对象
 		Object beanInstance = getSingleton(beanName, false);
 		if (beanInstance != null && beanInstance.getClass() != NullBean.class) {
+			// 如果不为空，且bean是FactoryBean，且不是以工厂名称前缀&打头，则获取其实际返回类型
 			if (beanInstance instanceof FactoryBean && !BeanFactoryUtils.isFactoryDereference(name)) {
 				return getTypeForFactoryBean((FactoryBean<?>) beanInstance);
 			}
@@ -625,32 +626,38 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			}
 		}
 
-		// No singleton instance found -> check bean definition.
+		// 没有找到单例实例->检查bean定义。
 		BeanFactory parentBeanFactory = getParentBeanFactory();
+		// 如果父bean工厂不为空，且不包含指定名称的bean定义
 		if (parentBeanFactory != null && !containsBeanDefinition(beanName)) {
-			// No bean definition found in this factory -> delegate to parent.
+			// 在这个工厂中没有找到bean定义——>委托给父类。
 			return parentBeanFactory.getType(originalBeanName(name));
 		}
 
+		// 获取合并后的本地bean定义
 		RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
 
-		// Check decorated bean definition, if any: We assume it'll be easier
-		// to determine the decorated bean's type than the proxy's type.
+		// 检查修饰bean定义(如果有的话):我们假设确定修饰bean的类型比确定代理的类型更容易。
 		BeanDefinitionHolder dbd = mbd.getDecoratedDefinition();
+		// 如果修饰bean定义不为空，且bean名称不是使用工厂bean前缀&打头
 		if (dbd != null && !BeanFactoryUtils.isFactoryDereference(name)) {
+			// 将修饰bean定义作为父级，合并后的本地bean定义合并，得到合并后的bean定义
 			RootBeanDefinition tbd = getMergedBeanDefinition(dbd.getBeanName(), dbd.getBeanDefinition(), mbd);
+			// 返回预测出来的bean的类型
 			Class<?> targetClass = predictBeanType(dbd.getBeanName(), tbd);
+			// 如果预测出来的bean的类型不为空，且不是以工厂bean的前缀&打头，则直接返回预测出来的类型
 			if (targetClass != null && !FactoryBean.class.isAssignableFrom(targetClass)) {
 				return targetClass;
 			}
 		}
 
+		// 直接从合并的bean定义中推测bean的类型
 		Class<?> beanClass = predictBeanType(beanName, mbd);
 
-		// Check bean class whether we're dealing with a FactoryBean.
+		// 检查bean类是否正在处理FactoryBean。
 		if (beanClass != null && FactoryBean.class.isAssignableFrom(beanClass)) {
 			if (!BeanFactoryUtils.isFactoryDereference(name)) {
-				// If it's a FactoryBean, we want to look at what it creates, not at the factory class.
+				// 如果它是一个FactoryBean，我们希望查看它创建了什么，而不是在factory类中。
 				return getTypeForFactoryBean(beanName, mbd);
 			}
 			else {

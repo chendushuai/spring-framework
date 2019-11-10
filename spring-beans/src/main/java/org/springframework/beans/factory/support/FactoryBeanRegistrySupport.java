@@ -48,10 +48,9 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 
 
 	/**
-	 * Determine the type for the given FactoryBean.
-	 * @param factoryBean the FactoryBean instance to check
-	 * @return the FactoryBean's object type,
-	 * or {@code null} if the type cannot be determined yet
+	 * 确定给定FactoryBean的类型。
+	 * @param factoryBean 要检查的FactoryBean实例
+	 * @return FactoryBean的对象类型，如果类型还不能确定，则为{@code null}
 	 */
 	@Nullable
 	protected Class<?> getTypeForFactoryBean(final FactoryBean<?> factoryBean) {

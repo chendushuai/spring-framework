@@ -116,10 +116,8 @@ import org.springframework.lang.Nullable;
 public interface BeanFactory {
 
 	/**
-	 * Used to dereference a {@link FactoryBean} instance and distinguish it from
-	 * beans <i>created</i> by the FactoryBean. For example, if the bean named
-	 * {@code myJndiObject} is a FactoryBean, getting {@code &myJndiObject}
-	 * will return the factory, not the instance returned by the factory.
+	 * 用于取消引用一个{@link FactoryBean}实例，并将它与FactoryBean<i>创建</i>的bean区别开来。
+	 * 例如，如果名为{@code myJndiObject}的bean是FactoryBean，那么获取{@code &myJndiObject}将返回工厂，而不是工厂返回的实例。
 	 */
 	String FACTORY_BEAN_PREFIX = "&";
 
@@ -308,15 +306,13 @@ public interface BeanFactory {
 	boolean isTypeMatch(String name, Class<?> typeToMatch) throws NoSuchBeanDefinitionException;
 
 	/**
-	 * Determine the type of the bean with the given name. More specifically,
-	 * determine the type of object that {@link #getBean} would return for the given name.
-	 * <p>For a {@link FactoryBean}, return the type of object that the FactoryBean creates,
-	 * as exposed by {@link FactoryBean#getObjectType()}.
-	 * <p>Translates aliases back to the corresponding canonical bean name.
-	 * Will ask the parent factory if the bean cannot be found in this factory instance.
-	 * @param name the name of the bean to query
-	 * @return the type of the bean, or {@code null} if not determinable
-	 * @throws NoSuchBeanDefinitionException if there is no bean with the given name
+	 * 确定具有给定名称的bean的类型。
+	 * 更具体地说，确定{@link #getBean}为给定名称返回的对象类型。
+	 * <p>对于{@link FactoryBean}，返回FactoryBean创建的对象的类型，由{@link FactoryBean#getObjectType()}公开。
+	 * <p>将别名转换回相应的规范bean名称。如果在这个工厂实例中找不到bean，将询问父工厂。
+	 * @param name 要查找的bean的名称
+	 * @return bean的类型，如果不能确定，则为{@code null}
+	 * @throws NoSuchBeanDefinitionException 如果没有具有给定名称的bean
 	 * @since 1.1.2
 	 * @see #getBean
 	 * @see #isTypeMatch

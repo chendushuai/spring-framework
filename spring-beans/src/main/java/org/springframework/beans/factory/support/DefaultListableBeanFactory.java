@@ -1215,9 +1215,11 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 					candidates.put(beanName, (beanInstance instanceof NullBean ? null : beanInstance));
 				}
 				else {
+					// 否则，保存bean名称，和对应类型的映射关系
 					candidates.put(beanName, getType(beanName));
 				}
 			}
+			// 从候选bean名称集合中找到最适合于请求bean类型的bean名称
 			String candidateName = determinePrimaryCandidate(candidates, requiredType.toClass());
 			if (candidateName == null) {
 				candidateName = determineHighestPriorityCandidate(candidates, requiredType.toClass());
@@ -1600,36 +1602,47 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	/**
-	 * Determine the primary candidate in the given set of beans.
-	 * @param candidates a Map of candidate names and candidate instances
-	 * (or candidate classes if not created yet) that match the required type
-	 * @param requiredType the target dependency type to match against
-	 * @return the name of the primary candidate, or {@code null} if none found
+	 * 确定给定bean集中的主要候选对象。
+	 * <p>这个判断很简单，就是判断给定的bean名称中的bean是否设置了@Primary，也就是主，
+	 * 如果没有一个设置，则返回null;
+	 * 如果只有一个设置了，则直接返回;
+	 * 如果有多个设置，则判断是否都有bean定义，如果其中一个有，其他的没有，则返回有bean定义的这个；
+	 * 如果有多个设置，且存在两个以上都有bean定义，则抛出异常内容。
+	 * @param candidates 与所需类型匹配的候选名称和候选实例(或候选类，如果尚未创建)的映射
+	 * @param requiredType 要匹配的目标依赖项类型
+	 * @return 主候选项的名称，如果没有找到，则为{@code null}
 	 * @see #isPrimary(String, Object)
 	 */
 	@Nullable
 	protected String determinePrimaryCandidate(Map<String, Object> candidates, Class<?> requiredType) {
 		String primaryBeanName = null;
+		// 遍历集合
 		for (Map.Entry<String, Object> entry : candidates.entrySet()) {
 			String candidateBeanName = entry.getKey();
 			Object beanInstance = entry.getValue();
+			// 判断给定bean名称是否指定为Primary，也就是优先使用的，如果是
 			if (isPrimary(candidateBeanName, beanInstance)) {
+				// 第一次循环中，primaryBeanName肯定为null，而在第一次的设置为主的循环结束之后，就不是null了
 				if (primaryBeanName != null) {
+					// 获取第二个符合主bean的定义是否存在及第一个符合主bean的bean定义是否存在，如果都存在，则抛出异常，找到两个主bean
 					boolean candidateLocal = containsBeanDefinition(candidateBeanName);
 					boolean primaryLocal = containsBeanDefinition(primaryBeanName);
 					if (candidateLocal && primaryLocal) {
 						throw new NoUniqueBeanDefinitionException(requiredType, candidates.size(),
 								"more than one 'primary' bean found among candidates: " + candidates.keySet());
 					}
+					// 如果已找出来的主bean的bean定义不存在，则设置主bean为当前bean名称
 					else if (candidateLocal) {
 						primaryBeanName = candidateBeanName;
 					}
 				}
 				else {
+					// 保存找出来主bean名称
 					primaryBeanName = candidateBeanName;
 				}
 			}
 		}
+		// 返回找出来的主bean名称
 		return primaryBeanName;
 	}
 
@@ -1677,17 +1690,18 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	/**
-	 * Return whether the bean definition for the given bean name has been
-	 * marked as a primary bean.
-	 * @param beanName the name of the bean
-	 * @param beanInstance the corresponding bean instance (can be null)
-	 * @return whether the given bean qualifies as primary
+	 * 返回给定bean名称的bean定义是否已标记为主bean。也就是是否使用@Primary进行过标记
+	 * @param beanName bean的名称
+	 * @param beanInstance 当前bean的实例(可以为null)
+	 * @return 给定的bean是否确实为Primary bean
 	 */
 	protected boolean isPrimary(String beanName, Object beanInstance) {
 		String transformedBeanName = transformedBeanName(beanName);
+		// 如果存在bean名称的bean定义，则直接从合并bean定义中返回是否为主
 		if (containsBeanDefinition(transformedBeanName)) {
 			return getMergedLocalBeanDefinition(transformedBeanName).isPrimary();
 		}
+		// 否则，获取父工厂，使用父工厂判断是否为主
 		BeanFactory parent = getParentBeanFactory();
 		return (parent instanceof DefaultListableBeanFactory &&
 				((DefaultListableBeanFactory) parent).isPrimary(transformedBeanName, beanInstance));
