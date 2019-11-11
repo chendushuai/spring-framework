@@ -264,9 +264,7 @@ public class ConstructorArgumentValues {
 	}
 
 	/**
-	 * Look for the next generic argument value that matches the given type,
-	 * ignoring argument values that have already been used in the current
-	 * resolution process.
+	 * 寻找下一个匹配给定类型的泛型参数值，忽略当前解析过程中已经使用的参数值。
 	 * @param requiredType the type to match (can be {@code null} to find
 	 * an arbitrary next generic argument value)
 	 * @param requiredName the name to match (can be {@code null} to not
@@ -334,18 +332,13 @@ public class ConstructorArgumentValues {
 	}
 
 	/**
-	 * Look for an argument value that either corresponds to the given index
-	 * in the constructor argument list or generically matches by type.
-	 * @param index the index in the constructor argument list
-	 * @param requiredType the parameter type to match (can be {@code null}
-	 * to find an untyped argument value)
-	 * @param requiredName the parameter name to match (can be {@code null}
-	 * to find an unnamed argument value, or empty String to match any name)
-	 * @param usedValueHolders a Set of ValueHolder objects that have already
-	 * been used in the current resolution process and should therefore not
-	 * be returned again (allowing to return the next generic argument match
-	 * in case of multiple generic argument values of the same type)
-	 * @return the ValueHolder for the argument, or {@code null} if none set
+	 * 在构造函数参数列表中查找与给定索引对应的参数值，或根据类型进行常规匹配的参数值。
+	 * @param index 构造函数参数列表中的索引
+	 * @param requiredType 要匹配的参数类型(可以是{@code null}来查找无类型参数值)
+	 * @param requiredName 要匹配的参数名(可以是{@code null}来查找未命名的参数值，也可以是空字符串来匹配任何名称)
+	 * @param usedValueHolders 一组ValueHolder对象，它们已经在当前解析过程中使用过，
+	 *                         因此不应该再次返回(允许在多个相同类型的泛型参数值的情况下返回下一个泛型参数匹配)
+	 * @return 参数的ValueHolder，如果没有设置，返回{@code null}
 	 */
 	@Nullable
 	public ValueHolder getArgumentValue(int index, @Nullable Class<?> requiredType, @Nullable String requiredName, @Nullable Set<ValueHolder> usedValueHolders) {

@@ -261,7 +261,7 @@ class ConstructorResolver {
 						if (logger.isTraceEnabled()) {
 							logger.trace("Ignoring constructor [" + candidate + "] of bean '" + beanName + "': " + ex);
 						}
-						// Swallow and try next constructor.
+						// 保存异常内容，并尝试验证下一个构造函数
 						if (causes == null) {
 							causes = new LinkedList<>();
 						}
@@ -770,6 +770,7 @@ class ConstructorResolver {
 			BeanWrapper bw, Class<?>[] paramTypes, @Nullable String[] paramNames, Executable executable,
 			boolean autowiring, boolean fallback) throws UnsatisfiedDependencyException {
 
+		// 返回要使用的自定义类型转换器
 		TypeConverter customConverter = this.beanFactory.getCustomTypeConverter();
 		TypeConverter converter = (customConverter != null ? customConverter : bw);
 
@@ -779,14 +780,16 @@ class ConstructorResolver {
 
 		for (int paramIndex = 0; paramIndex < paramTypes.length; paramIndex++) {
 			Class<?> paramType = paramTypes[paramIndex];
+			// 尝试获取参数名称
 			String paramName = (paramNames != null ? paramNames[paramIndex] : "");
-			// Try to find matching constructor argument value, either indexed or generic.
+			// 尝试查找匹配的构造函数参数值，无论是索引的还是泛型的。
 			ConstructorArgumentValues.ValueHolder valueHolder = null;
 			if (resolvedValues != null) {
+				// 得到指定序号、类型、名称的构造函数参数holder对象
 				valueHolder = resolvedValues.getArgumentValue(paramIndex, paramType, paramName, usedValueHolders);
-				// If we couldn't find a direct match and are not supposed to autowire,
-				// let's try the next generic, untyped argument value as fallback:
-				// it could match after type conversion (for example, String -> int).
+				// 如果我们找不到直接匹配，并且不打算自动装配，那么让我们尝试下一个泛型的、无类型的参数值作为回退:
+				// 它可以在类型转换之后匹配(例如，String -> int)。
+				// 这中情况是找不到对应的参数，但是参数个数匹配，或者不打算自动装配
 				if (valueHolder == null && (!autowiring || paramTypes.length == resolvedValues.getArgumentCount())) {
 					valueHolder = resolvedValues.getGenericArgumentValue(null, null, usedValueHolders);
 				}

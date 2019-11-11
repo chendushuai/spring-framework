@@ -1341,12 +1341,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * “自动装配构造函数”(按类型提供构造函数参数)行为。
 	 * 如果指定了显式构造函数参数值，将所有剩余参数与bean工厂中的bean匹配，也可以应用。
 	 * <p>这与构造函数注入相对应:在这种模式下，Spring bean工厂能够承载期望基于构造函数的依赖项解析的组件。
-	 * @param beanName the name of the bean
-	 * @param mbd the bean definition for the bean
-	 * @param ctors the chosen candidate constructors
-	 * @param explicitArgs argument values passed in programmatically via the getBean method,
-	 * or {@code null} if none (-> use constructor argument values from bean definition)
-	 * @return a BeanWrapper for the new instance
+	 * @param beanName bean的名称
+	 * @param mbd bean的bean定义
+	 * @param ctors 选择的候选构造函数
+	 * @param explicitArgs 参数值通过getBean方法以编程方式传递，如果没有参数值，则为{@code null}(->使用来自bean定义的构造函数参数值)
+	 * @return 新实例的BeanWrapper
 	 */
 	protected BeanWrapper autowireConstructor(
 			String beanName, RootBeanDefinition mbd, @Nullable Constructor<?>[] ctors, @Nullable Object[] explicitArgs) {
