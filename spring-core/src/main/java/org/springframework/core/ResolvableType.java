@@ -1308,8 +1308,8 @@ public class ResolvableType implements Serializable {
 	}
 
 	/**
-	 * Resolve the top-level parameter type of the given {@code MethodParameter}.
-	 * @param methodParameter the method parameter to resolve
+	 * 解析给定{@code MethodParameter}的顶级参数类型。
+	 * @param methodParameter 要解析的方法参数
 	 * @since 4.1.9
 	 * @see MethodParameter#setParameterType
 	 */

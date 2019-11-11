@@ -92,7 +92,7 @@ class ConstructorResolver {
 
 
 	/**
-	 * Create a new ConstructorResolver for the given factory and instantiation strategy.
+	 * 为给定的工厂和实例化策略创建一个新的构造解析器ConstructorResolver。
 	 * @param beanFactory the BeanFactory to work with
 	 */
 	public ConstructorResolver(AbstractAutowireCapableBeanFactory beanFactory) {
@@ -241,6 +241,7 @@ class ConstructorResolver {
 					continue;
 				}
 
+				// 声明参数持有者对象
 				ArgumentsHolder argsHolder;
 				if (resolvedValues != null) {
 					try {
@@ -877,6 +878,7 @@ class ConstructorResolver {
 			Object argValue = argsToResolve[argIndex];
 			// 得到指定序号的方法参数信息
 			MethodParameter methodParam = MethodParameter.forExecutable(executable, argIndex);
+			// 解析参数类型
 			GenericTypeResolver.resolveParameterType(methodParam, executable.getDeclaringClass());
 			if (argValue instanceof AutowiredArgumentMarker) {
 				argValue = resolveAutowiredArgument(methodParam, beanName, null, converter, fallback);
