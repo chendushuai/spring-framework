@@ -207,8 +207,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	}
 
 	/**
-	 * Return the ParameterNameDiscoverer to use for resolving method parameter
-	 * names if needed.
+	 * 如果需要，返回用于解析方法参数名的ParameterNameDiscoverer。
 	 */
 	@Nullable
 	protected ParameterNameDiscoverer getParameterNameDiscoverer() {

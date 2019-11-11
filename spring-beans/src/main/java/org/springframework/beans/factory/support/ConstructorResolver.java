@@ -245,8 +245,10 @@ class ConstructorResolver {
 				ArgumentsHolder argsHolder;
 				if (resolvedValues != null) {
 					try {
+						// 得到构造函数的@ConstructorProperties注解给出的参数，并判断给定的参数值同构造函数参数个数是否相同，如果不同，抛出异常
 						String[] paramNames = ConstructorPropertiesChecker.evaluate(candidate, paramTypes.length);
 						if (paramNames == null) {
+							// 如果没有得到注解中的参数，则使用方法参数发现工具查询构造方法的参数名称
 							ParameterNameDiscoverer pnd = this.beanFactory.getParameterNameDiscoverer();
 							if (pnd != null) {
 								paramNames = pnd.getParameterNames(candidate);
@@ -761,8 +763,7 @@ class ConstructorResolver {
 	}
 
 	/**
-	 * Create an array of arguments to invoke a constructor or factory method,
-	 * given the resolved constructor argument values.
+	 * 给定已解析的构造函数参数值，创建参数数组来调用构造函数或工厂方法。
 	 */
 	private ArgumentsHolder createArgumentArray(
 			String beanName, RootBeanDefinition mbd, @Nullable ConstructorArgumentValues resolvedValues,
@@ -1042,7 +1043,7 @@ class ConstructorResolver {
 
 
 	/**
-	 * Delegate for checking Java 6's {@link ConstructorProperties} annotation.
+	 * 委托来检查Java 6的{@link ConstructorProperties}注释。
 	 */
 	private static class ConstructorPropertiesChecker {
 
