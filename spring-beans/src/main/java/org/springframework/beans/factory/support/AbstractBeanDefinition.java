@@ -176,6 +176,9 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 
 	private boolean lenientConstructorResolution = true;
 
+	/**
+	 * 工厂bean的名称
+	 */
 	@Nullable
 	private String factoryBeanName;
 
@@ -799,7 +802,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	}
 
 	/**
-	 * Return the factory bean name, if any.
+	 * 返回工厂bean名(如果有的话)。
 	 */
 	@Override
 	@Nullable

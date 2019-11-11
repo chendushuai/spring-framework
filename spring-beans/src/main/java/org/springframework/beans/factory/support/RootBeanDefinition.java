@@ -89,11 +89,11 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	/** 包可见字段，将构造函数参数标记为已解析。 */
 	boolean constructorArgumentsResolved = false;
 
-	/** Package-visible field for caching fully resolved constructor arguments. */
+	/** 包可见字段，用于缓存完全解析的构造函数参数。 */
 	@Nullable
 	Object[] resolvedConstructorArguments;
 
-	/** Package-visible field for caching partly prepared constructor arguments. */
+	/** 用于缓存部分准备好的构造函数参数的包可见字段。 */
 	@Nullable
 	Object[] preparedConstructorArguments;
 

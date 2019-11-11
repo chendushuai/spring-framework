@@ -74,6 +74,9 @@ public class MethodParameter {
 	@Nullable
 	Map<Integer, Integer> typeIndexesPerLevel;
 
+	/**
+	 * 包含类类型
+	 */
 	@Nullable
 	private volatile Class<?> containingClass;
 
@@ -375,7 +378,7 @@ public class MethodParameter {
 	}
 
 	/**
-	 * Set a containing class to resolve the parameter type against.
+	 * 设置一个包含类来解析参数类型。
 	 */
 	void setContainingClass(Class<?> containingClass) {
 		this.containingClass = containingClass;

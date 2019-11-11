@@ -1153,7 +1153,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					"Bean class isn't public, and non-public access not allowed: " + beanClass.getName());
 		}
 
-		// 返回bean定义中可以用于实例化的回调函数
+		// 返回bean定义中可以用于实例化的回调函数，
+		// 类似于工厂方法，直接指定返回对象的函数，通过该函数直接创建返回对象，无需进行构造函数判断流程
 		Supplier<?> instanceSupplier = mbd.getInstanceSupplier();
 		if (instanceSupplier != null) {
 			return obtainFromSupplier(instanceSupplier, beanName);

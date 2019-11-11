@@ -53,10 +53,10 @@ public final class GenericTypeResolver {
 
 
 	/**
-	 * Determine the target type for the given generic parameter type.
-	 * @param methodParameter the method parameter specification
-	 * @param implementationClass the class to resolve type variables against
-	 * @return the corresponding generic parameter or return type
+	 * 确定给定泛型参数类型的目标类型。
+	 * @param methodParameter 方法参数说明
+	 * @param implementationClass 要对其解析类型变量的类
+	 * @return 对应的泛型参数或返回类型
 	 */
 	public static Class<?> resolveParameterType(MethodParameter methodParameter, Class<?> implementationClass) {
 		Assert.notNull(methodParameter, "MethodParameter must not be null");
