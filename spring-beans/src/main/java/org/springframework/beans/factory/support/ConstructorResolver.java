@@ -794,9 +794,9 @@ class ConstructorResolver {
 					valueHolder = resolvedValues.getGenericArgumentValue(null, null, usedValueHolders);
 				}
 			}
+			// 如果找到构造函数参数值
 			if (valueHolder != null) {
-				// We found a potential match - let's give it a try.
-				// Do not consider the same value definition multiple times!
+				// 我们找到了一个潜在的匹配——让我们试一试。不要多次考虑相同的值定义!
 				usedValueHolders.add(valueHolder);
 				Object originalValue = valueHolder.getValue();
 				Object convertedValue;

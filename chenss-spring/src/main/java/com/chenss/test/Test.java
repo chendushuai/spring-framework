@@ -22,8 +22,11 @@ public class Test {
 		//annotationConfigApplicationContext.start();
 		UserDao userDao = (UserDao) annotationConfigApplicationContext.getBean("userDao");
 		UserDao userDao1 = (UserDao) annotationConfigApplicationContext.getBean("userDao");
-		System.out.println(userDao);
-		System.out.println(userDao1);
+		System.out.println(userDao.getClass().getSimpleName() + "  " + userDao.hashCode());
+		System.out.println(userDao1.getClass().getSimpleName() + "  " + userDao1.hashCode());
+
+		UserDao userDaoImpl2 = (UserDao) annotationConfigApplicationContext.getBean("userDaoImpl2");
+		System.out.println(userDaoImpl2.getClass().getSimpleName() + "  " + userDaoImpl2.hashCode());
 
 		AopAspectJDao aopAspectJDao = (AopAspectJDao) annotationConfigApplicationContext.getBean("aopAspectJDao");
 		aopAspectJDao.print("aopTest1");

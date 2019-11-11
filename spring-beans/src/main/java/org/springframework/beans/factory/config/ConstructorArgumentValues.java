@@ -265,28 +265,30 @@ public class ConstructorArgumentValues {
 
 	/**
 	 * 寻找下一个匹配给定类型的泛型参数值，忽略当前解析过程中已经使用的参数值。
-	 * @param requiredType the type to match (can be {@code null} to find
-	 * an arbitrary next generic argument value)
-	 * @param requiredName the name to match (can be {@code null} to not
-	 * match argument values by name, or empty String to match any name)
-	 * @param usedValueHolders a Set of ValueHolder objects that have already been used
-	 * in the current resolution process and should therefore not be returned again
-	 * @return the ValueHolder for the argument, or {@code null} if none found
+	 * @param requiredType 要匹配的类型(可以是{@code null}来查找任意下一个泛型参数值)
+	 * @param requiredName 要匹配的名称(可以是{@code null}，不根据名称匹配参数值，也可以是空字符串，以匹配任何名称)
+	 * @param usedValueHolders 一组ValueHolder对象，它们已经在当前解析过程中使用过，
+	 *                         因此不应该再次返回(允许在多个相同类型的泛型参数值的情况下返回下一个泛型参数匹配)
+	 * @return 参数的ValueHolder，如果没有设置，返回{@code null}
 	 */
 	@Nullable
 	public ValueHolder getGenericArgumentValue(@Nullable Class<?> requiredType, @Nullable String requiredName, @Nullable Set<ValueHolder> usedValueHolders) {
 		for (ValueHolder valueHolder : this.genericArgumentValues) {
+			// 如果该参数已经被匹配出来，则直接跳过
 			if (usedValueHolders != null && usedValueHolders.contains(valueHolder)) {
 				continue;
 			}
+			// 如果当前参数名称不为空，且要匹配的参数名称不为空，且要匹配的名称为空或当前参数名称同要匹配的参数名称不一致，则直接跳过
 			if (valueHolder.getName() != null && !"".equals(requiredName) &&
 					(requiredName == null || !valueHolder.getName().equals(requiredName))) {
 				continue;
 			}
+			// 如果当前参数类型不为空，但要匹配的类型为null，或当前参数类型同要匹配的参数类型不匹配，则直接跳过
 			if (valueHolder.getType() != null &&
 					(requiredType == null || !ClassUtils.matchesTypeName(requiredType, valueHolder.getType()))) {
 				continue;
 			}
+			// 如果要匹配的参数类型不为null，且当前参数类型及名称均为null，且要匹配的参数类型同当前参数值无继承关系，则直接跳过
 			if (requiredType != null && valueHolder.getType() == null && valueHolder.getName() == null &&
 					!ClassUtils.isAssignableValue(requiredType, valueHolder.getValue())) {
 				continue;
