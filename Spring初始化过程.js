@@ -18,3 +18,8 @@ annotationConfigApplicationContext.register(Appconfig.class);
 annotationConfigApplicationContext.refresh();
 4. 获取初始化完成的Bean
 UserDao userDao = (UserDao) annotationConfigApplicationContext.getBean("userDao");
+
+
+org.springframework.context.support.PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(org.springframework.beans.factory.config.ConfigurableListableBeanFactory, java.util.List<org.springframework.beans.factory.config.BeanFactoryPostProcessor>)
+首先调用BeanDefinitionRegistryPostProcessor，这个是我们自己注册或预先注册的类型，存储在应用程序上下文的this.beanFactoryPostProcessors，调用其postProcessBeanDefinitionRegistry方法
+

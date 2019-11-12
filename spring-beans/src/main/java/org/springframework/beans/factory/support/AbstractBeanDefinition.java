@@ -174,6 +174,9 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 */
 	private boolean nonPublicAccessAllowed = true;
 
+	/**
+	 * 在宽松模式还是在严格模式下解析构造函数。默认在宽松模式解析
+	 */
 	private boolean lenientConstructorResolution = true;
 
 	/**
@@ -785,7 +788,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	}
 
 	/**
-	 * Return whether to resolve constructors in lenient mode or in strict mode.
+	 * 返回是在宽松模式还是在严格模式下解析构造函数。
 	 */
 	public boolean isLenientConstructorResolution() {
 		return this.lenientConstructorResolution;

@@ -254,6 +254,7 @@ class ConstructorResolver {
 								paramNames = pnd.getParameterNames(candidate);
 							}
 						}
+						// 获取实际的构造函数，然后根据构造函数创建实际对应的对象集合
 						argsHolder = createArgumentArray(beanName, mbd, resolvedValues, bw, paramTypes, paramNames,
 								getUserDeclaredConstructor(candidate), autowiring, candidates.length == 1);
 					}
@@ -308,6 +309,7 @@ class ConstructorResolver {
 						"Could not resolve matching constructor " +
 						"(hint: specify index/type/name arguments for simple parameters to avoid type ambiguities)");
 			}
+			// 如果存在模糊不清的构造函数，且在严格模式下解析构造函数，就抛出异常
 			else if (ambiguousConstructors != null && !mbd.isLenientConstructorResolution()) {
 				throw new BeanCreationException(mbd.getResourceDescription(), beanName,
 						"Ambiguous constructor matches found in bean '" + beanName + "' " +
@@ -907,9 +909,17 @@ class ConstructorResolver {
 		return resolvedArgs;
 	}
 
+	/**
+	 * 获取声明的构造函数对象
+	 * @param constructor
+	 * @return
+	 */
 	protected Constructor<?> getUserDeclaredConstructor(Constructor<?> constructor) {
+		// 获取构造函数的声明类
 		Class<?> declaringClass = constructor.getDeclaringClass();
+		// 获取声明类的用户定义的实际类
 		Class<?> userClass = ClassUtils.getUserClass(declaringClass);
+		// 如果构造方法的声明类和定义的实际类不是一个，则重新从实际类上获取构造函数
 		if (userClass != declaringClass) {
 			try {
 				return userClass.getDeclaredConstructor(constructor.getParameterTypes());
