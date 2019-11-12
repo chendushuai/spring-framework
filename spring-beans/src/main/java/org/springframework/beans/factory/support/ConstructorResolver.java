@@ -886,7 +886,9 @@ class ConstructorResolver {
 			MethodParameter methodParam = MethodParameter.forExecutable(executable, argIndex);
 			// 解析参数类型
 			GenericTypeResolver.resolveParameterType(methodParam, executable.getDeclaringClass());
+			// 如果参数值是一个自动装配参数标记对象
 			if (argValue instanceof AutowiredArgumentMarker) {
+				// 解析自动装配参数
 				argValue = resolveAutowiredArgument(methodParam, beanName, null, converter, fallback);
 			}
 			else if (argValue instanceof BeanMetadataElement) {
@@ -933,13 +935,15 @@ class ConstructorResolver {
 	}
 
 	/**
-	 * Template method for resolving the specified argument which is supposed to be autowired.
+	 * 用于解析指定参数的模板方法，该参数应该是自动生成的。
 	 */
 	@Nullable
 	protected Object resolveAutowiredArgument(MethodParameter param, String beanName,
 			@Nullable Set<String> autowiredBeanNames, TypeConverter typeConverter, boolean fallback) {
 
+		// 得到方法参数类型
 		Class<?> paramType = param.getParameterType();
+		// 如果方法参数类型实现自InjectionPoint
 		if (InjectionPoint.class.isAssignableFrom(paramType)) {
 			InjectionPoint injectionPoint = currentInjectionPoint.get();
 			if (injectionPoint == null) {
@@ -1049,7 +1053,7 @@ class ConstructorResolver {
 
 
 	/**
-	 * Marker for autowired arguments in a cached argument array.
+	 * 在缓存的参数数组中标记自动获取的参数。
  	 */
 	private static class AutowiredArgumentMarker {
 	}
