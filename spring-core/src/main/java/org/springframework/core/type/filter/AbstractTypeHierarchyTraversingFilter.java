@@ -57,20 +57,23 @@ public abstract class AbstractTypeHierarchyTraversingFilter implements TypeFilte
 	public boolean match(MetadataReader metadataReader, MetadataReaderFactory metadataReaderFactory)
 			throws IOException {
 
-		// This method optimizes avoiding unnecessary creation of ClassReaders
-		// as well as visiting over those readers.
+		// 这个方法优化了避免不必要的类阅读器的创建，以及访问那些阅读器。
 		if (matchSelf(metadataReader)) {
 			return true;
 		}
+		// 得到要匹配的类型，判断类型名称是否匹配
 		ClassMetadata metadata = metadataReader.getClassMetadata();
 		if (matchClassName(metadata.getClassName())) {
 			return true;
 		}
 
+		// 如果需要考虑继承关系
 		if (this.considerInherited) {
+			// 获取匹配类型的父类
 			String superClassName = metadata.getSuperClassName();
 			if (superClassName != null) {
-				// Optimization to avoid creating ClassReader for super class.
+				// 优化以避免为超类创建ClassReader。
+				// 尝试匹配父类
 				Boolean superClassMatch = matchSuperClass(superClassName);
 				if (superClassMatch != null) {
 					if (superClassMatch.booleanValue()) {
@@ -78,8 +81,9 @@ public abstract class AbstractTypeHierarchyTraversingFilter implements TypeFilte
 					}
 				}
 				else {
-					// Need to read super class to determine a match...
+					// 需要读取超类来确定匹配…
 					try {
+						// 递归判断，继续判断超类
 						if (match(metadata.getSuperClassName(), metadataReaderFactory)) {
 							return true;
 						}
@@ -94,9 +98,11 @@ public abstract class AbstractTypeHierarchyTraversingFilter implements TypeFilte
 			}
 		}
 
+		// 如果需要考虑接口匹配
 		if (this.considerInterfaces) {
 			for (String ifc : metadata.getInterfaceNames()) {
-				// Optimization to avoid creating ClassReader for super class
+				// 优化以避免为超类创建ClassReader。
+				// 匹配接口类型
 				Boolean interfaceMatch = matchInterface(ifc);
 				if (interfaceMatch != null) {
 					if (interfaceMatch.booleanValue()) {
@@ -104,8 +110,9 @@ public abstract class AbstractTypeHierarchyTraversingFilter implements TypeFilte
 					}
 				}
 				else {
-					// Need to read interface to determine a match...
+					// 需要读取接口来确定是否匹配…
 					try {
+						// 递归判断接口是否匹配
 						if (match(ifc, metadataReaderFactory)) {
 							return true;
 						}
@@ -128,23 +135,21 @@ public abstract class AbstractTypeHierarchyTraversingFilter implements TypeFilte
 	}
 
 	/**
-	 * Override this to match self characteristics alone. Typically,
-	 * the implementation will use a visitor to extract information
-	 * to perform matching.
+	 * 重写它以仅匹配自身特征。通常，实现将使用访问者来提取信息以执行匹配。
 	 */
 	protected boolean matchSelf(MetadataReader metadataReader) {
 		return false;
 	}
 
 	/**
-	 * Override this to match on type name.
+	 * 覆盖此设置以匹配类型名。
 	 */
 	protected boolean matchClassName(String className) {
 		return false;
 	}
 
 	/**
-	 * Override this to match on super type name.
+	 * 重写此以匹配超类型名。
 	 */
 	@Nullable
 	protected Boolean matchSuperClass(String superClassName) {
@@ -152,7 +157,7 @@ public abstract class AbstractTypeHierarchyTraversingFilter implements TypeFilte
 	}
 
 	/**
-	 * Override this to match on interface type name.
+	 * 重写此以匹配接口类型名称。
 	 */
 	@Nullable
 	protected Boolean matchInterface(String interfaceName) {
