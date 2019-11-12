@@ -66,8 +66,7 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
 /**
- * Delegate for resolving constructors and factory methods.
- * Performs constructor resolution through argument matching.
+ * 委托来解析构造函数和工厂方法。通过参数匹配执行构造函数解析。
  *
  * @author Juergen Hoeller
  * @author Rob Harrop
@@ -83,6 +82,9 @@ class ConstructorResolver {
 
 	private static final Object[] EMPTY_ARGS = new Object[0];
 
+	/**
+	 * 当前注入点
+	 */
 	private static final NamedThreadLocal<InjectionPoint> currentInjectionPoint =
 			new NamedThreadLocal<>("Current injection point");
 
@@ -124,7 +126,7 @@ class ConstructorResolver {
 		// 要使用的参数集合
 		Object[] argsToUse = null;
 
-		// 如果提供了参数，则使用提供的参数集合
+		// 如果提供了构造函数参数，则使用提供的参数集合
 		if (explicitArgs != null) {
 			argsToUse = explicitArgs;
 		}
@@ -147,6 +149,7 @@ class ConstructorResolver {
 			}
 			// 如果解析出来的构造函数参数不为空，则解析准备好的参数
 			if (argsToResolve != null) {
+				// 解析在bean定义中已经指定的构造函数参数
 				argsToUse = resolvePreparedArguments(beanName, mbd, bw, constructorToUse, argsToResolve, true);
 			}
 		}
@@ -776,8 +779,11 @@ class ConstructorResolver {
 		TypeConverter customConverter = this.beanFactory.getCustomTypeConverter();
 		TypeConverter converter = (customConverter != null ? customConverter : bw);
 
+		// 构造函数参数缓存
 		ArgumentsHolder args = new ArgumentsHolder(paramTypes.length);
+		// 可用的构造函数参数值对象缓存
 		Set<ConstructorArgumentValues.ValueHolder> usedValueHolders = new HashSet<>(paramTypes.length);
+		// 自动装配的bean名称集合
 		Set<String> autowiredBeanNames = new LinkedHashSet<>(4);
 
 		for (int paramIndex = 0; paramIndex < paramTypes.length; paramIndex++) {
@@ -789,7 +795,7 @@ class ConstructorResolver {
 			if (resolvedValues != null) {
 				// 得到指定序号、类型、名称的构造函数参数holder对象
 				valueHolder = resolvedValues.getArgumentValue(paramIndex, paramType, paramName, usedValueHolders);
-				// 如果我们找不到直接匹配，并且不打算自动装配，那么让我们尝试下一个泛型的、无类型的参数值作为回退:
+				// 如果我们找不到直接匹配，并且不打算自动装配，那么让我们尝试下一个泛型的、无类型的参数值作为后路:
 				// 它可以在类型转换之后匹配(例如，String -> int)。
 				// 这中情况是找不到对应的参数，但是参数个数匹配，或者不打算自动装配
 				if (valueHolder == null && (!autowiring || paramTypes.length == resolvedValues.getArgumentCount())) {
@@ -800,17 +806,24 @@ class ConstructorResolver {
 			if (valueHolder != null) {
 				// 我们找到了一个潜在的匹配——让我们试一试。不要多次考虑相同的值定义!
 				usedValueHolders.add(valueHolder);
+				// 得到原值
 				Object originalValue = valueHolder.getValue();
 				Object convertedValue;
+				// 如果已经进行过转换，则转换值则为原值的转换后的值
 				if (valueHolder.isConverted()) {
 					convertedValue = valueHolder.getConvertedValue();
+					// 将参数值保存到指定序号的位置
 					args.preparedArguments[paramIndex] = convertedValue;
 				}
+				// 如果构造函数参数值没有进行过转换，则需要进行转换
 				else {
+					// 创建一个方法参数实例
 					MethodParameter methodParam = MethodParameter.forExecutable(executable, paramIndex);
 					try {
+						// 执行构造函数参数值转换，得到新值
 						convertedValue = converter.convertIfNecessary(originalValue, paramType, methodParam);
 					}
+					// 如果格式化失败，抛出异常
 					catch (TypeMismatchException ex) {
 						throw new UnsatisfiedDependencyException(
 								mbd.getResourceDescription(), beanName, new InjectionPoint(methodParam),
@@ -825,13 +838,16 @@ class ConstructorResolver {
 						args.preparedArguments[paramIndex] = sourceValue;
 					}
 				}
+				// 保存转换后的构造函数参数值及原始构造函数参数值到指定序号
 				args.arguments[paramIndex] = convertedValue;
 				args.rawArguments[paramIndex] = originalValue;
 			}
+			// 如果没有找到构造方法参数值
 			else {
+				// 创建一个方法参数实例
 				MethodParameter methodParam = MethodParameter.forExecutable(executable, paramIndex);
-				// No explicit match found: we're either supposed to autowire or
-				// have to fail creating an argument array for the given constructor.
+				// 没有找到明确的匹配:我们要么应该自动装配，要么一定是给定的构造函数创建一个参数数组失败。
+				// 所以在不允许自动装配的时候，直接pao9chu异常
 				if (!autowiring) {
 					throw new UnsatisfiedDependencyException(
 							mbd.getResourceDescription(), beanName, new InjectionPoint(methodParam),
@@ -839,6 +855,7 @@ class ConstructorResolver {
 							"] - did you specify the correct bean references as arguments?");
 				}
 				try {
+					// 尝试通过自动装配来获取自动装配的参数值，并进行保存
 					Object autowiredArgument = resolveAutowiredArgument(
 							methodParam, beanName, autowiredBeanNames, converter, fallback);
 					args.rawArguments[paramIndex] = autowiredArgument;
@@ -853,6 +870,7 @@ class ConstructorResolver {
 			}
 		}
 
+		// 遍历自动装配的bean名称集合，保存两个bean的依赖关系
 		for (String autowiredBeanName : autowiredBeanNames) {
 			this.beanFactory.registerDependentBean(autowiredBeanName, beanName);
 			if (logger.isDebugEnabled()) {
@@ -891,14 +909,18 @@ class ConstructorResolver {
 				// 解析自动装配参数
 				argValue = resolveAutowiredArgument(methodParam, beanName, null, converter, fallback);
 			}
+			// 如果参数值是一个bean元数据元素对象，则解析相应的参数值
 			else if (argValue instanceof BeanMetadataElement) {
 				argValue = valueResolver.resolveValueIfNecessary("constructor argument", argValue);
 			}
+			// 如果参数值是一个字符串，则将其解析为一个表达式
 			else if (argValue instanceof String) {
 				argValue = this.beanFactory.evaluateBeanDefinitionString((String) argValue, mbd);
 			}
+			// 得到对应序号的给定的构造函数参数类型
 			Class<?> paramType = paramTypes[argIndex];
 			try {
+				// 尝试转换为实际的对象值
 				resolvedArgs[argIndex] = converter.convertIfNecessary(argValue, paramType, methodParam);
 			}
 			catch (TypeMismatchException ex) {
@@ -945,6 +967,7 @@ class ConstructorResolver {
 		Class<?> paramType = param.getParameterType();
 		// 如果方法参数类型实现自InjectionPoint
 		if (InjectionPoint.class.isAssignableFrom(paramType)) {
+			// 获取当前注入点，如果注入点为空则抛出异常，否则返回注入点
 			InjectionPoint injectionPoint = currentInjectionPoint.get();
 			if (injectionPoint == null) {
 				throw new IllegalStateException("No current InjectionPoint available for " + param);
@@ -952,6 +975,7 @@ class ConstructorResolver {
 			return injectionPoint;
 		}
 		try {
+			// 尝试解析依赖
 			return this.beanFactory.resolveDependency(
 					new DependencyDescriptor(param, true), beanName, autowiredBeanNames, typeConverter);
 		}
@@ -960,6 +984,7 @@ class ConstructorResolver {
 		}
 		catch (NoSuchBeanDefinitionException ex) {
 			if (fallback) {
+				// 单一构造函数或工厂方法 -> 让我们返回一个空array/collection，例如一个vararg或一个非空List/Set/Map参数。
 				// Single constructor or factory method -> let's return an empty array/collection
 				// for e.g. a vararg or a non-null List/Set/Map parameter.
 				if (paramType.isArray()) {
@@ -976,6 +1001,11 @@ class ConstructorResolver {
 		}
 	}
 
+	/**
+	 * 添加或移除当前注入点
+	 * @param injectionPoint 注入点
+	 * @return
+	 */
 	static InjectionPoint setCurrentInjectionPoint(@Nullable InjectionPoint injectionPoint) {
 		InjectionPoint old = currentInjectionPoint.get();
 		if (injectionPoint != null) {

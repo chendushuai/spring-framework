@@ -1511,8 +1511,10 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		}
 
 		Scope scope = null;
+		// 如果给定的bean定义不为空，则获取bean定义的范围，是单例还是原型的
 		if (beanDefinition != null) {
 			String scopeName = beanDefinition.getScope();
+			// 如果范围不为空，得到相应的枚举对象
 			if (scopeName != null) {
 				scope = getRegisteredScope(scopeName);
 			}

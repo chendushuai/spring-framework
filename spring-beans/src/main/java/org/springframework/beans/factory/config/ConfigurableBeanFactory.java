@@ -254,11 +254,10 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
 	String[] getRegisteredScopeNames();
 
 	/**
-	 * Return the Scope implementation for the given scope name, if any.
-	 * <p>This will only return explicitly registered scopes.
-	 * Built-in scopes such as "singleton" and "prototype" won't be exposed.
-	 * @param scopeName the name of the scope
-	 * @return the registered Scope implementation, or {@code null} if none
+	 * 返回给定范围名的范围实现(如果有)。
+	 * <p>这将只返回显式注册的范围。像“单例”和“原型”这样的内建范围将不会被公开。
+	 * @param scopeName bean的范围
+	 * @return 注册的范围实现，如果没有，就返回{@code null}
 	 * @see #registerScope
 	 */
 	@Nullable

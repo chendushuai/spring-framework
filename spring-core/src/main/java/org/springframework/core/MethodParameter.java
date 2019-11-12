@@ -705,12 +705,11 @@ public class MethodParameter {
 	}
 
 	/**
-	 * Create a new MethodParameter for the given method or constructor.
-	 * <p>This is a convenience factory method for scenarios where a
-	 * Method or Constructor reference is treated in a generic fashion.
-	 * @param executable the Method or Constructor to specify a parameter for
-	 * @param parameterIndex the index of the parameter
-	 * @return the corresponding MethodParameter instance
+	 * 为给定的方法或构造函数创建一个新的方法参数。
+	 * <p>这是一种方便的工厂方法，用于以通用方式处理方法或构造函数引用的场景。
+	 * @param executable 指定参数的方法或构造函数
+	 * @param parameterIndex 参数序号
+	 * @return 对应的MethodParameter实例
 	 * @since 5.0
 	 */
 	public static MethodParameter forExecutable(Executable executable, int parameterIndex) {
