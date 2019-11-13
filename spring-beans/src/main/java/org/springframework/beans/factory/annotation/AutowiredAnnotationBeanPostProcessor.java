@@ -228,12 +228,19 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 		this.injectionMetadataCache.remove(beanName);
 	}
 
+	/**
+	 * 推断候选构造函数集合
+	 * @param beanClass bean类
+	 * @param beanName bean名称
+	 * @return 返回候选构造函数集合
+	 * @throws BeanCreationException
+	 */
 	@Override
 	@Nullable
 	public Constructor<?>[] determineCandidateConstructors(Class<?> beanClass, final String beanName)
 			throws BeanCreationException {
 
-		// 在这里检查@lookup方法..
+		// 在这里检查@Lookup方法..如果bean名称没有进行过检查，则需要进行检查
 		if (!this.lookupMethodsChecked.contains(beanName)) {
 			if (AnnotationUtils.isCandidateClass(beanClass, Lookup.class)) {
 				try {
@@ -288,11 +295,14 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 					Constructor<?> defaultConstructor = null;
 					// 如果类是Kotlin类，则返回主构造函数，对于非Kotlin类，直接返回null
 					Constructor<?> primaryConstructor = BeanUtils.findPrimaryConstructor(beanClass);
+					// 非合成构造函数的数量
 					int nonSyntheticConstructors = 0;
 					for (Constructor<?> candidate : rawCandidates) {
+						// 如果构造函数不是合成的，则非合成构造函数的数量+1
 						if (!candidate.isSynthetic()) {
 							nonSyntheticConstructors++;
 						}
+						// 如果是Kotlin类，会返回主构造函数，否则为null，这边肯定是null
 						else if (primaryConstructor != null) {
 							continue;
 						}
@@ -364,24 +374,31 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 						// 将得到的候选构造函数集合赋值给candidateConstructors
 						candidateConstructors = candidates.toArray(new Constructor<?>[0]);
 					}
+					// 如果候选构造函数数量为空，且声明的构造函数只有一个，且该构造函数的参数个数大于0，则直接将该构造函数作为候选构造函数
 					else if (rawCandidates.length == 1 && rawCandidates[0].getParameterCount() > 0) {
 						candidateConstructors = new Constructor<?>[] {rawCandidates[0]};
 					}
-					// primaryConstructor永远是null，除非是Kotlin类
+					// primaryConstructor永远是null，除非是Kotlin类，
+					// 如果判断出的非合成类数量等于2，且存在主构造函数，且默认构造函数也存在，且主构造函数和默认构造函数不一致，
+					// 则将主构造函数和默认构造函数同时作为候选构造函数
 					else if (nonSyntheticConstructors == 2 && primaryConstructor != null &&
 							defaultConstructor != null && !primaryConstructor.equals(defaultConstructor)) {
 						candidateConstructors = new Constructor<?>[] {primaryConstructor, defaultConstructor};
 					}
+					// 如果判断出的非合成类数量等于1，且存在主构造函数，则候选猴枣函数只有一个主构造函数
 					else if (nonSyntheticConstructors == 1 && primaryConstructor != null) {
 						candidateConstructors = new Constructor<?>[] {primaryConstructor};
 					}
+					// 否则设置候选构造函数集合为空
 					else {
 						candidateConstructors = new Constructor<?>[0];
 					}
+					// 将得到的候选构造函数集合保存到缓存中
 					this.candidateConstructorsCache.put(beanClass, candidateConstructors);
 				}
 			}
 		}
+		// 返回候选构造函数集合
 		return (candidateConstructors.length > 0 ? candidateConstructors : null);
 	}
 
