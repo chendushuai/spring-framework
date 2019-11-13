@@ -284,10 +284,12 @@ class ConstructorResolver {
 					argsHolder = new ArgumentsHolder(explicitArgs);
 				}
 
-				// 根据bean定义中是否在宽松模式下进行构造函数解析，判断构造函数类型差值
+				// 根据bean定义中是否在宽松模式下进行构造函数解析，判断构造函数类型差值，
+				// getTypeDifferenceWeight为获取原参数和转换后的参数同参数类型的差值权重，取最优的权重差
+				// getAssignabilityWeight为判断转换后的参数和原参数是否继承或实现自对应的参数类型。
 				int typeDiffWeight = (mbd.isLenientConstructorResolution() ?
 						argsHolder.getTypeDifferenceWeight(paramTypes) : argsHolder.getAssignabilityWeight(paramTypes));
-				// Choose this constructor if it represents the closest match.
+				// 如果它表示最接近的匹配，则选择此构造函数。
 				if (typeDiffWeight < minTypeDiffWeight) {
 					constructorToUse = candidate;
 					argsHolderToUse = argsHolder;
@@ -295,6 +297,7 @@ class ConstructorResolver {
 					minTypeDiffWeight = typeDiffWeight;
 					ambiguousConstructors = null;
 				}
+				// 如果找到一个构造函数，权重同已经比较出来的权重相同，则认为构造函数的模棱两可的，保存到模棱两可的构造函数接中
 				else if (constructorToUse != null && typeDiffWeight == minTypeDiffWeight) {
 					if (ambiguousConstructors == null) {
 						ambiguousConstructors = new LinkedHashSet<>();
@@ -304,6 +307,7 @@ class ConstructorResolver {
 				}
 			}
 
+			// 如果选择出来要使用的构造函数
 			if (constructorToUse == null) {
 				if (causes != null) {
 					UnsatisfiedDependencyException ex = causes.removeLast();
@@ -1058,23 +1062,33 @@ class ConstructorResolver {
 			// 如果原始参数权重更好，使用它。
 			// 将原始参数权重减少1024，使其优于同等的转换重量。
 
-			//
+			// 获取参数值同参数类型比较之后的权重
 			int typeDiffWeight = MethodInvoker.getTypeDifferenceWeight(paramTypes, this.arguments);
+			// 获取原参数值同参数类型比较之后的权重，并减去1024，标识优先使用原参数
 			int rawTypeDiffWeight = MethodInvoker.getTypeDifferenceWeight(paramTypes, this.rawArguments) - 1024;
+			// 比较得到最优的权重差值
 			return Math.min(rawTypeDiffWeight, typeDiffWeight);
 		}
 
+		/**
+		 * 得到可转换权重
+		 * @param paramTypes 参数类型
+		 * @return 返回权重差值
+		 */
 		public int getAssignabilityWeight(Class<?>[] paramTypes) {
+			// 遍历参数类型，如果转换后的参数对象类型不是继承或实现自参数类型，则返回最大整数
 			for (int i = 0; i < paramTypes.length; i++) {
 				if (!ClassUtils.isAssignableValue(paramTypes[i], this.arguments[i])) {
 					return Integer.MAX_VALUE;
 				}
 			}
+			// 遍历参数类型，如果原参数对象类型不是继承或实现自参数类型，则返回最大值-512
 			for (int i = 0; i < paramTypes.length; i++) {
 				if (!ClassUtils.isAssignableValue(paramTypes[i], this.rawArguments[i])) {
 					return Integer.MAX_VALUE - 512;
 				}
 			}
+			// 如果转换后的参数对象类型和原参数对象类型均是继承或实现自对应的参数类型，则返回最大值-1024
 			return Integer.MAX_VALUE - 1024;
 		}
 
