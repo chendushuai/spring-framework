@@ -273,14 +273,18 @@ class ConstructorResolver {
 						continue;
 					}
 				}
+				// 如果在前面获取构造函数参数的步骤中没有获取到参数值
 				else {
-					// Explicit arguments given -> arguments length must match exactly.
+					// 给定的显式参数->参数长度必须精确匹配。
+					// 如果构造函数的参数类型集合的元素数量同给定的构造函数参数的个数不一致，则认为无法精确匹配，直接跳过
 					if (paramTypes.length != explicitArgs.length) {
 						continue;
 					}
+					// 否则直接使用给定的参数集合进行精确匹配，创建参数集合对象
 					argsHolder = new ArgumentsHolder(explicitArgs);
 				}
 
+				// 根据bean定义中是否在宽松模式下进行构造函数解析，判断构造函数类型差值
 				int typeDiffWeight = (mbd.isLenientConstructorResolution() ?
 						argsHolder.getTypeDifferenceWeight(paramTypes) : argsHolder.getAssignabilityWeight(paramTypes));
 				// Choose this constructor if it represents the closest match.
@@ -1043,11 +1047,18 @@ class ConstructorResolver {
 			this.preparedArguments = args;
 		}
 
+		/**
+		 * 得到参数同参数类型的差异权重
+		 * @param paramTypes 参数类型集合
+		 * @return 权重差值
+		 */
 		public int getTypeDifferenceWeight(Class<?>[] paramTypes) {
-			// If valid arguments found, determine type difference weight.
-			// Try type difference weight on both the converted arguments and
-			// the raw arguments. If the raw weight is better, use it.
-			// Decrease raw weight by 1024 to prefer it over equal converted weight.
+			// 如果找到有效的参数，请确定类型差异权重。
+			// 尝试在转换后的参数和原始参数上键入不同的权重。
+			// 如果原始参数权重更好，使用它。
+			// 将原始参数权重减少1024，使其优于同等的转换重量。
+
+			//
 			int typeDiffWeight = MethodInvoker.getTypeDifferenceWeight(paramTypes, this.arguments);
 			int rawTypeDiffWeight = MethodInvoker.getTypeDifferenceWeight(paramTypes, this.rawArguments) - 1024;
 			return Math.min(rawTypeDiffWeight, typeDiffWeight);
