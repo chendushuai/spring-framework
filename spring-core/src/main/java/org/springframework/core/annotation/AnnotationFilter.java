@@ -28,9 +28,7 @@ import java.lang.annotation.Annotation;
 public interface AnnotationFilter {
 
 	/**
-	 * {@link AnnotationFilter} that matches annotations in the
-	 * {@code java.lang} and {@code org.springframework.lang} packages
-	 * and their subpackages.
+	 * 匹配{@code java.lang}包和{@code org.springframework.lang}包及他们的子包中的注解
 	 */
 	AnnotationFilter PLAIN = packages("java.lang", "org.springframework.lang");
 

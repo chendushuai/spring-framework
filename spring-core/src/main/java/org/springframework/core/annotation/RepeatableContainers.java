@@ -93,9 +93,8 @@ public abstract class RepeatableContainers {
 
 
 	/**
-	 * Create a {@link RepeatableContainers} instance that searches using Java's
-	 * {@link Repeatable @Repeatable} annotation.
-	 * @return a {@link RepeatableContainers} instance
+	 * 创建一个{@link RepeatableContainers}实例，该实例使用Java的{@link Repeatable @Repeatable}注释进行搜索。
+	 * @return {@link RepeatableContainers}实例
 	 */
 	public static RepeatableContainers standardRepeatables() {
 		return StandardRepeatableContainers.INSTANCE;

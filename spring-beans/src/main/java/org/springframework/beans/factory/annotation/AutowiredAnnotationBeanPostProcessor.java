@@ -296,7 +296,10 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 						else if (primaryConstructor != null) {
 							continue;
 						}
+						// 得到构造函数中@Autowired注解内容
 						MergedAnnotation<?> ann = findAutowiredAnnotation(candidate);
+						// 如果没有使用@Autowired注解，且获取的用户定义的类同bean类不同，
+						// 则继续获取用户定义类中相同参数对应的构造方法，并获取构造方法上@Autowired注解的内容
 						if (ann == null) {
 							Class<?> userClass = ClassUtils.getUserClass(beanClass);
 							// 如果是内部类，则条件成立
@@ -307,37 +310,47 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 									ann = findAutowiredAnnotation(superCtor);
 								}
 								catch (NoSuchMethodException ex) {
-									// Simply proceed, no equivalent superclass constructor found...
+									// 简单处理，没有找到等价的超类构造函数...
 								}
 							}
 						}
+						// 如果获取的@Autowired注解不为空
 						if (ann != null) {
+							// 如果已经判断出了一个添加了@Autowired(required=true)注解或@Autowired注解的构造函数，
+							// 则认为存在多个必要使用的构造函数，直接抛出异常
 							if (requiredConstructor != null) {
 								throw new BeanCreationException(beanName,
 										"Invalid autowire-marked constructor: " + candidate +
-										". Found constructor with 'required' Autowired annotation already: " +
-										requiredConstructor);
+												". Found constructor with 'required' Autowired annotation already: " +
+												requiredConstructor);
 							}
+							// 获取注解中required是否设置为true，如果是，则意味着必须选择，否则为可跳过的选择
 							boolean required = determineRequiredStatus(ann);
+							// 如果是必须选择，则认为找到了必须的构造函数，进行赋值
 							if (required) {
 								// 不允许同时有两个构造方法都添加@AutoWired参数
 								if (!candidates.isEmpty()) {
 									throw new BeanCreationException(beanName,
 											"Invalid autowire-marked constructors: " + candidates +
-											". Found constructor with 'required' Autowired annotation: " +
-											candidate);
+													". Found constructor with 'required' Autowired annotation: " +
+													candidate);
 								}
 								requiredConstructor = candidate;
 							}
 							candidates.add(candidate);
 						}
+						// 如果没有添加@Autowired注解，且构造函数的参数个数为0，则认为是默认构造函数
 						else if (candidate.getParameterCount() == 0) {
 							defaultConstructor = candidate;
 						}
 					}
+					// 如果找到的候选构造函数数量为空
 					if (!candidates.isEmpty()) {
-						// Add default constructor to list of optional constructors, as fallback.
+						// 将默认构造函数作为后路添加到可选构造函数列表中。
+
+						// 如果必须要选择的构造函数为空
 						if (requiredConstructor == null) {
+							// 如果提供的默认无参构造函数存在，则将默认无参构造函数添加到候选构造函数集合中
 							if (defaultConstructor != null) {
 								candidates.add(defaultConstructor);
 							}
@@ -348,6 +361,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 										"default constructor to fall back to: " + candidates.get(0));
 							}
 						}
+						// 将得到的候选构造函数集合赋值给candidateConstructors
 						candidateConstructors = candidates.toArray(new Constructor<?>[0]);
 					}
 					else if (rawCandidates.length == 1 && rawCandidates[0].getParameterCount() > 0) {
@@ -496,6 +510,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 
 	@Nullable
 	private MergedAnnotation<?> findAutowiredAnnotation(AccessibleObject ao) {
+		// 得到对象中的注解内容
 		MergedAnnotations annotations = MergedAnnotations.from(ao, SearchStrategy.INHERITED_ANNOTATIONS);
 		for (Class<? extends Annotation> type : this.autowiredAnnotationTypes) {
 			MergedAnnotation<?> annotation = annotations.get(type);
@@ -507,12 +522,11 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 	}
 
 	/**
-	 * Determine if the annotated field or method requires its dependency.
-	 * <p>A 'required' dependency means that autowiring should fail when no beans
-	 * are found. Otherwise, the autowiring process will simply bypass the field
-	 * or method when no beans are found.
-	 * @param ann the Autowired annotation
-	 * @return whether the annotation indicates that a dependency is required
+	 * 确定带注解的字段或方法是否需要其依赖项。
+	 * <p>“required”依赖意味着在没有找到bean时自动装配应该失败。
+	 * 否则，自动装配过程只会在没有找到bean时绕过字段或方法。
+	 * @param ann Autowired的注解
+	 * @return 注解是否指示需要依赖项
 	 */
 	@SuppressWarnings({ "deprecation", "cast" })
 	protected boolean determineRequiredStatus(MergedAnnotation<?> ann) {
