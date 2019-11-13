@@ -778,10 +778,8 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	}
 
 	/**
-	 * Specify whether to resolve constructors in lenient mode ({@code true},
-	 * which is the default) or to switch to strict resolution (throwing an exception
-	 * in case of ambiguous constructors that all match when converting the arguments,
-	 * whereas lenient mode would use the one with the 'closest' type matches).
+	 * 指定是使用宽松lenient模式解析构造函数({@code true}，这是默认值)，
+	 * 还是切换到严格strict模式(在转换参数时，在所有匹配的模棱两可的构造函数的情况下抛出异常，而lenient模式将使用“最接近”类型匹配的构造函数)。
 	 */
 	public void setLenientConstructorResolution(boolean lenientConstructorResolution) {
 		this.lenientConstructorResolution = lenientConstructorResolution;

@@ -328,12 +328,15 @@ class ConstructorResolver {
 						ambiguousConstructors);
 			}
 
+			// 如果给定的参数值为空，且最终得到的要使用的参数集合不为空，则将解析出来的构造函数和参数信息保存到bean定义上，
+			// 并设置构造函数解析状态为已解析
 			if (explicitArgs == null && argsHolderToUse != null) {
 				argsHolderToUse.storeCache(mbd, constructorToUse);
 			}
 		}
 
 		Assert.state(argsToUse != null, "Unresolved constructor arguments");
+		// 使用得到的构造函数和构造函数参数初始化bean，并返回BeanWrapper对象
 		bw.setBeanInstance(instantiate(beanName, mbd, constructorToUse, argsToUse));
 		return bw;
 	}

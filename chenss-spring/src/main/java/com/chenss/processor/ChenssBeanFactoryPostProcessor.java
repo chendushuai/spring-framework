@@ -31,6 +31,9 @@ public class ChenssBeanFactoryPostProcessor implements BeanFactoryPostProcessor 
 		//genericBeanDefinition.setInstanceSupplier(() -> new NoAnnotationDao((UserDao) defaultListableBeanFactory.getBean("userDaoImpl2")));
 		defaultListableBeanFactory.registerBeanDefinition("noAnnotationDao",genericBeanDefinition);
 
+		GenericBeanDefinition taggerDao = (GenericBeanDefinition) defaultListableBeanFactory.getBeanDefinition("taggerDao");
+		taggerDao.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR);
+		taggerDao.setLenientConstructorResolution(true);
 		// 修改已经注册完成的bean定义
 		//BeanDefinition existBeanDefinition = defaultListableBeanFactory.getBeanDefinition("userDao");
 		//existBeanDefinition.setBeanClassName(TaggerDao.class.getName());
