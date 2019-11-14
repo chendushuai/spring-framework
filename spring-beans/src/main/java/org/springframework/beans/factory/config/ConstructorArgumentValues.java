@@ -115,6 +115,7 @@ public class ConstructorArgumentValues {
 	public void addIndexedArgumentValue(int index, ValueHolder newValue) {
 		Assert.isTrue(index >= 0, "Index must not be negative");
 		Assert.notNull(newValue, "ValueHolder must not be null");
+		// 新增或合并现有值，并保存到有序参数值集合中
 		addOrMergeIndexedArgumentValue(index, newValue);
 	}
 
@@ -126,6 +127,7 @@ public class ConstructorArgumentValues {
 	 */
 	private void addOrMergeIndexedArgumentValue(Integer key, ValueHolder newValue) {
 		ValueHolder currentValue = this.indexedArgumentValues.get(key);
+		// 如果当前值不为空，且新的值实现了可合并的接口，则将新值集中的值去覆盖当前值集中的值
 		if (currentValue != null && newValue.getValue() instanceof Mergeable) {
 			Mergeable mergeable = (Mergeable) newValue.getValue();
 			if (mergeable.isMergeEnabled()) {
