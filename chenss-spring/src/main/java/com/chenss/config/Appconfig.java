@@ -2,7 +2,7 @@ package com.chenss.config;
 
 import com.chenss.dao.BeanTestA;
 import com.chenss.dao.BeanTestB;
-import com.chenss.processor.CustomAopBeanPostProcessor;
+import com.chenss.processor.CustomAop;
 import org.springframework.context.annotation.*;
 import org.springframework.stereotype.Component;
 

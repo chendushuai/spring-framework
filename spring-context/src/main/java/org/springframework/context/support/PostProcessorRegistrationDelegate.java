@@ -103,6 +103,8 @@ final class PostProcessorRegistrationDelegate {
 			// 首先，调用实现PriorityOrdered的BeanDefinitionRegistryPostProcessors。
 			// BeanDefinitionRegistryPostProcessor 等于 BeanFactoryPostProcessor
 			// getBeanNamesForType 根据bean的类型获取bean的名字ConfigurationClassPostProcessor
+
+			// 在这里进行了第一次的bean定义的合并，为了获取完整的合并后的bean定义，然后再进行筛选
 			String[] postProcessorNames =
 					beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
 			/**
@@ -135,6 +137,9 @@ final class PostProcessorRegistrationDelegate {
 			currentRegistryProcessors.clear();
 
 			// 接下来，调用实现Ordered的BeanDefinitionRegistryPostProcessor。
+			//
+			// 每次调用getBeanNamesForType，都会进行一次合并，因为每次执行PostProcessor都有可能添加新的bd，
+			// 而新的bd还是需要进行合并然后再比较，尤其是ConfigurationPostProcessor中，会扫描现有所有的bd
 			postProcessorNames = beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
 			for (String ppName : postProcessorNames) {
 				if (!processedBeans.contains(ppName) && beanFactory.isTypeMatch(ppName, Ordered.class)) {
