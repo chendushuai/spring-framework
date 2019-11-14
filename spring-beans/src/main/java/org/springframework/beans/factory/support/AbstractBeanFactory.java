@@ -1252,10 +1252,13 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 */
 	protected RootBeanDefinition getMergedLocalBeanDefinition(String beanName) throws BeansException {
 		// 首先快速检查并发映射，使用最小的锁定。
+
+		// 如果合并完成的bean定义中，已经存在了这个bean在，则直接返回
 		RootBeanDefinition mbd = this.mergedBeanDefinitions.get(beanName);
 		if (mbd != null) {
 			return mbd;
 		}
+		// 执行bean定义合并
 		return getMergedBeanDefinition(beanName, getBeanDefinition(beanName));
 	}
 
