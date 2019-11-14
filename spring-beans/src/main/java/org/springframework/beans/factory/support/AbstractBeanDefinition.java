@@ -326,6 +326,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		}
 		setRole(other.getRole());
 		setSource(other.getSource());
+		// 拷贝属性
 		copyAttributesFrom(other);
 
 		if (other instanceof AbstractBeanDefinition) {
@@ -336,6 +337,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 			if (otherAbd.hasConstructorArgumentValues()) {
 				getConstructorArgumentValues().addArgumentValues(other.getConstructorArgumentValues());
 			}
+			// 拷贝属性值
 			if (otherAbd.hasPropertyValues()) {
 				getPropertyValues().addPropertyValues(other.getPropertyValues());
 			}

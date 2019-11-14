@@ -1613,7 +1613,10 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		if (!this.alreadyCreated.contains(beanName)) {
 			synchronized (this.mergedBeanDefinitions) {
 				if (!this.alreadyCreated.contains(beanName)) {
-					// 现在我们正在创建bean，让bean定义重新合并……以防它的元数据在此期间发生变化。
+					// 现在我们正在创建bean，让bean定义重新合并……
+					// 以防它的元数据在此期间发生变化。
+					// 比如我们在后置处理器中修改了bean定义的信息，导致元数据发生了变化，
+					// 如果不重新合并，则认为bean信息有误，无法使用
 					clearMergedBeanDefinition(beanName);
 					this.alreadyCreated.add(beanName);
 				}

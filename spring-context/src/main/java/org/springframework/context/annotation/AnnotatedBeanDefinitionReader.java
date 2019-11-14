@@ -34,9 +34,10 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
- * Convenient adapter for programmatic registration of annotated bean classes.
- * This is an alternative to {@link ClassPathBeanDefinitionScanner}, applying
- * the same resolution of annotations but for explicitly registered classes only.
+ * 方便的适配器，可编程注册带注解的bean类。
+ * 这是{@link ClassPathBeanDefinitionScanner}的另一种选择，它应用了相同的注解解析，但是只针对显式注册的类。
+ *
+ * AnnotatedBeanDefinitionReader仅用来生成显式注册的类的bean定义
  *
  * @author Juergen Hoeller
  * @author Chris Beams
@@ -63,14 +64,14 @@ public class AnnotatedBeanDefinitionReader {
 
 
 	/**
-	 *  这里的BeanDefinitionRegistry registry是通过在AnnotationConfigApplicationContext
-	 *  的构造方法中传进来的this
-	 *  由此说明AnnotationConfigApplicationContext是一个BeanDefinitionRegistry类型的类
-	 *  何以证明我们可以看到AnnotationConfigApplicationContext的类关系：
-	 *  GenericApplicationContext extends AbstractApplicationContext implements BeanDefinitionRegistry
-	 *  看到他实现了BeanDefinitionRegistry证明上面的说法，那么BeanDefinitionRegistry的作用是什么呢？
-	 *  BeanDefinitionRegistry 顾名思义就是BeanDefinition的注册器
-	 *  那么何为BeanDefinition呢？参考BeanDefinition的源码的注释
+	 * 这里的BeanDefinitionRegistry registry是通过在AnnotationConfigApplicationContext
+	 * 的构造方法中传进来的this
+	 * 由此说明AnnotationConfigApplicationContext是一个BeanDefinitionRegistry类型的类
+	 * 何以证明我们可以看到AnnotationConfigApplicationContext的类关系：
+	 * GenericApplicationContext extends AbstractApplicationContext implements BeanDefinitionRegistry
+	 * 看到他实现了BeanDefinitionRegistry证明上面的说法，那么BeanDefinitionRegistry的作用是什么呢？
+	 * BeanDefinitionRegistry 顾名思义就是BeanDefinition的注册器
+	 * 那么何为BeanDefinition呢？参考BeanDefinition的源码的注释
 	 */
 	public AnnotatedBeanDefinitionReader(BeanDefinitionRegistry registry) {
 		/**
