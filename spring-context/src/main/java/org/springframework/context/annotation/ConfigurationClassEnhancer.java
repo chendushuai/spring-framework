@@ -56,13 +56,9 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
 
 /**
- * Enhances {@link Configuration} classes by generating a CGLIB subclass which
- * interacts with the Spring container to respect bean scoping semantics for
- * {@code @Bean} methods. Each such {@code @Bean} method will be overridden in
- * the generated subclass, only delegating to the actual {@code @Bean} method
- * implementation if the container actually requests the construction of a new
- * instance. Otherwise, a call to such an {@code @Bean} method serves as a
- * reference back to the container, obtaining the corresponding bean by name.
+ * 通过生成与Spring容器交互的CGLIB子类来增强{@link Configuration}类，从而分别完成{@code @Bean}方法的bean作用域语义。
+ * 每个这样的{@code @Bean}方法都会在生成的子类中被覆盖，只有在容器实际请求构造新实例时才会委托给实际的{@code @Bean}方法实现。
+ * 否则，对这样一个{@code @Bean}方法的调用将作为对容器的引用，通过名称获得相应的bean。
  *
  * @author Chris Beams
  * @author Juergen Hoeller
@@ -90,7 +86,7 @@ class ConfigurationClassEnhancer {
 
 
 	/**
-	 * 加载指定的类并生成它的CGLIB子类，该子类具有支持容器的回调，能够尊重作用域和其他bean语义。
+	 * 加载指定的类并生成它的CGLIB子类，该子类具有支持容器的回调，能够区别作用域和其他bean语义。
 	 * @return 增强的子类
 	 */
 	public Class<?> enhance(Class<?> configClass, @Nullable ClassLoader classLoader) {

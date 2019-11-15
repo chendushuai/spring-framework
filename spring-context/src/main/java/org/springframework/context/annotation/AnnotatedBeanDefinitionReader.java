@@ -147,7 +147,7 @@ public class AnnotatedBeanDefinitionReader {
 	}
 
 	/**
-	 * 注册来自给定bean类的bean，从类声明的注释派生其元数据。
+	 * 注册来自给定bean类的bean，从类声明的注解派生其元数据。
 	 * @param annotatedClass bean的Class
 	 */
 	public void registerBean(Class<?> annotatedClass) {
@@ -156,11 +156,9 @@ public class AnnotatedBeanDefinitionReader {
 	}
 
 	/**
-	 * Register a bean from the given bean class, deriving its metadata from
-	 * class-declared annotations.
-	 * @param annotatedClass the class of the bean
-	 * @param name an explicit name for the bean
-	 * (or {@code null} for generating a default bean name)
+	 * 注册来自给定bean类的bean，从类声明的注解派生其元数据。
+	 * @param annotatedClass bean的Class
+	 * @param name bean的显式名称(或用于生成默认bean名称的{@code null})
 	 * @since 5.2
 	 */
 	public void registerBean(Class<?> annotatedClass, @Nullable String name) {
@@ -168,11 +166,9 @@ public class AnnotatedBeanDefinitionReader {
 	}
 
 	/**
-	 * Register a bean from the given bean class, deriving its metadata from
-	 * class-declared annotations.
-	 * @param annotatedClass the class of the bean
-	 * @param qualifiers specific qualifier annotations to consider,
-	 * in addition to qualifiers at the bean class level
+	 * 注册来自给定bean类的bean，从类声明的注解派生其元数据。
+	 * @param annotatedClass bean的Class
+	 * @param qualifiers 除了bean类级别的限定符之外，还需要考虑特定的限定符注解
 	 */
 	@SuppressWarnings("unchecked")
 	public void registerBean(Class<?> annotatedClass, Class<? extends Annotation>... qualifiers) {
@@ -180,13 +176,10 @@ public class AnnotatedBeanDefinitionReader {
 	}
 
 	/**
-	 * Register a bean from the given bean class, deriving its metadata from
-	 * class-declared annotations.
-	 * @param annotatedClass the class of the bean
-	 * @param name an explicit name for the bean
-	 * (or {@code null} for generating a default bean name)
-	 * @param qualifiers specific qualifier annotations to consider,
-	 * in addition to qualifiers at the bean class level
+	 * 注册来自给定bean类的bean，从类声明的注解派生其元数据。
+	 * @param annotatedClass bean的Class
+	 * @param name bean的显式名称(或用于生成默认bean名称的{@code null})
+	 * @param qualifiers 除了bean类级别的限定符之外，还需要考虑特定的限定符注解
 	 */
 	@SuppressWarnings("unchecked")
 	public void registerBean(Class<?> annotatedClass, @Nullable String name,
