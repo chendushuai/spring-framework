@@ -31,4 +31,5 @@ rootProject.children.each {project ->
 	project.buildFileName = "${project.name}.gradle"
 }
 include 'chenss-spring'
+include 'chenss-spring-mvc'
 
