@@ -441,21 +441,16 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 
 	/**
 	 * 为给定的处理程序(包括适用的拦截器)构建{@link HandlerExecutionChain}。
-	 * <p>The default implementation builds a standard {@link HandlerExecutionChain}
-	 * with the given handler, the handler mapping's common interceptors, and any
-	 * {@link MappedInterceptor MappedInterceptors} matching to the current request URL. Interceptors
-	 * are added in the order they were registered. Subclasses may override this
-	 * in order to extend/rearrange the list of interceptors.
-	 * <p><b>NOTE:</b> The passed-in handler object may be a raw handler or a
-	 * pre-built {@link HandlerExecutionChain}. This method should handle those
-	 * two cases explicitly, either building a new {@link HandlerExecutionChain}
-	 * or extending the existing chain.
-	 * <p>For simply adding an interceptor in a custom subclass, consider calling
-	 * {@code super.getHandlerExecutionChain(handler, request)} and invoking
-	 * {@link HandlerExecutionChain#addInterceptor} on the returned chain object.
-	 * @param handler the resolved handler instance (never {@code null})
-	 * @param request current HTTP request
-	 * @return the HandlerExecutionChain (never {@code null})
+	 * <p>默认实现使用给定的处理程序、处理程序映射的公共拦截器和与当前请求URL匹配的任何
+	 * {@link MappedInterceptor MappedInterceptors}构建标准{@link HandlerExecutionChain}。
+	 * 拦截器是按照注册的顺序添加的。子类可以覆盖它来扩展/重新排列拦截器列表。
+	 * <p><b>注意:</b>传入的处理程序对象可以是原始处理程序或预先构建的{@link HandlerExecutionChain}。
+	 * 这个方法应该显式地处理这两种情况，要么构建一个新的{@link HandlerExecutionChain}，要么扩展现有的链。
+	 * <p>对于简单地在自定义子类中添加拦截器，可以考虑调用{@code super.getHandlerExecutionChain(handler, request)}
+	 * 并且在返回的chain对象上调用{@link HandlerExecutionChain#addInterceptor}。
+	 * @param handler 解析的处理程序实例(绝不是{@code null})
+	 * @param request 当前 HTTP 请求
+	 * @return HandlerExecutionChain (绝不是 {@code null})
 	 * @see #getAdaptedInterceptors()
 	 */
 	protected HandlerExecutionChain getHandlerExecutionChain(Object handler, HttpServletRequest request) {

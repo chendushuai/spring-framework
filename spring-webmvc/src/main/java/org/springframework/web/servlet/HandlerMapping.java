@@ -63,10 +63,9 @@ public interface HandlerMapping {
 	String BEST_MATCHING_HANDLER_ATTRIBUTE = HandlerMapping.class.getName() + ".bestMatchingHandler";
 
 	/**
-	 * Name of the {@link HttpServletRequest} attribute that contains the path
-	 * used to look up the matching handler, which depending on the configured
-	 * {@link org.springframework.web.util.UrlPathHelper} could be the full path
-	 * or without the context path, decoded or not, etc.
+	 * 包含用于查找匹配处理程序的路径的{@link HttpServletRequest}属性的名称，
+	 * 该处理程序取决于配置的{@link org.springframework.web.util.UrlPathHelper}可以是完整路径，
+	 * 也可以是不包含上下文路径、已解码或未解码等。
 	 * @since 5.2
 	 */
 	String LOOKUP_PATH = HandlerMapping.class.getName() + ".lookupPath";
