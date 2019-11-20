@@ -1,4 +1,4 @@
-package chenss.initializer;
+package com.chenss.initializer;
 
 import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;

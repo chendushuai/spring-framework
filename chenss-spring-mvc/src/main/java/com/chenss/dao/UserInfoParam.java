@@ -1,4 +1,4 @@
-package chenss.dao;
+package com.chenss.dao;
 
 public class UserInfoParam {
     private String name;

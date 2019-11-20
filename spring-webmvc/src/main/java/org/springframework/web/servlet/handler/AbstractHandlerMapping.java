@@ -380,10 +380,9 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 
 
 	/**
-	 * Look up a handler for the given request, falling back to the default
-	 * handler if no specific one is found.
-	 * @param request current HTTP request
-	 * @return the corresponding handler instance, or the default handler
+	 * 查找给定请求的处理程序，如果没有找到特定的处理程序，则返回到默认处理程序。
+	 * @param request 当前 HTTP 请求
+	 * @return 对应处理程序实例，或默认处理程序
 	 * @see #getHandlerInternal
 	 */
 	@Override
@@ -396,7 +395,7 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 		if (handler == null) {
 			return null;
 		}
-		// Bean name or resolved handler?
+		// Bean名称或已解析的处理程序?
 		if (handler instanceof String) {
 			String handlerName = (String) handler;
 			handler = obtainApplicationContext().getBean(handlerName);
@@ -441,8 +440,7 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	protected abstract Object getHandlerInternal(HttpServletRequest request) throws Exception;
 
 	/**
-	 * Build a {@link HandlerExecutionChain} for the given handler, including
-	 * applicable interceptors.
+	 * 为给定的处理程序(包括适用的拦截器)构建{@link HandlerExecutionChain}。
 	 * <p>The default implementation builds a standard {@link HandlerExecutionChain}
 	 * with the given handler, the handler mapping's common interceptors, and any
 	 * {@link MappedInterceptor MappedInterceptors} matching to the current request URL. Interceptors

@@ -1,4 +1,4 @@
-package chenss.controller;
+package com.chenss.controller;
 
 import com.chenss.dao.UserInfoParam;
 import org.springframework.stereotype.Controller;

@@ -1,4 +1,4 @@
-package chenss.initializer;
+package com.chenss.initializer;
 
 import com.chenss.config.AppConfig;
 import org.springframework.web.WebApplicationInitializer;
