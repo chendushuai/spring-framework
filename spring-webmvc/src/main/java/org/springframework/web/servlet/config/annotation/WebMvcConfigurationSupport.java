@@ -101,68 +101,52 @@ import org.springframework.web.servlet.view.ViewResolverComposite;
 import org.springframework.web.util.UrlPathHelper;
 
 /**
- * This is the main class providing the configuration behind the MVC Java config.
- * It is typically imported by adding {@link EnableWebMvc @EnableWebMvc} to an
- * application {@link Configuration @Configuration} class. An alternative more
- * advanced option is to extend directly from this class and override methods as
- * necessary, remembering to add {@link Configuration @Configuration} to the
- * subclass and {@link Bean @Bean} to overridden {@link Bean @Bean} methods.
- * For more details see the javadoc of {@link EnableWebMvc @EnableWebMvc}.
+ * 这是提供MVC Java配置背后配置的主类。
+ * 它通常是通过将{@link EnableWebMvc @EnableWebMvc}添加到应用程序{@link Configuration @Configuration}类来导入的。
+ * 另一个更高级的选项是直接从这个类扩展并根据需要覆盖方法，记住将{@link Configuration @Configuration}添加到子类中，
+ * 将{@link Bean @Bean}添加到覆盖的{@link Bean @Bean}方法中。
+ * 有关更多细节，请参见{@link EnableWebMvc @EnableWebMvc}的javadoc。
  *
- * <p>This class registers the following {@link HandlerMapping HandlerMappings}:</p>
+ * <p>这个类注册如下{@link HandlerMapping HandlerMappings}:</p>
  * <ul>
- * <li>{@link RequestMappingHandlerMapping}
- * ordered at 0 for mapping requests to annotated controller methods.
- * <li>{@link HandlerMapping}
- * ordered at 1 to map URL paths directly to view names.
- * <li>{@link BeanNameUrlHandlerMapping}
- * ordered at 2 to map URL paths to controller bean names.
- * <li>{@link HandlerMapping}
- * ordered at {@code Integer.MAX_VALUE-1} to serve static resource requests.
- * <li>{@link HandlerMapping}
- * ordered at {@code Integer.MAX_VALUE} to forward requests to the default servlet.
+ * <li>{@link RequestMappingHandlerMapping} 0. 用于将请求映射到带注释的控制器方法。
+ * <li>{@link HandlerMapping} 1. 将URL路径直接映射到视图名称。
+ * <li>{@link BeanNameUrlHandlerMapping} 2. 将URL路径映射到控制器bean名称。
+ * <li>{@link HandlerMapping} {@code Integer.MAX_VALUE-1}. 服务静态资源请求。
+ * <li>{@link HandlerMapping} {@code Integer.MAX_VALUE}. 将请求转发到默认servlet。
  * </ul>
  *
- * <p>Registers these {@link HandlerAdapter HandlerAdapters}:
+ * <p>注册这些{@link HandlerAdapter HandlerAdapters}:
  * <ul>
- * <li>{@link RequestMappingHandlerAdapter}
- * for processing requests with annotated controller methods.
- * <li>{@link HttpRequestHandlerAdapter}
- * for processing requests with {@link HttpRequestHandler HttpRequestHandlers}.
- * <li>{@link SimpleControllerHandlerAdapter}
- * for processing requests with interface-based {@link Controller Controllers}.
+ * <li>{@link RequestMappingHandlerAdapter} 用于处理带有注解的控制器方法的请求。
+ * <li>{@link HttpRequestHandlerAdapter} 用于使用{@link HttpRequestHandler HttpRequestHandlers}处理请求。
+ * <li>{@link SimpleControllerHandlerAdapter} 用于处理基于接口的{@link Controller Controller}的请求。
  * </ul>
  *
- * <p>Registers a {@link HandlerExceptionResolverComposite} with this chain of
- * exception resolvers:
+ * <p>用这个异常解析器链注册一个{@link HandlerExceptionResolverComposite}:
  * <ul>
- * <li>{@link ExceptionHandlerExceptionResolver} for handling exceptions through
- * {@link org.springframework.web.bind.annotation.ExceptionHandler} methods.
- * <li>{@link ResponseStatusExceptionResolver} for exceptions annotated with
- * {@link org.springframework.web.bind.annotation.ResponseStatus}.
- * <li>{@link DefaultHandlerExceptionResolver} for resolving known Spring
- * exception types
+ * <li>{@link ExceptionHandlerExceptionResolver} 用于通过
+ * {@link org.springframework.web.bind.annotation.ExceptionHandler}处理异常的方法。
+ * <li>{@link ResponseStatusExceptionResolver} 用于使用
+ * {@link org.springframework.web.bind.annotation.ResponseStatus}对异常进行注解
+ * <li>{@link DefaultHandlerExceptionResolver} 用于解析已知的Spring异常类型
  * </ul>
  *
- * <p>Registers an {@link AntPathMatcher} and a {@link UrlPathHelper}
- * to be used by:
+ * <p>注册{@link AntPathMatcher}和{@link UrlPathHelper}以供使用
  * <ul>
- * <li>the {@link RequestMappingHandlerMapping},
- * <li>the {@link HandlerMapping} for ViewControllers
- * <li>and the {@link HandlerMapping} for serving resources
+ * <li>{@link RequestMappingHandlerMapping},
+ * <li>用于ViewControllers的{@link HandlerMapping}
+ * <li>以及用于服务资源的{@link HandlerMapping}
  * </ul>
- * Note that those beans can be configured with a {@link PathMatchConfigurer}.
  *
- * <p>Both the {@link RequestMappingHandlerAdapter} and the
- * {@link ExceptionHandlerExceptionResolver} are configured with default
- * instances of the following by default:
+ * 注意，可以使用{@link PathMatchConfigurer}配置这些bean。
+ *
+ * <p>默认情况下，{@link RequestMappingHandlerAdapter}和{@link ExceptionHandlerExceptionResolver}都配置了以下的默认实例:
  * <ul>
- * <li>a {@link ContentNegotiationManager}
- * <li>a {@link DefaultFormattingConversionService}
- * <li>an {@link org.springframework.validation.beanvalidation.OptionalValidatorFactoryBean}
- * if a JSR-303 implementation is available on the classpath
- * <li>a range of {@link HttpMessageConverter HttpMessageConverters} depending on the third-party
- * libraries available on the classpath.
+ * <li>{@link ContentNegotiationManager}
+ * <li>{@link DefaultFormattingConversionService}
+ * <li>如果类路径上有JSR-303实现可用，配置一个{@link org.springframework.validation.beanvalidation.OptionalValidatorFactoryBean}
+ * <li>取决于类路径上可用的第三方库的{@link HttpMessageConverter HttpMessageConverters}的范围。
  * </ul>
  *
  * @author Rossen Stoyanchev
@@ -269,14 +253,14 @@ public class WebMvcConfigurationSupport implements ApplicationContextAware, Serv
 
 
 	/**
-	 * Return a {@link RequestMappingHandlerMapping} ordered at 0 for mapping
-	 * requests to annotated controllers.
+	 * 返回一个{@link RequestMappingHandlerMapping}，按0排序，用于将请求映射到带注解的控制器。
 	 */
 	@Bean
 	public RequestMappingHandlerMapping requestMappingHandlerMapping(
 			ContentNegotiationManager mvcContentNegotiationManager,
 			FormattingConversionService mvcConversionService,
 			ResourceUrlProvider mvcResourceUrlProvider) {
+		// 得到请求映射到带注解的控制器的集合
 		RequestMappingHandlerMapping mapping = createRequestMappingHandlerMapping();
 		mapping.setOrder(0);
 		mapping.setInterceptors(getInterceptors(mvcConversionService, mvcResourceUrlProvider));
@@ -315,8 +299,7 @@ public class WebMvcConfigurationSupport implements ApplicationContextAware, Serv
 	}
 
 	/**
-	 * Protected method for plugging in a custom subclass of
-	 * {@link RequestMappingHandlerMapping}.
+	 * 用于插入{@link RequestMappingHandlerMapping}的自定义子类的受保护方法。
 	 * @since 4.0
 	 */
 	protected RequestMappingHandlerMapping createRequestMappingHandlerMapping() {
