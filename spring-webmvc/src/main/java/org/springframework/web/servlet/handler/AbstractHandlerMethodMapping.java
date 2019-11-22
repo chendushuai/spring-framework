@@ -90,6 +90,9 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	}
 
 
+	/**
+	 * 是否检测父容器中的处理程序方法
+	 */
 	private boolean detectHandlerMethodsInAncestorContexts = false;
 
 	@Nullable
@@ -249,6 +252,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 				logger.trace("Could not resolve type for bean '" + beanName + "'", ex);
 			}
 		}
+		// 判断类中是否添加了@Controller或@RequestMapping注解
 		if (beanType != null && isHandler(beanType)) {
 			detectHandlerMethods(beanName);
 		}
