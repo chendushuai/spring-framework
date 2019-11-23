@@ -161,7 +161,7 @@ import org.springframework.web.util.WebUtils;
 @SuppressWarnings("serial")
 public class DispatcherServlet extends FrameworkServlet {
 
-	/** Well-known name for the MultipartResolver object in the bean factory for this namespace. */
+	/** bean工厂中此名称空间的MultipartResolver对象的知名名称。 */
 	public static final String MULTIPART_RESOLVER_BEAN_NAME = "multipartResolver";
 
 	/** Well-known name for the LocaleResolver object in the bean factory for this namespace. */
@@ -495,8 +495,8 @@ public class DispatcherServlet extends FrameworkServlet {
 	}
 
 	/**
-	 * Initialize the strategy objects that this servlet uses.
-	 * <p>May be overridden in subclasses in order to initialize further strategy objects.
+	 * 初始化这个servlet使用的策略对象。
+	 * <p>为了进一步初始化策略对象，可以在子类中重写。
 	 */
 	protected void initStrategies(ApplicationContext context) {
 		initMultipartResolver(context);
@@ -511,9 +511,8 @@ public class DispatcherServlet extends FrameworkServlet {
 	}
 
 	/**
-	 * Initialize the MultipartResolver used by this class.
-	 * <p>If no bean is defined with the given name in the BeanFactory for this namespace,
-	 * no multipart handling is provided.
+	 * 初始化这个类使用的MultipartResolver。
+	 * <p>如果在BeanFactory中没有使用此命名空间的给定名称定义bean，则不提供多部分处理。
 	 */
 	private void initMultipartResolver(ApplicationContext context) {
 		try {
