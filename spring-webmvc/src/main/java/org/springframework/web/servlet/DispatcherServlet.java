@@ -499,7 +499,9 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * <p>为了进一步初始化策略对象，可以在子类中重写。
 	 */
 	protected void initStrategies(ApplicationContext context) {
+		// 初始化多部分内容解析器，也就是处理文件上传的解析器
 		initMultipartResolver(context);
+		// 初始化本地化语言解析器
 		initLocaleResolver(context);
 		initThemeResolver(context);
 		initHandlerMappings(context);
@@ -516,6 +518,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 */
 	private void initMultipartResolver(ApplicationContext context) {
 		try {
+			// 初始化多部分内容解析器
 			this.multipartResolver = context.getBean(MULTIPART_RESOLVER_BEAN_NAME, MultipartResolver.class);
 			if (logger.isTraceEnabled()) {
 				logger.trace("Detected " + this.multipartResolver);
@@ -525,7 +528,7 @@ public class DispatcherServlet extends FrameworkServlet {
 			}
 		}
 		catch (NoSuchBeanDefinitionException ex) {
-			// Default is no multipart resolver.
+			// 默认情况下没有多部分解析器。
 			this.multipartResolver = null;
 			if (logger.isTraceEnabled()) {
 				logger.trace("No MultipartResolver '" + MULTIPART_RESOLVER_BEAN_NAME + "' declared");
@@ -534,9 +537,8 @@ public class DispatcherServlet extends FrameworkServlet {
 	}
 
 	/**
-	 * Initialize the LocaleResolver used by this class.
-	 * <p>If no bean is defined with the given name in the BeanFactory for this namespace,
-	 * we default to AcceptHeaderLocaleResolver.
+	 * 初始化该类使用的LocaleResolver。
+	 * <p>如果在BeanFactory中没有为该名称空间定义给定名称的bean，则默认为AcceptHeaderLocaleResolver。
 	 */
 	private void initLocaleResolver(ApplicationContext context) {
 		try {
@@ -559,9 +561,8 @@ public class DispatcherServlet extends FrameworkServlet {
 	}
 
 	/**
-	 * Initialize the ThemeResolver used by this class.
-	 * <p>If no bean is defined with the given name in the BeanFactory for this namespace,
-	 * we default to a FixedThemeResolver.
+	 * 初始化该类使用的ThemeResolver。
+	 * <p>如果在这个命名空间的BeanFactory中没有使用给定的名称定义bean，我们将默认使用FixedThemeResolver。
 	 */
 	private void initThemeResolver(ApplicationContext context) {
 		try {
