@@ -22,23 +22,16 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.lang.Nullable;
 
 /**
- * Interface for web-based theme resolution strategies that allows for
- * both theme resolution via the request and theme modification via
- * request and response.
+ * 基于web的主题解析策略的接口，允许通过请求进行主题解析，也允许通过请求和响应进行主题修改。
  *
- * <p>This interface allows for implementations based on session,
- * cookies, etc. The default implementation is
- * {@link org.springframework.web.servlet.theme.FixedThemeResolver},
- * simply using a configured default theme.
+ * <p>这个接口允许基于会话、cookie等的实现。默认实现是
+ * {@link org.springframework.web.servlet.theme.FixedThemeResolver}，只是使用配置的默认主题。
  *
- * <p>Note that this resolver is only responsible for determining the
- * current theme name. The Theme instance for the resolved theme name
- * gets looked up by DispatcherServlet via the respective ThemeSource,
- * i.e. the current WebApplicationContext.
+ * <p>请注意，此解析器仅负责确定当前主题名称。
+ * 解析后的主题名的主题实例由DispatcherServlet通过各自的主题资源(即当前的WebApplicationContext)来查找。
  *
- * <p>Use {@link org.springframework.web.servlet.support.RequestContext#getTheme()}
- * to retrieve the current theme in controllers or views, independent
- * of the actual resolution strategy.
+ * <p>使用{@link org.springframework.web.servlet.support.RequestContext#getTheme()}
+ * 来检索控制器或视图中的当前主题，独立于实际的解析策略。
  *
  * @author Jean-Pierre Pawlak
  * @author Juergen Hoeller

@@ -503,6 +503,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		initMultipartResolver(context);
 		// 初始化本地化语言解析器
 		initLocaleResolver(context);
+		// 初始化用于解析主题的解析器
 		initThemeResolver(context);
 		initHandlerMappings(context);
 		initHandlerAdapters(context);
