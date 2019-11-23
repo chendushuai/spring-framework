@@ -618,9 +618,10 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	@SuppressWarnings("unchecked")
 	public <T> Map<String, T> getBeansOfType(@Nullable Class<T> type, boolean includeNonSingletons, boolean allowEagerInit)
 			throws BeansException {
-
+		// 根据bean类型获取符合条件的bean名称集合
 		String[] beanNames = getBeanNamesForType(type, includeNonSingletons, allowEagerInit);
 		Map<String, T> result = new LinkedHashMap<>(beanNames.length);
+		// 循环，获取bean实例，将其放入结果集合中
 		for (String beanName : beanNames) {
 			try {
 				Object beanInstance = getBean(beanName);

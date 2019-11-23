@@ -303,30 +303,22 @@ public abstract class BeanFactoryUtils {
 	}
 
 	/**
-	 * Return all beans of the given type or subtypes, also picking up beans defined in
-	 * ancestor bean factories if the current bean factory is a HierarchicalBeanFactory.
-	 * The returned Map will only contain beans of this type.
-	 * <p>Does consider objects created by FactoryBeans if the "allowEagerInit" flag is set,
-	 * which means that FactoryBeans will get initialized. If the object created by the
-	 * FactoryBean doesn't match, the raw FactoryBean itself will be matched against the
-	 * type. If "allowEagerInit" is not set, only raw FactoryBeans will be checked
-	 * (which doesn't require initialization of each FactoryBean).
-	 * <p><b>Note: Beans of the same name will take precedence at the 'lowest' factory level,
-	 * i.e. such beans will be returned from the lowest factory that they are being found in,
-	 * hiding corresponding beans in ancestor factories.</b> This feature allows for
-	 * 'replacing' beans by explicitly choosing the same bean name in a child factory;
-	 * the bean in the ancestor factory won't be visible then, not even for by-type lookups.
-	 * @param lbf the bean factory
-	 * @param type type of bean to match
-	 * @param includeNonSingletons whether to include prototype or scoped beans too
-	 * or just singletons (also applies to FactoryBeans)
-	 * @param allowEagerInit whether to initialize <i>lazy-init singletons</i> and
-	 * <i>objects created by FactoryBeans</i> (or by factory methods with a
-	 * "factory-bean" reference) for the type check. Note that FactoryBeans need to be
-	 * eagerly initialized to determine their type: So be aware that passing in "true"
-	 * for this flag will initialize FactoryBeans and "factory-bean" references.
-	 * @return the Map of matching bean instances, or an empty Map if none
-	 * @throws BeansException if a bean could not be created
+	 * 返回给定类型或子类型的所有bean，如果当前bean工厂是HierarchicalBeanFactory，还将获取在祖先bean工厂中定义的bean。
+	 * 返回的映射将只包含这种类型的bean。
+	 * <p>如果设置了“allowEagerInit”标志，那么可以考虑FactoryBeans创建的对象，这意味着FactoryBeans将被初始化。
+	 * 如果FactoryBean创建的对象不匹配，原始的FactoryBean本身将根据类型进行匹配。
+	 * 如果没有设置“allowEagerInit”，那么只检查原始的FactoryBean(不需要初始化每个FactoryBean)。
+	 * <p><b>注意:相同名称的bean将优先取“最低”工厂级别，即这些bean将从它们所在的最低工厂返回，并将相应的bean隐藏在祖先工厂中。</b>
+	 * 该特性允许通过显式地在子工厂中选择相同的bean名称来“替换”bean;然后祖先工厂中的bean将不可见，甚至对于按类型查找也是如此。
+	 * @param lbf bean工厂
+	 * @param type 要匹配的bean的类型
+	 * @param includeNonSingletons 是否也包括原型bean或添加了作用域的bean，或者只是单例bean(也适用于FactoryBeans)
+	 * @param allowEagerInit 是否为类型检查初始化<i>由FactoryBeans对象</i>和<i>延迟初始化的单例对象</i>
+	 *                       (或由具有“factory-bean”引用的工厂方法)。
+	 *                       注意，必须立即初始化FactoryBeans以确定它们的类型:
+	 *                       因此要注意，为这个标志传递“true”将初始化FactoryBeans和“factory-bean”引用。
+	 * @return 匹配bean实例的映射，如果没有，则为空映射
+	 * @throws BeansException 如果无法创建bean
 	 * @see ListableBeanFactory#getBeansOfType(Class, boolean, boolean)
 	 */
 	public static <T> Map<String, T> beansOfTypeIncludingAncestors(
@@ -334,13 +326,17 @@ public abstract class BeanFactoryUtils {
 			throws BeansException {
 
 		Assert.notNull(lbf, "ListableBeanFactory must not be null");
+		// 初始化返回结果集合
 		Map<String, T> result = new LinkedHashMap<>(4);
+		// 先保存直接通过bean工厂的类型匹配到的对象集合
 		result.putAll(lbf.getBeansOfType(type, includeNonSingletons, allowEagerInit));
+		// 如果bean工厂是一个层级工厂，则说明还有父级工厂，仍需要进行其父工厂查找，此处的查找是递归查找，知道找不到父级为止
 		if (lbf instanceof HierarchicalBeanFactory) {
 			HierarchicalBeanFactory hbf = (HierarchicalBeanFactory) lbf;
 			if (hbf.getParentBeanFactory() instanceof ListableBeanFactory) {
 				Map<String, T> parentResult = beansOfTypeIncludingAncestors(
 						(ListableBeanFactory) hbf.getParentBeanFactory(), type, includeNonSingletons, allowEagerInit);
+				// 这一句话其实就是方法说明中描述的，如果在父子bean工厂中存在同名bean，优先取低级bean工厂中的bean
 				parentResult.forEach((beanName, beanInstance) -> {
 					if (!result.containsKey(beanName) && !hbf.containsLocalBean(beanName)) {
 						result.put(beanName, beanInstance);

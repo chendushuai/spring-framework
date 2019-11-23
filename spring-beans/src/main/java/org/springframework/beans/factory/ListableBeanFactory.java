@@ -191,35 +191,24 @@ public interface ListableBeanFactory extends BeanFactory {
 	<T> Map<String, T> getBeansOfType(@Nullable Class<T> type) throws BeansException;
 
 	/**
-	 * Return the bean instances that match the given object type (including
-	 * subclasses), judging from either bean definitions or the value of
-	 * {@code getObjectType} in the case of FactoryBeans.
-	 * <p><b>NOTE: This method introspects top-level beans only.</b> It does <i>not</i>
-	 * check nested beans which might match the specified type as well.
-	 * <p>Does consider objects created by FactoryBeans if the "allowEagerInit" flag is set,
-	 * which means that FactoryBeans will get initialized. If the object created by the
-	 * FactoryBean doesn't match, the raw FactoryBean itself will be matched against the
-	 * type. If "allowEagerInit" is not set, only raw FactoryBeans will be checked
-	 * (which doesn't require initialization of each FactoryBean).
-	 * <p>Does not consider any hierarchy this factory may participate in.
-	 * Use BeanFactoryUtils' {@code beansOfTypeIncludingAncestors}
-	 * to include beans in ancestor factories too.
-	 * <p>Note: Does <i>not</i> ignore singleton beans that have been registered
-	 * by other means than bean definitions.
-	 * <p>The Map returned by this method should always return bean names and
-	 * corresponding bean instances <i>in the order of definition</i> in the
-	 * backend configuration, as far as possible.
-	 * @param type the class or interface to match, or {@code null} for all concrete beans
-	 * @param includeNonSingletons whether to include prototype or scoped beans too
-	 * or just singletons (also applies to FactoryBeans)
-	 * @param allowEagerInit whether to initialize <i>lazy-init singletons</i> and
-	 * <i>objects created by FactoryBeans</i> (or by factory methods with a
-	 * "factory-bean" reference) for the type check. Note that FactoryBeans need to be
-	 * eagerly initialized to determine their type: So be aware that passing in "true"
-	 * for this flag will initialize FactoryBeans and "factory-bean" references.
-	 * @return a Map with the matching beans, containing the bean names as
-	 * keys and the corresponding bean instances as values
-	 * @throws BeansException if a bean could not be created
+	 * 根据bean定义或FactoryBeans中{@code getObjectType}的值判断，返回与给定对象类型(包括子类)匹配的bean实例。
+	 * <p><b>注意:此方法仅内省顶级bean</b>。
+	 * 它也<i>不检查</i>可能匹配指定类型的嵌套bean。
+	 * <p>如果设置了“allowEagerInit”标志，那么可以考虑FactoryBeans创建的对象，这意味着FactoryBeans将被初始化。
+	 * 如果FactoryBean创建的对象不匹配，原始的FactoryBean本身将根据类型进行匹配。
+	 * 如果没有设置“allowEagerInit”，那么只检查原始的FactoryBean(不需要初始化每个FactoryBean)。
+	 * <p>不考虑本工厂可能参与的任何层级。
+	 * 使用BeanFactoryUtils的{@code beansOfTypeIncludingAncestors}在始祖工厂中包含bean。
+	 * <p>注意:<i>不要</i>忽略通过bean定义以外的其他方式注册的单例bean。
+	 * <p>此方法返回的映射应该总是尽可能按照后端配置中的<i>定义的顺序</i>返回bean名称和相应的bean实例。
+	 * @param type 要匹配的类或接口，或所有具体bean的{@code null}
+	 * @param includeNonSingletons 是否也包括原型bean或作用域bean，或者只是单例bean(也适用于FactoryBeans)
+	 * @param allowEagerInit 是否为类型检查初始化<i>由FactoryBeans对象</i>和<i>延迟初始化的单例对象</i>
+	 *                       (或由具有“factory-bean”引用的工厂方法)。
+	 *                       注意，必须立即初始化FactoryBeans以确定它们的类型:
+	 *                       因此要注意，为这个标志传递“true”将初始化FactoryBeans和“factory-bean”引用。
+	 * @return 具有匹配bean的映射，其中包含作为键的bean名称和作为值的相应bean实例
+	 * @throws BeansException 如果无法创建bean
 	 * @see FactoryBean#getObjectType
 	 * @see BeanFactoryUtils#beansOfTypeIncludingAncestors(ListableBeanFactory, Class, boolean, boolean)
 	 */

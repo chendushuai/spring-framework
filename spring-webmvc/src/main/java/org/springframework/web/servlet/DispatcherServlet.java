@@ -292,7 +292,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		}
 	}
 
-	/** Detect all HandlerMappings or just expect "handlerMapping" bean?. */
+	/** 检测所有的handlerMapping或者只是查找“handlerMapping”bean? */
 	private boolean detectAllHandlerMappings = true;
 
 	/** Detect all HandlerAdapters or just expect "handlerAdapter" bean?. */
@@ -310,15 +310,15 @@ public class DispatcherServlet extends FrameworkServlet {
 	/** Perform cleanup of request attributes after include request?. */
 	private boolean cleanupAfterInclude = true;
 
-	/** MultipartResolver used by this servlet. */
+	/** 此servlet使用的MultipartResolver。用于处理文件上传的解析器 */
 	@Nullable
 	private MultipartResolver multipartResolver;
 
-	/** LocaleResolver used by this servlet. */
+	/** 此servlet使用的LocaleResolver。用于处理语言本地化的解析器 */
 	@Nullable
 	private LocaleResolver localeResolver;
 
-	/** ThemeResolver used by this servlet. */
+	/** 此servlet使用的ThemeResolver。用于解析主题设置的解析器 */
 	@Nullable
 	private ThemeResolver themeResolver;
 
@@ -505,6 +505,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		initLocaleResolver(context);
 		// 初始化用于解析主题的解析器
 		initThemeResolver(context);
+		// 获取
 		initHandlerMappings(context);
 		initHandlerAdapters(context);
 		initHandlerExceptionResolvers(context);
@@ -586,15 +587,15 @@ public class DispatcherServlet extends FrameworkServlet {
 	}
 
 	/**
-	 * Initialize the HandlerMappings used by this class.
-	 * <p>If no HandlerMapping beans are defined in the BeanFactory for this namespace,
-	 * we default to BeanNameUrlHandlerMapping.
+	 * 初始化该类使用的HandlerMappings。
+	 * <p>如果在BeanFactory中没有为这个名称空间定义HandlerMapping bean，则默认为BeanNameUrlHandlerMapping。
 	 */
 	private void initHandlerMappings(ApplicationContext context) {
 		this.handlerMappings = null;
 
+		// 判断是否检查所有的HandlerMapping，默认为true
 		if (this.detectAllHandlerMappings) {
-			// Find all HandlerMappings in the ApplicationContext, including ancestor contexts.
+			// 在ApplicationContext中查找所有HandlerMappings，包括祖先上下文。
 			Map<String, HandlerMapping> matchingBeans =
 					BeanFactoryUtils.beansOfTypeIncludingAncestors(context, HandlerMapping.class, true, false);
 			if (!matchingBeans.isEmpty()) {
