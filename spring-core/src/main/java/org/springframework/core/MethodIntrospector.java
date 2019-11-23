@@ -28,11 +28,10 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 
 /**
- * Defines the algorithm for searching for metadata-associated methods exhaustively
- * including interfaces and parent classes while also dealing with parameterized methods
- * as well as common scenarios encountered with interface and class-based proxies.
+ * 定义搜索与元数据相关的方法的算法，这些方法详尽地包括接口和父类，
+ * 同时还处理参数化方法以及使用接口和基于类的代理遇到的常见场景。
  *
- * <p>Typically, but not necessarily, used for finding annotated handler methods.
+ * <p>通常(但不一定)用于查找带注解的处理程序方法。
  *
  * @author Juergen Hoeller
  * @author Rossen Stoyanchev
@@ -98,17 +97,13 @@ public final class MethodIntrospector {
 	}
 
 	/**
-	 * Select an invocable method on the target type: either the given method itself
-	 * if actually exposed on the target type, or otherwise a corresponding method
-	 * on one of the target type's interfaces or on the target type itself.
-	 * <p>Matches on user-declared interfaces will be preferred since they are likely
-	 * to contain relevant metadata that corresponds to the method on the target class.
-	 * @param method the method to check
-	 * @param targetType the target type to search methods on
-	 * (typically an interface-based JDK proxy)
-	 * @return a corresponding invocable method on the target type
-	 * @throws IllegalStateException if the given method is not invocable on the given
-	 * target type (typically due to a proxy mismatch)
+	 * 在目标类型上选择一个可调用的方法:
+	 * 如果实际暴露在目标类型上，则选择给定的方法本身，或者在目标类型的某个接口上选择相应的方法，或者在目标类型本身上选择相应的方法。
+	 * <p>用户声明的接口上的匹配将是首选的，因为它们可能包含与目标类上的方法相对应的相关元数据。
+	 * @param method 要检查的方法
+	 * @param targetType 要搜索方法的目标类型(通常是基于接口的JDK代理)
+	 * @return 目标类型上相应的可调用方法
+	 * @throws IllegalStateException 如果给定的方法不能在给定的目标类型上调用(通常是由于代理不匹配)
 	 */
 	public static Method selectInvocableMethod(Method method, Class<?> targetType) {
 		if (method.getDeclaringClass().isAssignableFrom(targetType)) {

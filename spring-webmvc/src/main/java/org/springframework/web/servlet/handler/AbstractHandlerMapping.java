@@ -410,8 +410,10 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 			logger.debug("Mapped to " + executionChain.getHandler());
 		}
 
+		// 判断处理程序有没有实现CorsConfigurationSource接口
 		if (hasCorsConfigurationSource(handler)) {
 			CorsConfiguration config = (this.corsConfigurationSource != null ? this.corsConfigurationSource.getCorsConfiguration(request) : null);
+			// 得到跨域CROS配置
 			CorsConfiguration handlerConfig = getCorsConfiguration(handler, request);
 			config = (config != null ? config.combine(handlerConfig) : handlerConfig);
 			executionChain = getCorsHandlerExecutionChain(request, executionChain, config);
@@ -474,7 +476,7 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	}
 
 	/**
-	 * Return {@code true} if there is a {@link CorsConfigurationSource} for this handler.
+	 * 如果这个处理程序有实现{@link CorsConfigurationSource}接口，那么返回{@code true}。
 	 * @since 5.2
 	 */
 	protected boolean hasCorsConfigurationSource(Object handler) {
@@ -482,10 +484,10 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	}
 
 	/**
-	 * Retrieve the CORS configuration for the given handler.
-	 * @param handler the handler to check (never {@code null}).
-	 * @param request the current request.
-	 * @return the CORS configuration for the handler, or {@code null} if none
+	 * 检索给定处理程序的CORS配置。
+	 * @param handler 要检查的处理程序(绝不是 {@code null}).
+	 * @param request 当前请求
+	 * @return 处理程序的CORS配置，如果没有，则为{@code null}
 	 * @since 4.2
 	 */
 	@Nullable
@@ -501,12 +503,10 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	}
 
 	/**
-	 * Update the HandlerExecutionChain for CORS-related handling.
-	 * <p>For pre-flight requests, the default implementation replaces the selected
-	 * handler with a simple HttpRequestHandler that invokes the configured
-	 * {@link #setCorsProcessor}.
-	 * <p>For actual requests, the default implementation inserts a
-	 * HandlerInterceptor that makes CORS-related checks and adds CORS headers.
+	 * 更新与CORS相关的处理的HandlerExecutionChain。
+	 * <p>对于预校准请求，默认实现使用一个简单的HttpRequestHandler替换所选的处理程序，
+	 * 该处理程序调用所配置的{@link #setCorsProcessor}。
+	 * <p>对于实际的请求，默认的实现将插入一个HandlerInterceptor，该拦截器执行与CORS相关的检查并添加CORS标头。
 	 * @param request the current request
 	 * @param chain the handler chain
 	 * @param config the applicable CORS configuration (possibly {@code null})

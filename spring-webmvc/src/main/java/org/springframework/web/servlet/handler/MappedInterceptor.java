@@ -138,10 +138,10 @@ public final class MappedInterceptor implements HandlerInterceptor {
 
 
 	/**
-	 * Determine a match for the given lookup path.
-	 * @param lookupPath the current request path
-	 * @param pathMatcher a path matcher for path pattern matching
-	 * @return {@code true} if the interceptor applies to the given request path
+	 * 确定给定查找路径的匹配。
+	 * @param lookupPath 当前请求路径
+	 * @param pathMatcher 用于路径模式匹配的路径匹配器
+	 * @return 如果拦截器应用于给定的请求路径，则为{@code true}
 	 */
 	public boolean matches(String lookupPath, PathMatcher pathMatcher) {
 		PathMatcher pathMatcherToUse = (this.pathMatcher != null ? this.pathMatcher : pathMatcher);
