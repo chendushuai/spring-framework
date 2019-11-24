@@ -980,9 +980,8 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	}
 
 	/**
-	 * Process this request, publishing an event regardless of the outcome.
-	 * <p>The actual event handling is performed by the abstract
-	 * {@link #doService} template method.
+	 * 处理此请求，无论结果如何发布事件。
+	 * <p>实际的事件处理是由abstract {@link #doService}模板方法执行的。
 	 */
 	protected final void processRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -1162,15 +1161,12 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 
 
 	/**
-	 * Subclasses must implement this method to do the work of request handling,
-	 * receiving a centralized callback for GET, POST, PUT and DELETE.
-	 * <p>The contract is essentially the same as that for the commonly overridden
-	 * {@code doGet} or {@code doPost} methods of HttpServlet.
-	 * <p>This class intercepts calls to ensure that exception handling and
-	 * event publication takes place.
-	 * @param request current HTTP request
-	 * @param response current HTTP response
-	 * @throws Exception in case of any kind of processing failure
+	 * 子类必须实现此方法来完成请求处理工作，接收GET、POST、PUT和DELETE的集中回调。
+	 * <p>契约本质上与通常覆盖的HttpServlet的{@code doGet}或{@code doPost}方法相同。
+	 * <p>该类拦截调用，以确保发生异常处理和事件发布。
+	 * @param request 当前 HTTP request
+	 * @param response 当前 HTTP response
+	 * @throws Exception 在任何类型的处理失败的情况下
 	 * @see javax.servlet.http.HttpServlet#doGet
 	 * @see javax.servlet.http.HttpServlet#doPost
 	 */

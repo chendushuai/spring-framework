@@ -337,7 +337,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	@Nullable
 	private RequestToViewNameTranslator viewNameTranslator;
 
-	/** FlashMapManager used by this servlet. */
+	/** 这个servlet使用的FlashMapManager。 */
 	@Nullable
 	private FlashMapManager flashMapManager;
 
@@ -904,16 +904,16 @@ public class DispatcherServlet extends FrameworkServlet {
 
 
 	/**
-	 * Exposes the DispatcherServlet-specific request attributes and delegates to {@link #doDispatch}
-	 * for the actual dispatching.
+	 * 为实际调度公开DispatcherServlet特定的请求属性和委托给{@link #doDispatch}。
 	 */
 	@Override
 	protected void doService(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		logRequest(request);
 
-		// Keep a snapshot of the request attributes in case of an include,
-		// to be able to restore the original attributes after the include.
+		// 在包含的情况下保持请求属性的快照，以便能够在包含之后恢复原始属性。
+		// 属性快照集合
 		Map<String, Object> attributesSnapshot = null;
+		// 检查“javax.servlet.include.request_uri”请求属性是否存在。
 		if (WebUtils.isIncludeRequest(request)) {
 			attributesSnapshot = new HashMap<>();
 			Enumeration<?> attrNames = request.getAttributeNames();
@@ -925,12 +925,13 @@ public class DispatcherServlet extends FrameworkServlet {
 			}
 		}
 
-		// Make framework objects available to handlers and view objects.
+		// 使框架对象对处理程序和视图对象可用。
 		request.setAttribute(WEB_APPLICATION_CONTEXT_ATTRIBUTE, getWebApplicationContext());
 		request.setAttribute(LOCALE_RESOLVER_ATTRIBUTE, this.localeResolver);
 		request.setAttribute(THEME_RESOLVER_ATTRIBUTE, this.themeResolver);
 		request.setAttribute(THEME_SOURCE_ATTRIBUTE, getThemeSource());
 
+		// 如果这个视图使用了FlashMapManager
 		if (this.flashMapManager != null) {
 			FlashMap inputFlashMap = this.flashMapManager.retrieveAndUpdate(request, response);
 			if (inputFlashMap != null) {
@@ -988,15 +989,14 @@ public class DispatcherServlet extends FrameworkServlet {
 	}
 
 	/**
-	 * Process the actual dispatching to the handler.
-	 * <p>The handler will be obtained by applying the servlet's HandlerMappings in order.
-	 * The HandlerAdapter will be obtained by querying the servlet's installed HandlerAdapters
-	 * to find the first that supports the handler class.
-	 * <p>All HTTP methods are handled by this method. It's up to HandlerAdapters or handlers
-	 * themselves to decide which methods are acceptable.
-	 * @param request current HTTP request
-	 * @param response current HTTP response
-	 * @throws Exception in case of any kind of processing failure
+	 * 将实际调度处理到处理程序。
+	 * <p>处理程序将通过依次应用servlet的HandlerMappings来获得。
+	 * HandlerAdapter将通过查询servlet安装的HandlerAdapter来获得，以找到第一个支持处理程序类的HandlerAdapter。
+	 * <p>所有HTTP方法都由这个方法处理。
+	 * 由HandlerAdapters或处理程序本身决定哪些方法是可接受处理的。
+	 * @param request 当前 HTTP request
+	 * @param response 当前 HTTP response
+	 * @throws Exception 在任何类型的处理失败的情况下
 	 */
 	protected void doDispatch(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		HttpServletRequest processedRequest = request;
@@ -1006,10 +1006,12 @@ public class DispatcherServlet extends FrameworkServlet {
 		WebAsyncManager asyncManager = WebAsyncUtils.getAsyncManager(request);
 
 		try {
+			// 默认创建ModelAndView对象及异常对象
 			ModelAndView mv = null;
 			Exception dispatchException = null;
 
 			try {
+				// 检查多部分请求，如果是多部分请求，返回包装后的多部分请求
 				processedRequest = checkMultipart(request);
 				multipartRequestParsed = (processedRequest != request);
 
@@ -1156,13 +1158,14 @@ public class DispatcherServlet extends FrameworkServlet {
 	}
 
 	/**
-	 * Convert the request into a multipart request, and make multipart resolver available.
-	 * <p>If no multipart resolver is set, simply use the existing request.
-	 * @param request current HTTP request
-	 * @return the processed request (multipart wrapper if necessary)
+	 * 将请求转换为多部分请求，并使多部分解析器可用。
+	 * <p>如果没有设置多部分解析器，只需使用现有的请求。
+	 * @param request 当前 HTTP request
+	 * @return 处理后的 request (如果需要，则是多部分包装)
 	 * @see MultipartResolver#resolveMultipart
 	 */
 	protected HttpServletRequest checkMultipart(HttpServletRequest request) throws MultipartException {
+		// 如果存在多部分解析器，且请求是多部分请求
 		if (this.multipartResolver != null && this.multipartResolver.isMultipart(request)) {
 			if (WebUtils.getNativeRequest(request, MultipartHttpServletRequest.class) != null) {
 				if (request.getDispatcherType().equals(DispatcherType.REQUEST)) {
@@ -1188,7 +1191,7 @@ public class DispatcherServlet extends FrameworkServlet {
 				}
 			}
 		}
-		// If not returned before: return original request.
+		// 如果之前没有返回:返回原始请求。
 		return request;
 	}
 

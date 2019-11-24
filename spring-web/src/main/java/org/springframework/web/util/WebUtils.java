@@ -489,13 +489,11 @@ public abstract class WebUtils {
 	}
 
 	/**
-	 * Determine whether the given request is an include request,
-	 * that is, not a top-level HTTP request coming in from the outside.
-	 * <p>Checks the presence of the "javax.servlet.include.request_uri"
-	 * request attribute. Could check any request attribute that is only
-	 * present in an include request.
-	 * @param request current servlet request
-	 * @return whether the given request is an include request
+	 * 确定给定的请求是否是包含请求，也就是说，不是来自外部的顶级HTTP请求。
+	 * <p>检查“javax.servlet.include.request_uri”请求属性是否存在。
+	 * 可以检查仅在包含请求中出现的任何请求属性。
+	 * @param request 当前 servlet request
+	 * @return 给定的请求是否为包含请求
 	 */
 	public static boolean isIncludeRequest(ServletRequest request) {
 		return (request.getAttribute(INCLUDE_REQUEST_URI_ATTRIBUTE) != null);
