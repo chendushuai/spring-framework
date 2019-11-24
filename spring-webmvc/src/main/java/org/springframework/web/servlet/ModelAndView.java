@@ -46,7 +46,7 @@ import org.springframework.util.CollectionUtils;
  */
 public class ModelAndView {
 
-	/** View instance or view name String. */
+	/** 视图实例或视图名称字符串。 */
 	@Nullable
 	private Object view;
 
@@ -216,8 +216,7 @@ public class ModelAndView {
 	}
 
 	/**
-	 * Indicate whether or not this {@code ModelAndView} has a view, either
-	 * as a view name or as a direct {@link View} instance.
+	 * 指示这个{@code ModelAndView}是否有一个视图，要么作为一个视图名，要么作为一个直接的{@link View}实例。
 	 */
 	public boolean hasView() {
 		return (this.view != null);

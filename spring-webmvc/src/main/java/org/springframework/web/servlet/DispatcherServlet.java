@@ -333,7 +333,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	@Nullable
 	private List<HandlerExceptionResolver> handlerExceptionResolvers;
 
-	/** RequestToViewNameTranslator used by this servlet. */
+	/** 这个servlet使用的RequestToViewNameTranslator。 */
 	@Nullable
 	private RequestToViewNameTranslator viewNameTranslator;
 
@@ -1013,6 +1013,7 @@ public class DispatcherServlet extends FrameworkServlet {
 			try {
 				// 检查多部分请求，如果是多部分请求，返回包装后的多部分请求
 				processedRequest = checkMultipart(request);
+				// 如果处理后的请求同源请求不同，则认为是经过多部分请求解析了
 				multipartRequestParsed = (processedRequest != request);
 
 				// 确定当前请求的处理程序。
@@ -1025,28 +1026,35 @@ public class DispatcherServlet extends FrameworkServlet {
 				// 确定当前请求的处理程序适配器。
 				HandlerAdapter ha = getHandlerAdapter(mappedHandler.getHandler());
 
-				// Process last-modified header, if supported by the handler.
+				// 如果处理程序支持，则处理最后修改的标头。
 				String method = request.getMethod();
+				// 判断是不是GET请求
 				boolean isGet = "GET".equals(method);
+				// 如果是GET请求或HEAD请求
 				if (isGet || "HEAD".equals(method)) {
+					// 得到请求的最后修改值，如果是GET，则直接判断在两次请求过程中，请求内容是否有修改，如果没有修改，则直接返回不处理
 					long lastModified = ha.getLastModified(request, mappedHandler.getHandler());
 					if (new ServletWebRequest(request, response).checkNotModified(lastModified) && isGet) {
 						return;
 					}
 				}
 
+				// 应用已经注册的拦截器的预处理方法
 				if (!mappedHandler.applyPreHandle(processedRequest, response)) {
 					return;
 				}
 
-				// Actually invoke the handler.
+				// 实际调用处理程序。
 				mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
 
+				// 请求是否选择了异步请求
 				if (asyncManager.isConcurrentHandlingStarted()) {
 					return;
 				}
 
+				// 应用默认视图名称
 				applyDefaultViewName(processedRequest, mv);
+				// 应用拦截器的后处理方法postHandle
 				mappedHandler.applyPostHandle(processedRequest, response, mv);
 			}
 			catch (Exception ex) {
@@ -1083,9 +1091,10 @@ public class DispatcherServlet extends FrameworkServlet {
 	}
 
 	/**
-	 * Do we need view name translation?
+	 * 我们需要视图名称转换吗?
 	 */
 	private void applyDefaultViewName(HttpServletRequest request, @Nullable ModelAndView mv) throws Exception {
+		// 如果MV不为空，且没有视图
 		if (mv != null && !mv.hasView()) {
 			String defaultViewName = getDefaultViewName(request);
 			if (defaultViewName != null) {
@@ -1095,8 +1104,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	}
 
 	/**
-	 * Handle the result of handler selection and handler invocation, which is
-	 * either a ModelAndView or an Exception to be resolved to a ModelAndView.
+	 * 处理处理程序选择和处理程序调用的结果，该结果要么是ModelAndView，要么是要解析为ModelAndView的异常。
 	 */
 	private void processDispatchResult(HttpServletRequest request, HttpServletResponse response,
 			@Nullable HandlerExecutionChain mappedHandler, @Nullable ModelAndView mv,
@@ -1263,13 +1271,14 @@ public class DispatcherServlet extends FrameworkServlet {
 	}
 
 	/**
-	 * Return the HandlerAdapter for this handler object.
-	 * @param handler the handler object to find an adapter for
-	 * @throws ServletException if no HandlerAdapter can be found for the handler. This is a fatal error.
+	 * 返回此处理程序对象的HandlerAdapter。
+	 * @param handler 要为其查找适配器的处理程序对象
+	 * @throws ServletException 如果找不到处理程序的HandlerAdapter。这是一个致命的错误。
 	 */
 	protected HandlerAdapter getHandlerAdapter(Object handler) throws ServletException {
 		if (this.handlerAdapters != null) {
 			for (HandlerAdapter adapter : this.handlerAdapters) {
+				// 判断适配器是否支持处理程序对象，如果支持，直接返回
 				if (adapter.supports(handler)) {
 					return adapter;
 				}
@@ -1384,10 +1393,10 @@ public class DispatcherServlet extends FrameworkServlet {
 	}
 
 	/**
-	 * Translate the supplied request into a default view name.
-	 * @param request current HTTP servlet request
-	 * @return the view name (or {@code null} if no default found)
-	 * @throws Exception if view name translation failed
+	 * 将提供的请求转换为默认视图名。
+	 * @param request 当前 HTTP servlet request
+	 * @return 视图名称 (如果没有找到默认的，则返回 {@code null})
+	 * @throws Exception 如果视图名称转换失败
 	 */
 	@Nullable
 	protected String getDefaultViewName(HttpServletRequest request) throws Exception {

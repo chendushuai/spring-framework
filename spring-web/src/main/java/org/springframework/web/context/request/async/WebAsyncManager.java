@@ -124,12 +124,9 @@ public final class WebAsyncManager {
 	}
 
 	/**
-	 * Whether the selected handler for the current request chose to handle the
-	 * request asynchronously. A return value of "true" indicates concurrent
-	 * handling is under way and the response will remain open. A return value
-	 * of "false" means concurrent handling was either not started or possibly
-	 * that it has completed and the request was dispatched for further
-	 * processing of the concurrent result.
+	 * 当前请求的选定处理程序是否选择异步处理请求。
+	 * 返回值为“true”表示正在进行并发处理，响应将保持打开状态。
+	 * 返回值为“false”表示没有启动并发处理，或者可能已经完成并发处理，请求已被发送以进一步处理并发结果。
 	 */
 	public boolean isConcurrentHandlingStarted() {
 		return (this.asyncWebRequest != null && this.asyncWebRequest.isAsyncStarted());

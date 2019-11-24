@@ -134,11 +134,9 @@ public interface WebRequest extends RequestAttributes {
 	boolean isSecure();
 
 	/**
-	 * Check whether the requested resource has been modified given the
-	 * supplied last-modified timestamp (as determined by the application).
-	 * <p>This will also transparently set the "Last-Modified" response header
-	 * and HTTP status when applicable.
-	 * <p>Typical usage:
+	 * 根据提供的last-modified时间戳(由应用程序确定)，检查请求的资源是否已被修改。
+	 * <p>这也将透明地设置“Last-Modified”响应头和HTTP状态(如果适用)。
+	 * <p>使用示范:
 	 * <pre class="code">
 	 * public String myHandleMethod(WebRequest webRequest, Model model) {
 	 *   long lastModified = // application-specific calculation
@@ -150,23 +148,15 @@ public interface WebRequest extends RequestAttributes {
 	 *   model.addAttribute(...);
 	 *   return "myViewName";
 	 * }</pre>
-	 * <p>This method works with conditional GET/HEAD requests, but
-	 * also with conditional POST/PUT/DELETE requests.
-	 * <p><strong>Note:</strong> you can use either
-	 * this {@code #checkNotModified(long)} method; or
-	 * {@link #checkNotModified(String)}. If you want enforce both
-	 * a strong entity tag and a Last-Modified value,
-	 * as recommended by the HTTP specification,
-	 * then you should use {@link #checkNotModified(String, long)}.
-	 * <p>If the "If-Modified-Since" header is set but cannot be parsed
-	 * to a date value, this method will ignore the header and proceed
-	 * with setting the last-modified timestamp on the response.
-	 * @param lastModifiedTimestamp the last-modified timestamp in
-	 * milliseconds that the application determined for the underlying
-	 * resource
-	 * @return whether the request qualifies as not modified,
-	 * allowing to abort request processing and relying on the response
-	 * telling the client that the content has not been modified
+	 * <p>此方法适用于有条件的GET/HEAD请求，也适用于有条件的POST/PUT/DELETE请求。
+	 * <p><strong>注意:</strong> 您可以使用这个{@code #checkNotModified(long)}方法;
+	 * 或{@link #checkNotModified(String)}方法。
+	 * 如果您希望同时强制一个强实体标记和一个Last-Modified值，就像HTTP规范建议的那样，
+	 * 那么您应该使用{@link #checkNotModified(String, long)}。
+	 * <p>如果设置了“If-Modified-Since”标头，但不能解析为日期值，
+	 * 则此方法将忽略标头，并继续设置响应上的last-modified时间戳。
+	 * @param lastModifiedTimestamp 应用程序为底层资源确定的last-modified的时间戳(以毫秒为单位)
+	 * @return 请求是否符合未修改的条件，允许中止请求处理并依赖于通知客户机内容未修改的响应
 	 */
 	boolean checkNotModified(long lastModifiedTimestamp);
 
