@@ -171,8 +171,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	public static final String THEME_RESOLVER_BEAN_NAME = "themeResolver";
 
 	/**
-	 * Well-known name for the HandlerMapping object in the bean factory for this namespace.
-	 * Only used when "detectAllHandlerMappings" is turned off.
+	 * bean工厂中此名称空间的HandlerMapping对象的知名名称。仅在关闭“detectAllHandlerMappings”时使用。
 	 * @see #setDetectAllHandlerMappings
 	 */
 	public static final String HANDLER_MAPPING_BEAN_NAME = "handlerMapping";
@@ -295,7 +294,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	/** 检测所有的handlerMapping或者只是查找“handlerMapping”bean? */
 	private boolean detectAllHandlerMappings = true;
 
-	/** Detect all HandlerAdapters or just expect "handlerAdapter" bean?. */
+	/** 检测所有的HandlerAdapters或者只是查找“handlerAdapter”bean? */
 	private boolean detectAllHandlerAdapters = true;
 
 	/** Detect all HandlerExceptionResolvers or just expect "handlerExceptionResolver" bean?. */
@@ -505,8 +504,11 @@ public class DispatcherServlet extends FrameworkServlet {
 		initLocaleResolver(context);
 		// 初始化用于解析主题的解析器
 		initThemeResolver(context);
-		// 获取
+		// 获取HandlerMapping集合，如果是获取所有的，则直接从bean工厂及其父工厂中搜索HandlerMapping类型的bean；
+		// 如果不是获取所有的，则根据指定的名称，获取指定的HandlerMapping及其实例。
+		// 如果上面两种方式都没有获取到HandlerMapping，则直接给定一个默认的HandlerMapping。
 		initHandlerMappings(context);
+		// 初始化HandlerAdapter集合
 		initHandlerAdapters(context);
 		initHandlerExceptionResolvers(context);
 		initRequestToViewNameTranslator(context);
@@ -600,10 +602,11 @@ public class DispatcherServlet extends FrameworkServlet {
 					BeanFactoryUtils.beansOfTypeIncludingAncestors(context, HandlerMapping.class, true, false);
 			if (!matchingBeans.isEmpty()) {
 				this.handlerMappings = new ArrayList<>(matchingBeans.values());
-				// We keep HandlerMappings in sorted order.
+				// 我们让HandlerMappings保持有序。
 				AnnotationAwareOrderComparator.sort(this.handlerMappings);
 			}
 		}
+		// 如果不是加载所有的HandlerMapping，则获取需要加载的bean的名称，然后获取bean实例
 		else {
 			try {
 				HandlerMapping hm = context.getBean(HANDLER_MAPPING_BEAN_NAME, HandlerMapping.class);
@@ -614,8 +617,7 @@ public class DispatcherServlet extends FrameworkServlet {
 			}
 		}
 
-		// Ensure we have at least one HandlerMapping, by registering
-		// a default HandlerMapping if no other mappings are found.
+		// 如果没有找到其他映射，我们通过注册一个默认的HandlerMapping，确保我们至少有一个HandlerMapping。
 		if (this.handlerMappings == null) {
 			this.handlerMappings = getDefaultStrategies(context, HandlerMapping.class);
 			if (logger.isTraceEnabled()) {
@@ -626,20 +628,19 @@ public class DispatcherServlet extends FrameworkServlet {
 	}
 
 	/**
-	 * Initialize the HandlerAdapters used by this class.
-	 * <p>If no HandlerAdapter beans are defined in the BeanFactory for this namespace,
-	 * we default to SimpleControllerHandlerAdapter.
+	 * 初始化该类使用的HandlerAdapters。
+	 * <p>如果在BeanFactory中没有为这个名称空间定义HandlerAdapter bean，则默认为SimpleControllerHandlerAdapter。
 	 */
 	private void initHandlerAdapters(ApplicationContext context) {
 		this.handlerAdapters = null;
-
+		// 是否检测所有的HandlerAdapter
 		if (this.detectAllHandlerAdapters) {
-			// Find all HandlerAdapters in the ApplicationContext, including ancestor contexts.
+			// 在ApplicationContext中查找所有HandlerAdapter，包括祖先上下文。
 			Map<String, HandlerAdapter> matchingBeans =
 					BeanFactoryUtils.beansOfTypeIncludingAncestors(context, HandlerAdapter.class, true, false);
 			if (!matchingBeans.isEmpty()) {
 				this.handlerAdapters = new ArrayList<>(matchingBeans.values());
-				// We keep HandlerAdapters in sorted order.
+				// 我们保持HandlerAdapters排序。
 				AnnotationAwareOrderComparator.sort(this.handlerAdapters);
 			}
 		}
@@ -653,8 +654,7 @@ public class DispatcherServlet extends FrameworkServlet {
 			}
 		}
 
-		// Ensure we have at least some HandlerAdapters, by registering
-		// default HandlerAdapters if no other adapters are found.
+		// 如果没有找到其他适配器，通过注册默认的HandlerAdapters，确保至少有一些HandlerAdapters。
 		if (this.handlerAdapters == null) {
 			this.handlerAdapters = getDefaultStrategies(context, HandlerAdapter.class);
 			if (logger.isTraceEnabled()) {
@@ -849,7 +849,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	}
 
 	/**
-	 * Create a List of default strategy objects for the given strategy interface.
+	 * 为给定的策略接口创建默认策略对象列表。
 	 * <p>The default implementation uses the "DispatcherServlet.properties" file (in the same
 	 * package as the DispatcherServlet class) to determine the class names. It instantiates
 	 * the strategy objects through the context's BeanFactory.

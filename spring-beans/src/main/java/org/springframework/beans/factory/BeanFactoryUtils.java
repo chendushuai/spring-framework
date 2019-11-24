@@ -171,16 +171,14 @@ public abstract class BeanFactoryUtils {
 	}
 
 	/**
-	 * Get all bean names for the given type, including those defined in ancestor
-	 * factories. Will return unique names in case of overridden bean definitions.
-	 * <p>Does consider objects created by FactoryBeans, which means that FactoryBeans
-	 * will get initialized. If the object created by the FactoryBean doesn't match,
-	 * the raw FactoryBean itself will be matched against the type.
-	 * <p>This version of {@code beanNamesForTypeIncludingAncestors} automatically
-	 * includes prototypes and FactoryBeans.
-	 * @param lbf the bean factory
-	 * @param type the type that beans must match (as a {@code Class})
-	 * @return the array of matching bean names, or an empty array if none
+	 * 获取给定类型的所有bean名称，包括在祖先工厂中定义的名称。
+	 * 将在覆盖bean定义的情况下返回唯一的名称。
+	 * <p>考虑了FactoryBeans创建的对象，这意味着FactoryBeans将被初始化。
+	 * 如果FactoryBean创建的对象不匹配，原始的FactoryBean本身将根据类型进行匹配。
+	 * <p>这个版本的{@code beanNamesForTypeIncludingAncestors}自动包括原型和FactoryBeans。
+	 * @param lbf bean工厂
+	 * @param type bean必须匹配的类型(作为{@code Class})
+	 * @return 匹配bean名称的数组，如果没有，则为空数组
 	 * @see ListableBeanFactory#getBeanNamesForType(Class)
 	 */
 	public static String[] beanNamesForTypeIncludingAncestors(ListableBeanFactory lbf, Class<?> type) {
@@ -474,11 +472,11 @@ public abstract class BeanFactoryUtils {
 
 
 	/**
-	 * Merge the given bean names result with the given parent result.
-	 * @param result the local bean name result
-	 * @param parentResult the parent bean name result (possibly empty)
-	 * @param hbf the local bean factory
-	 * @return the merged result (possibly the local result as-is)
+	 * 将给定的bean名称结果与给定的父结果合并。
+	 * @param result 本地bean名称的结果
+	 * @param parentResult 父bean名结果(可能为空)
+	 * @param hbf 本地bean工厂
+	 * @return 合并后的结果(可能是本地结果)
 	 * @since 4.3.15
 	 */
 	private static String[] mergeNamesWithParent(String[] result, String[] parentResult, HierarchicalBeanFactory hbf) {
