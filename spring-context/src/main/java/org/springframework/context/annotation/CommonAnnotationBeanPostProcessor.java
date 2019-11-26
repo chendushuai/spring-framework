@@ -100,28 +100,22 @@ import org.springframework.util.StringValueResolver;
  * <pre class="code">
  * &lt;bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"/&gt;</pre>
  *
- * For direct JNDI access, resolving resource names as JNDI resource references
- * within the Java EE application's "java:comp/env/" namespace, use the following:
+ * 对于直接JNDI访问，将资源名称解析为Java EE应用程序的“java:comp/env/”名称空间中的JNDI资源引用，使用以下方法:
  *
- * <pre class="code">、。0.。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。32
-1
-     151-* &lt;bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"&gt;
+ * <pre class="code">
+ * &lt;bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"&gt;
  *   &lt;property name="alwaysUseJndiLookup" value="true"/&gt;
  * &lt;/bean&gt;</pre>
  *
- * {@code mappedName}引用将始终在JNDI中解析，同时允许全局JNDI名称(包括“java:”前缀)。“alwaysUseJndiLookup”标志只影响{@code name}引用和默认名称(从字段名/属性名推断)。
- * {@code mappedName} references will always be resolved in JNDI,
- * allowing for global JNDI names (including "java:" prefix) as well. The
- * "alwaysUseJndiLookup" flag just affects {@code name} references and
- * default names (inferred from the field name / property name).
+ * {@code mappedName}引用将始终在JNDI中解析，同时允许全局JNDI名称(包括“java:”前缀)。
+ * “alwaysUseJndiLookup”标志只影响{@code name}引用和默认名称(从字段名/属性名推断)。
  *
- * <p><b>NOTE:</b> A default CommonAnnotationBeanPostProcessor will be registered
- * by the "context:annotation-config" and "context:component-scan" XML tags.
- * Remove or turn off the default annotation configuration there if you intend
- * to specify a custom CommonAnnotationBeanPostProcessor bean definition!
- * <p><b>NOTE:</b> Annotation injection will be performed <i>before</i> XML injection; thus
- * the latter configuration will override the former for properties wired through
- * both approaches.
+ * <p><b>注意:</b> 默认的CommonAnnotationBeanPostProcessor将由“context:annotation-config”和
+ * “context:component-scan”XML标记注册。
+ * 如果您打算指定一个定制的CommonAnnotationBeanPostProcessor bean定义，请删除或关闭默认的注解配置!
+ *
+ * <p><b>注意:</b> 在XML注入<i>之前</i>进行注解注入;
+ * 因此，对于通过这两种方法连接的属性，后一种配置将覆盖前一种配置。
  *
  * @author Juergen Hoeller
  * @since 2.5
@@ -338,9 +332,9 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 
 
 	private InjectionMetadata findResourceMetadata(String beanName, final Class<?> clazz, @Nullable PropertyValues pvs) {
-		// Fall back to class name as cache key, for backwards compatibility with custom callers.
+		// 返回类名作为缓存键，以便向后兼容自定义调用程序。
 		String cacheKey = (StringUtils.hasLength(beanName) ? beanName : clazz.getName());
-		// Quick check on the concurrent map first, with minimal locking.
+		// 首先快速检查并发映射，并使用最少的锁。
 		InjectionMetadata metadata = this.injectionMetadataCache.get(cacheKey);
 		if (InjectionMetadata.needsRefresh(metadata, clazz)) {
 			synchronized (this.injectionMetadataCache) {
