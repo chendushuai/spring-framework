@@ -476,6 +476,11 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 		return metadata;
 	}
 
+	/**
+	 * 构建自动注入的元数据
+	 * @param clazz
+	 * @return
+	 */
 	private InjectionMetadata buildAutowiringMetadata(final Class<?> clazz) {
 		if (!AnnotationUtils.isCandidateClass(clazz, this.autowiredAnnotationTypes)) {
 			return InjectionMetadata.EMPTY;
