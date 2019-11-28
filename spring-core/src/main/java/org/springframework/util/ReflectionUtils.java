@@ -762,10 +762,8 @@ public abstract class ReflectionUtils {
 	}
 
 	/**
-	 * Make the given field accessible, explicitly setting it accessible if
-	 * necessary. The {@code setAccessible(true)} method is only called
-	 * when actually necessary, to avoid unnecessary conflicts with a JVM
-	 * SecurityManager (if active).
+	 * 使给定字段可访问，必要时显式设置为可访问。
+	 * 只有在实际需要时才调用{@code setAccessible(true)}方法，以避免与JVM SecurityManager(如果活动)发生不必要的冲突。
 	 * @param field the field to make accessible
 	 * @see java.lang.reflect.Field#setAccessible
 	 */

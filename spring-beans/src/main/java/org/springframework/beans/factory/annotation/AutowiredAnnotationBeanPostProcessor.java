@@ -597,7 +597,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 	}
 
 	/**
-	 * Register the specified bean as dependent on the autowired beans.
+	 * 将指定的bean注册为依赖于自动装配的bean。
 	 */
 	private void registerDependentBeans(@Nullable String beanName, Set<String> autowiredBeanNames) {
 		if (beanName != null) {
@@ -636,6 +636,9 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 
 		private final boolean required;
 
+		/**
+		 * 是否有缓存，区别在于是否对属性进行解析
+		 */
 		private volatile boolean cached = false;
 
 		@Nullable
@@ -646,20 +649,31 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 			this.required = required;
 		}
 
+		/**
+		 * 字段注入
+		 * @param bean
+		 * @param beanName
+		 * @param pvs
+		 * @throws Throwable
+		 */
 		@Override
 		protected void inject(Object bean, @Nullable String beanName, @Nullable PropertyValues pvs) throws Throwable {
 			Field field = (Field) this.member;
 			Object value;
+			// 判断你是否有缓存，区别在于是否需要解析
 			if (this.cached) {
 				value = resolvedCachedArgument(beanName, this.cachedFieldValue);
 			}
 			else {
 				DependencyDescriptor desc = new DependencyDescriptor(field, this.required);
 				desc.setContainingClass(bean.getClass());
+				// 用于存储需要自动注入的bean名称
 				Set<String> autowiredBeanNames = new LinkedHashSet<>(1);
 				Assert.state(beanFactory != null, "No BeanFactory available");
+				// 用于类型转换
 				TypeConverter typeConverter = beanFactory.getTypeConverter();
 				try {
+					// 返回最终需要注入的对象，在创建完成后从容器中获取的对象，getBean，有则获取，无则创建
 					value = beanFactory.resolveDependency(desc, beanName, autowiredBeanNames, typeConverter);
 				}
 				catch (BeansException ex) {
@@ -674,6 +688,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 								String autowiredBeanName = autowiredBeanNames.iterator().next();
 								if (beanFactory.containsBean(autowiredBeanName) &&
 										beanFactory.isTypeMatch(autowiredBeanName, field.getType())) {
+									// 缓存对象
 									this.cachedFieldValue = new ShortcutDependencyDescriptor(
 											desc, autowiredBeanName, field.getType());
 								}
@@ -682,12 +697,14 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 						else {
 							this.cachedFieldValue = null;
 						}
+						// 并设置缓存状态为已缓存
 						this.cached = true;
 					}
 				}
 			}
 			if (value != null) {
 				ReflectionUtils.makeAccessible(field);
+				// 直接设置对象的属性值
 				field.set(bean, value);
 			}
 		}
