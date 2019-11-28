@@ -77,12 +77,15 @@ public class InjectionMetadata {
 	 */
 	private final Collection<InjectedElement> injectedElements;
 
+	/**
+	 * 已完成检查，也就是注册到了this.externallyManagedConfigMembers外部管理配置成员集合中
+	 */
 	@Nullable
 	private volatile Set<InjectedElement> checkedElements;
 
 
 	/**
-	 * Create a new {@code InjectionMetadata instance}.
+	 * 创建一个新的 {@code InjectionMetadata instance}.
 	 * <p>Preferably use {@link #forElements} for reusing the {@link #EMPTY}
 	 * instance in case of no elements.
 	 * @param targetClass the target class
@@ -95,23 +98,43 @@ public class InjectionMetadata {
 	}
 
 
+	/**
+	 * 检查配置成员
+	 * @param beanDefinition bean定义
+	 */
 	public void checkConfigMembers(RootBeanDefinition beanDefinition) {
+		// 已完成检查的成员集合
 		Set<InjectedElement> checkedElements = new LinkedHashSet<>(this.injectedElements.size());
+		// 遍历要注入的元素
 		for (InjectedElement element : this.injectedElements) {
+			// 得到注入元素的成员信息
 			Member member = element.getMember();
+			// 如果当前成员在外部管理的配置成员集合中不存在
 			if (!beanDefinition.isExternallyManagedConfigMember(member)) {
+				// 则将其注册到该集合中
 				beanDefinition.registerExternallyManagedConfigMember(member);
+				// 将已经添加到外部管理的成员集合中的元素保存到检查过的成员集合中
 				checkedElements.add(element);
 				if (logger.isTraceEnabled()) {
 					logger.trace("Registered injected element on class [" + this.targetClass.getName() + "]: " + element);
 				}
 			}
 		}
+		// 将检查完成的元素赋值给全局变量
 		this.checkedElements = checkedElements;
 	}
 
+	/**
+	 * 执行注入
+	 * @param target 目标对象
+	 * @param beanName bean名称
+	 * @param pvs 属性值
+	 * @throws Throwable
+	 */
 	public void inject(Object target, @Nullable String beanName, @Nullable PropertyValues pvs) throws Throwable {
+		// 得到之前放入的已检查元素集合信息，该放置过程是在postProcessMergedBeanDefinition方法中完成的
 		Collection<InjectedElement> checkedElements = this.checkedElements;
+		// 如果已检查的成员集合为空，则获取需要注入的元素集合
 		Collection<InjectedElement> elementsToIterate =
 				(checkedElements != null ? checkedElements : this.injectedElements);
 		if (!elementsToIterate.isEmpty()) {
@@ -225,7 +248,7 @@ public class InjectionMetadata {
 		}
 
 		/**
-		 * Either this or {@link #getResourceToInject} needs to be overridden.
+		 * 需要覆盖这个或{@link #getResourceToInject}。
 		 */
 		protected void inject(Object target, @Nullable String requestingBeanName, @Nullable PropertyValues pvs)
 				throws Throwable {
