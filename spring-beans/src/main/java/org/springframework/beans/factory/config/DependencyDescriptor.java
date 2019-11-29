@@ -241,12 +241,9 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 	}
 
 	/**
-	 * Resolve a shortcut for this dependency against the given factory, for example
-	 * taking some pre-resolved information into account.
-	 * <p>The resolution algorithm will first attempt to resolve a shortcut through this
-	 * method before going into the regular type matching algorithm across all beans.
-	 * Subclasses may override this method to improve resolution performance based on
-	 * pre-cached information while still receiving {@link InjectionPoint} exposure etc.
+	 * 针对给定工厂解析此依赖项的快捷方式，例如考虑一些预先解析的信息。
+	 * <p>解析算法将首先尝试通过此方法解析一个快捷方式，然后再进入所有bean的常规类型匹配算法。
+	 * 子类可以重写这个方法，以提高基于预先缓存的信息的分辨率性能，同时仍然接收{@link InjectionPoint}曝光等。
 	 * @param beanFactory the associated factory
 	 * @return the shortcut result if any, or {@code null} if none
 	 * @throws BeansException if the shortcut could not be obtained

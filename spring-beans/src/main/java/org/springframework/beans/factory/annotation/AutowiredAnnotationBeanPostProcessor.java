@@ -816,7 +816,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 
 
 	/**
-	 * DependencyDescriptor variant with a pre-resolved target bean name.
+	 * DependencyDescriptor变量，带有预解析的目标bean名。
 	 */
 	@SuppressWarnings("serial")
 	private static class ShortcutDependencyDescriptor extends DependencyDescriptor {
