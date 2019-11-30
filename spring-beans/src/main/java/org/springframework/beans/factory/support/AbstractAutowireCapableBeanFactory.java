@@ -1405,14 +1405,17 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// 如果bean定义中已有属性，则获取已有的属性值
 		PropertyValues pvs = (mbd.hasPropertyValues() ? mbd.getPropertyValues() : null);
 
+		// 得到bean定义中的自动装配方式，如果给定自动选择装配模式，则根据是否有无参构造函数来确认使用的自动装配类型
+		// 如果存在无参构造函数，则返回根据类型自动装配；否则返回根据构造函数自动装配
 		int resolvedAutowireMode = mbd.getResolvedAutowireMode();
 		// 自动注入类型
 		if (resolvedAutowireMode == AUTOWIRE_BY_NAME || resolvedAutowireMode == AUTOWIRE_BY_TYPE) {
 			MutablePropertyValues newPvs = new MutablePropertyValues(pvs);
-			// Add property values based on autowire by name if applicable.
+			// 如果是根据名称自动装配，则根据自动装配的名称添加属性值。
 			if (resolvedAutowireMode == AUTOWIRE_BY_NAME) {
 				autowireByName(beanName, mbd, bw, newPvs);
 			}
+			// 如果是根据类型自动装配，则根据自动装配的类型添加属性值。
 			// Add property values based on autowire by type if applicable.
 			if (resolvedAutowireMode == AUTOWIRE_BY_TYPE) {
 				autowireByType(beanName, mbd, bw, newPvs);
@@ -1461,13 +1464,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	}
 
 	/**
-	 * Fill in any missing property values with references to
-	 * other beans in this factory if autowire is set to "byName".
-	 * @param beanName the name of the bean we're wiring up.
-	 * Useful for debugging messages; not used functionally.
-	 * @param mbd bean definition to update through autowiring
-	 * @param bw the BeanWrapper from which we can obtain information about the bean
-	 * @param pvs the PropertyValues to register wired objects with
+	 * 如果autowire设置为“byName”，则使用对工厂中其他bean的引用来填充任何缺失的属性值。
+	 * @param beanName 我们装配的bean的名称。对调试消息有用;未使用的功能。
+	 * @param mbd 通过自动装配更新bean定义
+	 * @param bw 我们可以从中获得关于bean的信息的BeanWrapper
+	 * @param pvs 用来注册连接对象的PropertyValues
 	 */
 	protected void autowireByName(
 			String beanName, AbstractBeanDefinition mbd, BeanWrapper bw, MutablePropertyValues pvs) {
@@ -1545,12 +1546,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 
 	/**
-	 * Return an array of non-simple bean properties that are unsatisfied.
-	 * These are probably unsatisfied references to other beans in the
-	 * factory. Does not include simple properties like primitives or Strings.
-	 * @param mbd the merged bean definition the bean was created with
-	 * @param bw the BeanWrapper the bean was created with
-	 * @return an array of bean property names
+	 * 返回一个不满足的非简单bean属性数组。
+	 * 这些可能是对工厂中其他bean的不满意的引用。
+	 * 不包括基本类型或字符串等简单属性。
+	 * @param mbd 与bean一起创建的合并bean定义
+	 * @param bw 用bean创建的BeanWrapper
+	 * @return bean属性名的数组
 	 * @see org.springframework.beans.BeanUtils#isSimpleProperty
 	 */
 	protected String[] unsatisfiedNonSimpleProperties(AbstractBeanDefinition mbd, BeanWrapper bw) {

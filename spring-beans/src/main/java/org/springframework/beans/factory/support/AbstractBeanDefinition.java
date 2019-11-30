@@ -115,21 +115,15 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	public static final int DEPENDENCY_CHECK_SIMPLE = 2;
 
 	/**
-	 * Constant that indicates dependency checking for all properties
-	 * (object references as well as "simple" properties).
+	 * 常量，指示对所有属性(对象引用以及“simple”属性)的依赖项检查。
 	 * @see #setDependencyCheck
 	 */
 	public static final int DEPENDENCY_CHECK_ALL = 3;
 
 	/**
-	 * Constant that indicates the container should attempt to infer the
-	 * {@link #setDestroyMethodName destroy method name} for a bean as opposed to
-	 * explicit specification of a method name. The value {@value} is specifically
-	 * designed to include characters otherwise illegal in a method name, ensuring
-	 * no possibility of collisions with legitimately named methods having the same
-	 * name.
-	 * <p>Currently, the method names detected during destroy method inference
-	 * are "close" and "shutdown", if present on the specific bean class.
+	 * 常量，指示容器应尝试推断bean的{@link #setDestroyMethodName 销毁方法名}，而不是显式指定方法名。
+	 * 值{@value}是专门设计来在方法名中包含其他不合法的字符的，以确保不可能与合法命名的具有相同名称的方法发生冲突。
+	 * <p>目前，在销毁方法推断过程中检测到的方法名是“close”和“shutdown”(如果存在于特定的bean类中)。
 	 */
 	public static final String INFER_METHOD = "(inferred)";
 
@@ -147,6 +141,9 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	@Nullable
 	private Boolean lazyInit;
 
+	/**
+	 * 指定的自动装配模式，默认为AUTOWIRE_NO，不自动装配
+	 */
 	private int autowireMode = AUTOWIRE_NO;
 
 	private int dependencyCheck = DEPENDENCY_CHECK_NONE;
@@ -580,7 +577,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	}
 
 	/**
-	 * Return the autowire mode as specified in the bean definition.
+	 * 返回bean定义中指定的自动装配模式。
 	 */
 	public int getAutowireMode() {
 		return this.autowireMode;
@@ -594,12 +591,13 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * @see #AUTOWIRE_BY_TYPE
 	 */
 	public int getResolvedAutowireMode() {
+		// 如果给定的自动装配模式是自动选择装配模式
 		if (this.autowireMode == AUTOWIRE_AUTODETECT) {
-			// Work out whether to apply setter autowiring or constructor autowiring.
-			// If it has a no-arg constructor it's deemed to be setter autowiring,
-			// otherwise we'll try constructor autowiring.
+			// 确定是应用setter自动装配还是构造器自动装配。
+			// 如果它有一个无参数的构造函数，它会被认为是setter自动装配，否则我们会尝试构造函数自动装配。
 			Constructor<?>[] constructors = getBeanClass().getConstructors();
 			for (Constructor<?> constructor : constructors) {
+				// 判断是否存在无参的，public的构造方法，如果存在，则返回根据类型自动装配，否则使用构造函数自动装配
 				if (constructor.getParameterCount() == 0) {
 					return AUTOWIRE_BY_TYPE;
 				}
@@ -607,6 +605,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 			return AUTOWIRE_CONSTRUCTOR;
 		}
 		else {
+			// 否则直接返回给定的自动装配模型
 			return this.autowireMode;
 		}
 	}
