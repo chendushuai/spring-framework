@@ -1397,10 +1397,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			}
 		}
 
+		// 通过自定义的实现InstantiationAwareBeanPostProcessor接口，可以实现禁用字段和除了构造函数之外的方法的自动装配
 		if (!continueWithPropertyPopulation) {
 			return;
 		}
 
+		// 如果bean定义中已有属性，则获取已有的属性值
 		PropertyValues pvs = (mbd.hasPropertyValues() ? mbd.getPropertyValues() : null);
 
 		int resolvedAutowireMode = mbd.getResolvedAutowireMode();
