@@ -1284,6 +1284,15 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		}
 	}
 
+	/**
+	 * 执行依赖解析
+	 * @param descriptor
+	 * @param beanName
+	 * @param autowiredBeanNames
+	 * @param typeConverter
+	 * @return
+	 * @throws BeansException
+	 */
 	@Nullable
 	public Object doResolveDependency(DependencyDescriptor descriptor, @Nullable String beanName,
 			@Nullable Set<String> autowiredBeanNames, @Nullable TypeConverter typeConverter) throws BeansException {
@@ -1298,12 +1307,16 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 			// 得到需要注入的类型
 			Class<?> type = descriptor.getDependencyType();
+			// 得到建议值
 			Object value = getAutowireCandidateResolver().getSuggestedValue(descriptor);
 			if (value != null) {
 				if (value instanceof String) {
+					// 得到解析后的值
 					String strVal = resolveEmbeddedValue((String) value);
+					// 如果beanName对应的bean已经存在，则返回合并bean定义，否则为空
 					BeanDefinition bd = (beanName != null && containsBean(beanName) ?
 							getMergedBeanDefinition(beanName) : null);
+					// 得到解析后的值
 					value = evaluateBeanDefinitionString(strVal, bd);
 				}
 				TypeConverter converter = (typeConverter != null ? typeConverter : getTypeConverter());
@@ -1318,6 +1331,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				}
 			}
 
+			// 解析多种bean
 			Object multipleBeans = resolveMultipleBeans(descriptor, beanName, autowiredBeanNames, typeConverter);
 			if (multipleBeans != null) {
 				return multipleBeans;
@@ -1511,13 +1525,11 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 	/**
 	 * 查找与所需类型匹配的bean实例。在为指定bean进行自动装配期间调用。
-	 * @param beanName the name of the bean that is about to be wired
-	 * @param requiredType the actual type of bean to look for
-	 * (may be an array component type or collection element type)
-	 * @param descriptor the descriptor of the dependency to resolve
-	 * @return a Map of candidate names and candidate instances that match
-	 * the required type (never {@code null})
-	 * @throws BeansException in case of errors
+	 * @param beanName 即将装配的bean的名称
+	 * @param requiredType 要查找的bean的实际类型(可能是数组组件类型或集合元素类型)
+	 * @param descriptor 要解析的依赖项的描述符
+	 * @return 匹配所需类型的候选名称和候选实例的映射(从不是{@code null})
+	 * @throws BeansException 错误情况
 	 * @see #autowireByType
 	 * @see #autowireConstructor
 	 */
@@ -1903,7 +1915,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 
 	/**
-	 * A dependency descriptor marker for nested elements.
+	 * 嵌套元素的依赖描述符标记。
 	 */
 	private static class NestedDependencyDescriptor extends DependencyDescriptor {
 

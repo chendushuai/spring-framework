@@ -567,10 +567,9 @@ public abstract class BeanUtils {
 	}
 
 	/**
-	 * Obtain a new MethodParameter object for the write method of the
-	 * specified property.
-	 * @param pd the PropertyDescriptor for the property
-	 * @return a corresponding MethodParameter object
+	 * 获取指定属性的写方法的新方法参数对象。
+	 * @param pd 属性的PropertyDescriptor
+	 * @return 一个对应的MethodParameter对象
 	 */
 	public static MethodParameter getWriteMethodParameter(PropertyDescriptor pd) {
 		if (pd instanceof GenericTypeAwarePropertyDescriptor) {
