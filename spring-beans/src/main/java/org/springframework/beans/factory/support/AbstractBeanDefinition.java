@@ -146,6 +146,9 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 */
 	private int autowireMode = AUTOWIRE_NO;
 
+	/**
+	 * 依赖项检查代码，默认没有依赖项检查
+	 */
 	private int dependencyCheck = DEPENDENCY_CHECK_NONE;
 
 	@Nullable
@@ -624,7 +627,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	}
 
 	/**
-	 * Return the dependency check code.
+	 * 返回依赖项检查代码。
 	 */
 	public int getDependencyCheck() {
 		return this.dependencyCheck;

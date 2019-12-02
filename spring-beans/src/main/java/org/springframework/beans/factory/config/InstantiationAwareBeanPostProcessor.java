@@ -23,20 +23,14 @@ import org.springframework.beans.PropertyValues;
 import org.springframework.lang.Nullable;
 
 /**
- * Subinterface of {@link BeanPostProcessor} that adds a before-instantiation callback,
- * and a callback after instantiation but before explicit properties are set or
- * autowiring occurs.
+ * {@link BeanPostProcessor}的子接口，它添加了一个实例化之前的回调，以及一个实例化之后但在显式属性设置之前的回调。
  *
- * <p>Typically used to suppress default instantiation for specific target beans,
- * for example to create proxies with special TargetSources (pooling targets,
- * lazily initializing targets, etc), or to implement additional injection strategies
- * such as field injection.
+ * <p>通常用于禁止特定目标bean的默认实例化，例如创建具有特定目标源的代理(池目标、延迟初始化目标等)，
+ * 或者实现额外的注入策略，如字段注入。
  *
- * <p><b>NOTE:</b> This interface is a special purpose interface, mainly for
- * internal use within the framework. It is recommended to implement the plain
- * {@link BeanPostProcessor} interface as far as possible, or to derive from
- * {@link InstantiationAwareBeanPostProcessorAdapter} in order to be shielded
- * from extensions to this interface.
+ * <p><b>注意:</b> 这个接口是一个特殊用途的接口，主要用于框架内部。
+ * 建议尽可能实现普通的{@link BeanPostProcessor}接口，
+ * 或者从{@link InstantiationAwareBeanPostProcessorAdapter}派生，以避免扩展到这个接口。
  *
  * @author Juergen Hoeller
  * @author Rod Johnson
@@ -94,19 +88,15 @@ public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
 	}
 
 	/**
-	 * Post-process the given property values before the factory applies them
-	 * to the given bean, without any need for property descriptors.
-	 * <p>Implementations should return {@code null} (the default) if they provide a custom
-	 * {@link #postProcessPropertyValues} implementation, and {@code pvs} otherwise.
-	 * In a future version of this interface (with {@link #postProcessPropertyValues} removed),
-	 * the default implementation will return the given {@code pvs} as-is directly.
-	 * @param pvs the property values that the factory is about to apply (never {@code null})
-	 * @param bean the bean instance created, but whose properties have not yet been set
-	 * @param beanName the name of the bean
-	 * @return the actual property values to apply to the given bean (can be the passed-in
-	 * PropertyValues instance), or {@code null} which proceeds with the existing properties
-	 * but specifically continues with a call to {@link #postProcessPropertyValues}
-	 * (requiring initialized {@code PropertyDescriptor}s for the current bean class)
+	 * 在工厂将给定的属性值应用到给定bean之前对它们进行后处理，而不需要任何属性描述符。
+	 * <p>如果实现提供定制的{@link #postProcessPropertyValues}实现，则应该返回{@code null}(默认值)，否则返回{@code pvs}。
+	 * 在这个接口的未来版本中(删除了{@link #postProcessPropertyValues})，默认实现将直接返回给定的{@code pvs}。
+	 * @param pvs 工厂将要应用的属性值(绝不是{@code null})
+	 * @param bean 创建了bean实例，但尚未设置其属性
+	 * @param beanName bean的名称
+	 * @return 要应用到给定bean的实际属性值(可以是传入的PropertyValues实例)，
+	 * 如果处理现有属性，但具体地继续调用{@link #postProcessPropertyValues}
+	 * (需要为当前bean类初始化{@code PropertyDescriptor}s)，则返回{@code null}，
 	 * @throws org.springframework.beans.BeansException in case of errors
 	 * @since 5.1
 	 * @see #postProcessPropertyValues

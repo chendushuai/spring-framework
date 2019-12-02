@@ -176,10 +176,10 @@ public class InjectionMetadata {
 	}
 
 	/**
-	 * Check whether the given injection metadata needs to be refreshed.
-	 * @param metadata the existing metadata instance
-	 * @param clazz the current target class
-	 * @return {@code true} indicating a refresh, {@code false} otherwise
+	 * 检查给定的注入元数据是否需要刷新。
+	 * @param metadata 现有元数据实例
+	 * @param clazz 当前目标类
+	 * @return {@code true}表示刷新，{@code false}表示不刷新
 	 */
 	public static boolean needsRefresh(@Nullable InjectionMetadata metadata, Class<?> clazz) {
 		return (metadata == null || metadata.targetClass != clazz);

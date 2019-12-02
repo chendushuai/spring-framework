@@ -1423,8 +1423,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			pvs = newPvs;
 		}
 
+		// 返回该工厂是否持有一个InstantiationAwareBeanPostProcessor，该实例化处理程序将在关闭时应用于单例bean。
 		boolean hasInstAwareBpps = hasInstantiationAwareBeanPostProcessors();
-		// 要不要做属性检查
+		// 要不要做属性检查，如果不需要做，则为false，否则为true
 		boolean needsDepCheck = (mbd.getDependencyCheck() != AbstractBeanDefinition.DEPENDENCY_CHECK_NONE);
 
 		PropertyDescriptor[] filteredPds = null;
@@ -1535,6 +1536,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					if (autowiredArgument != null) {
 						pvs.add(propertyName, autowiredArgument);
 					}
+					// 遍历注册依赖关系
 					for (String autowiredBeanName : autowiredBeanNames) {
 						registerDependentBean(autowiredBeanName, beanName);
 						if (logger.isTraceEnabled()) {

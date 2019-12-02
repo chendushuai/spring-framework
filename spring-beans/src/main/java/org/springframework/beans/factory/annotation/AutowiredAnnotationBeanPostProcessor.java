@@ -111,6 +111,9 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 
 	protected final Log logger = LogFactory.getLog(getClass());
 
+	/**
+	 * 自动装配注解类型，默认有@Autowired和@Value，如果支持JSR 330，则还支持@Inject
+	 */
 	private final Set<Class<? extends Annotation>> autowiredAnnotationTypes = new LinkedHashSet<>(4);
 
 	private String requiredParameterName = "required";
@@ -133,9 +136,8 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 
 
 	/**
-	 * Create a new AutowiredAnnotationBeanPostProcessor
-	 * for Spring's standard {@link Autowired} annotation.
-	 * <p>Also supports JSR-330's {@link javax.inject.Inject} annotation, if available.
+	 * 为Spring的标准{@link Autowired}注解创建一个新的AutowiredAnnotationBeanPostProcessor。
+	 * <p>如果可以，还支持JSR-330的{@link javax.inject.Inject}注解。
 	 */
 	@SuppressWarnings("unchecked")
 	public AutowiredAnnotationBeanPostProcessor() {
@@ -462,6 +464,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 		String cacheKey = (StringUtils.hasLength(beanName) ? beanName : clazz.getName());
 		// 首先快速检查并发映射，并使用最少的锁。
 		InjectionMetadata metadata = this.injectionMetadataCache.get(cacheKey);
+		// 判断是否需要刷新元数据
 		if (InjectionMetadata.needsRefresh(metadata, clazz)) {
 			synchronized (this.injectionMetadataCache) {
 				metadata = this.injectionMetadataCache.get(cacheKey);
@@ -483,6 +486,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 	 * @return
 	 */
 	private InjectionMetadata buildAutowiringMetadata(final Class<?> clazz) {
+		// 判断在类的方法和字段级别是否添加了@Autowired和@Value注解，如果没有，直接返回空的注入元数据
 		if (!AnnotationUtils.isCandidateClass(clazz, this.autowiredAnnotationTypes)) {
 			return InjectionMetadata.EMPTY;
 		}
@@ -491,18 +495,23 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 		Class<?> targetClass = clazz;
 
 		do {
+			// 得到的注入元数据注入元素列表
 			final List<InjectionMetadata.InjectedElement> currElements = new ArrayList<>();
 
 			ReflectionUtils.doWithLocalFields(targetClass, field -> {
+				// 逐个属性判断是否添加了自动装配注解，并得到注解内容
 				MergedAnnotation<?> ann = findAutowiredAnnotation(field);
 				if (ann != null) {
+					// 如果属性是静态的，则直接提示，不支持静态的属性
 					if (Modifier.isStatic(field.getModifiers())) {
 						if (logger.isInfoEnabled()) {
 							logger.info("Autowired annotation is not supported on static fields: " + field);
 						}
 						return;
 					}
+					// 判断是否有@Autowired(required=true)
 					boolean required = determineRequiredStatus(ann);
+					// 保存字段的自动注入注解信息
 					currElements.add(new AutowiredFieldElement(field, required));
 				}
 			});
@@ -540,6 +549,11 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 		return InjectionMetadata.forElements(elements, clazz);
 	}
 
+	/**
+	 * 找到自动装配注解
+	 * @param ao
+	 * @return
+	 */
 	@Nullable
 	private MergedAnnotation<?> findAutowiredAnnotation(AccessibleObject ao) {
 		// 得到对象中的注解内容
@@ -630,7 +644,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 
 
 	/**
-	 * Class representing injection information about an annotated field.
+	 * 类表示有关带字段字段的注入信息。
 	 */
 	private class AutowiredFieldElement extends InjectionMetadata.InjectedElement {
 
