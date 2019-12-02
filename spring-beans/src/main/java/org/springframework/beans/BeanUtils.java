@@ -473,12 +473,10 @@ public abstract class BeanUtils {
 	}
 
 	/**
-	 * Find a JavaBeans {@code PropertyDescriptor} for the given method,
-	 * with the method either being the read method or the write method for
-	 * that bean property.
-	 * @param method the method to find a corresponding PropertyDescriptor for
-	 * @param clazz the (most specific) class to introspect for descriptors
-	 * @return the corresponding PropertyDescriptor, or {@code null} if none
+	 * 为给定的方法找到一个JavaBeans {@code PropertyDescriptor}，该方法可以是该bean属性的读方法，也可以是写方法。
+	 * @param method 用于查找相应的PropertyDescriptor的方法
+	 * @param clazz 要内省描述符的(最特定的)类
+	 * @return 对应的PropertyDescriptor，如果没有，则为{@code null}
 	 * @throws BeansException if PropertyDescriptor lookup fails
 	 * @since 3.2.13
 	 */

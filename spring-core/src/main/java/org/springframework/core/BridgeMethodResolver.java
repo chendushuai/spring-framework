@@ -57,21 +57,24 @@ public final class BridgeMethodResolver {
 
 
 	/**
-	 * Find the original method for the supplied {@link Method bridge Method}.
-	 * <p>It is safe to call this method passing in a non-bridge {@link Method} instance.
-	 * In such a case, the supplied {@link Method} instance is returned directly to the caller.
-	 * Callers are <strong>not</strong> required to check for bridging before calling this method.
-	 * @param bridgeMethod the method to introspect
-	 * @return the original method (either the bridged method or the passed-in method
-	 * if no more specific one could be found)
+	 * 查找提供的{@link Method 桥接方法}的原始方法。
+	 * <p>通过一个非桥{@link Method}实例调用这个方法是安全的。
+	 * 在这种情况下，提供的{@link Method}实例直接返回给调用者。
+	 * 调用方在调用此方法之前<strong>不需要</strong>检查桥接。
+	 * @param bridgeMethod 内省的方法
+	 * @return 原始方法(如果找不到更具体的方法，则使用桥接方法或传入方法)
 	 */
 	public static Method findBridgedMethod(Method bridgeMethod) {
+		// 如果给定的方法不是一个桥接方法，则直接返回当前方法
 		if (!bridgeMethod.isBridge()) {
 			return bridgeMethod;
 		}
+
+		// 从缓存中得到桥接方法
 		Method bridgedMethod = cache.get(bridgeMethod);
+		// 如果桥接方法为null
 		if (bridgedMethod == null) {
-			// Gather all methods with matching name and parameter size.
+			// 收集所有具有匹配名称和参数大小的方法。
 			List<Method> candidateMethods = new ArrayList<>();
 			MethodFilter filter = candidateMethod ->
 					isBridgedCandidateFor(candidateMethod, bridgeMethod);

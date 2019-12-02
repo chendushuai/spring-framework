@@ -142,6 +142,7 @@ public class InjectionMetadata {
 				if (logger.isTraceEnabled()) {
 					logger.trace("Processing injected element of bean '" + beanName + "': " + element);
 				}
+				// 执行注入
 				element.inject(target, beanName, pvs);
 			}
 		}
@@ -249,22 +250,27 @@ public class InjectionMetadata {
 
 		/**
 		 * 需要覆盖这个或{@link #getResourceToInject}。
+		 * 实际执行输入
 		 */
 		protected void inject(Object target, @Nullable String requestingBeanName, @Nullable PropertyValues pvs)
 				throws Throwable {
 
+			// 如果需要注入的类型是属性，则直接注入即可。
 			if (this.isField) {
 				Field field = (Field) this.member;
 				ReflectionUtils.makeAccessible(field);
 				field.set(target, getResourceToInject(target, requestingBeanName));
 			}
+			// 如果需要注入的类型是方法
 			else {
+				// 判断属性值是否需要跳过
 				if (checkPropertySkipping(pvs)) {
 					return;
 				}
 				try {
 					Method method = (Method) this.member;
 					ReflectionUtils.makeAccessible(method);
+					// 请求自动注入属性
 					method.invoke(target, getResourceToInject(target, requestingBeanName));
 				}
 				catch (InvocationTargetException ex) {
@@ -274,9 +280,8 @@ public class InjectionMetadata {
 		}
 
 		/**
-		 * Check whether this injector's property needs to be skipped due to
-		 * an explicit property value having been specified. Also marks the
-		 * affected property as processed for other processors to ignore it.
+		 * 检查是否由于指定了显式属性值而需要跳过此注入器的属性。
+		 * 还将受影响的属性标记为已处理，以便其他处理器忽略它。
 		 */
 		protected boolean checkPropertySkipping(@Nullable PropertyValues pvs) {
 			Boolean skip = this.skip;
@@ -323,7 +328,7 @@ public class InjectionMetadata {
 		}
 
 		/**
-		 * Either this or {@link #inject} needs to be overridden.
+		 * 需要覆盖这个或{@link #inject}。
 		 */
 		@Nullable
 		protected Object getResourceToInject(Object target, @Nullable String requestingBeanName) {

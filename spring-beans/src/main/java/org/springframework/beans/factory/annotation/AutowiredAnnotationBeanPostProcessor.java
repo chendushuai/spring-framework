@@ -408,10 +408,19 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 		return (candidateConstructors.length > 0 ? candidateConstructors : null);
 	}
 
+	/**
+	 * 后置处理属性信息
+	 * @param pvs
+	 * @param bean
+	 * @param beanName
+	 * @return
+	 */
 	@Override
 	public PropertyValues postProcessProperties(PropertyValues pvs, Object bean, String beanName) {
+		// 查找需要自动注入的元数据信息，包括属性和方法
 		InjectionMetadata metadata = findAutowiringMetadata(beanName, bean.getClass(), pvs);
 		try {
+			// 执行元数据注入
 			metadata.inject(bean, beanName, pvs);
 		}
 		catch (BeanCreationException ex) {
@@ -472,6 +481,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 					if (metadata != null) {
 						metadata.clear(pvs);
 					}
+					// 构建需要自动注入的元素信息，包括属性和方法
 					metadata = buildAutowiringMetadata(clazz);
 					this.injectionMetadataCache.put(cacheKey, metadata);
 				}
@@ -491,13 +501,16 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 			return InjectionMetadata.EMPTY;
 		}
 
+		// 所有的自动注入信息
 		List<InjectionMetadata.InjectedElement> elements = new ArrayList<>();
+		// 目标类，用于递归查找父类
 		Class<?> targetClass = clazz;
 
 		do {
 			// 得到的注入元数据注入元素列表
 			final List<InjectionMetadata.InjectedElement> currElements = new ArrayList<>();
 
+			// 遍历属性自动注入信息
 			ReflectionUtils.doWithLocalFields(targetClass, field -> {
 				// 逐个属性判断是否添加了自动装配注解，并得到注解内容
 				MergedAnnotation<?> ann = findAutowiredAnnotation(field);
@@ -516,36 +529,46 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 				}
 			});
 
+			// 遍历方法自动注入信息
 			ReflectionUtils.doWithLocalMethods(targetClass, method -> {
+				// 判断方法是不是桥方法，如果是桥方法，则得到原始方法，否则就是当前方法
 				Method bridgedMethod = BridgeMethodResolver.findBridgedMethod(method);
 				if (!BridgeMethodResolver.isVisibilityBridgeMethodPair(method, bridgedMethod)) {
 					return;
 				}
+				// 得到方法上的自动装配注解信息
 				MergedAnnotation<?> ann = findAutowiredAnnotation(bridgedMethod);
 				if (ann != null && method.equals(ClassUtils.getMostSpecificMethod(method, clazz))) {
+					// 如果方法是static的，则不进行处理，直接返回
 					if (Modifier.isStatic(method.getModifiers())) {
 						if (logger.isInfoEnabled()) {
 							logger.info("Autowired annotation is not supported on static methods: " + method);
 						}
 						return;
 					}
+					// 自动装配注解必须使用在有参数的方法上，如果方法没有参数，则直接返回
 					if (method.getParameterCount() == 0) {
 						if (logger.isInfoEnabled()) {
 							logger.info("Autowired annotation should only be used on methods with parameters: " +
 									method);
 						}
 					}
+					// 判断是否有@Autowired(required=true)
 					boolean required = determineRequiredStatus(ann);
 					PropertyDescriptor pd = BeanUtils.findPropertyForMethod(bridgedMethod, clazz);
+					// 保存方法的自动注入信息
 					currElements.add(new AutowiredMethodElement(method, required, pd));
 				}
 			});
 
+			// 保存已经获取到的属性和方法的自动注入信息
 			elements.addAll(0, currElements);
+			// 继续查找父类
 			targetClass = targetClass.getSuperclass();
 		}
 		while (targetClass != null && targetClass != Object.class);
 
+		// 返回当前类及其父类中所有需要自动注入的元素信息
 		return InjectionMetadata.forElements(elements, clazz);
 	}
 

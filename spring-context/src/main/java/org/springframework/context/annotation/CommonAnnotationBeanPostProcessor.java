@@ -497,12 +497,11 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 	}
 
 	/**
-	 * Obtain a resource object for the given name and type through autowiring
-	 * based on the given factory.
-	 * @param factory the factory to autowire against
-	 * @param element the descriptor for the annotated field/method
-	 * @param requestingBeanName the name of the requesting bean
-	 * @return the resource object (never {@code null})
+	 * 通过基于给定工厂的自动装配获得给定名称和类型的资源对象。
+	 * @param factory 该工厂要进行自动装配
+	 * @param element 带注解的字段/方法的描述符
+	 * @param requestingBeanName 请求bean的名称
+	 * @return 资源对象(绝不是{@code null})
 	 * @throws NoSuchBeanDefinitionException if no corresponding target resource found
 	 */
 	protected Object autowireResource(BeanFactory factory, LookupElement element, @Nullable String requestingBeanName)
