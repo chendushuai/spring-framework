@@ -52,7 +52,7 @@ final class PostProcessorRegistrationDelegate {
 	}
 
 	/**
-	 * 请求BeanFactoryPostProcessor集合处理
+	 * M03.05.01 请求BeanFactoryPostProcessor集合处理
 	 *
 	 * beanFactoryPostProcessors
 	 * 1. 没有元素
@@ -64,31 +64,33 @@ final class PostProcessorRegistrationDelegate {
 	public static void invokeBeanFactoryPostProcessors(
 			ConfigurableListableBeanFactory beanFactory, List<BeanFactoryPostProcessor> beanFactoryPostProcessors) {
 
-		// 如果有的话，首先调用BeanDefinitionRegistryPostProcessor。
+		// C03.05.01.01 已经处理的bean集合。如果有的话，首先调用BeanDefinitionRegistryPostProcessor。
 		Set<String> processedBeans = new HashSet<>();
 
 		if (beanFactory instanceof BeanDefinitionRegistry) {
 			BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
-			// 常规后置处理器
+			// C03.05.01.02 常规后置处理器
 			List<BeanFactoryPostProcessor> regularPostProcessors = new ArrayList<>();
-			// 已处理的bean定义注册后置处理器
+			// C03.05.01.03 已处理的bean定义注册后置处理器
 			List<BeanDefinitionRegistryPostProcessor> registryProcessors = new ArrayList<>();
 
-			// 自定义的beanFactoryPostProcessors
+			// C03.05.01.04 遍历给定的bean工厂后置处理器集合beanFactoryPostProcessors，这里的后置处理器集合来源为上下文对象
 			for (BeanFactoryPostProcessor postProcessor : beanFactoryPostProcessors) {
-				// 如果后置处理器的类型是bean定义注册后置处理器BeanDefinitionRegistryPostProcessor
+				// C03.05.01.04_1 如果后置处理器的类型是bean定义注册后置处理器BeanDefinitionRegistryPostProcessor，调用其postProcessBeanDefinitionRegistry方法
 				if (postProcessor instanceof BeanDefinitionRegistryPostProcessor) {
 					// 有可能给定的对象的类型是BeanDefinitionRegistryPostProcessor的子类
 					BeanDefinitionRegistryPostProcessor registryProcessor =
 							(BeanDefinitionRegistryPostProcessor) postProcessor;
 					// 在上下文初始化，bean定义加载完成，但尚未初始化之前，执行处理
-					// 自定义的BeanDefinitionRegistryPostProcessor接口的实现后置处理器，
+					// C03.05.01.04_1_1 执行自定义的BeanDefinitionRegistryPostProcessor接口的实现后置处理器的postProcessBeanDefinitionRegistry方法，
 					// 通过org.springframework.context.support.AbstractApplicationContext.addBeanFactoryPostProcessor
 					// 注册到后置处理器列表中后，就会在此处进行调用postProcessBeanDefinitionRegistry方法，执行bean定义注册处理。
 					registryProcessor.postProcessBeanDefinitionRegistry(registry);
+					// C03.05.01.04_1_2 将已处理的BeanDefinitionRegistryPostProcessor后置处理器保存到已处理已处理的bean定义注册后置处理器集合中
 					registryProcessors.add(registryProcessor);
 				}
 				else {
+					// C03.05.01.04_1 否则将其保存到常规后置处理器集合中
 					regularPostProcessors.add(postProcessor);
 				}
 			}
@@ -98,6 +100,7 @@ final class PostProcessorRegistrationDelegate {
 			// 将实现优先排序、有序的BeanDefinitionRegistryPostProcessor与其他处理器分开。
 			// 这个currentRegistryProcessors 放的是spring内部自己实现了BeanDefinitionRegistryPostProcessor接口的对象。
 			// 或者是自己注册的后置处理器
+			// C03.05.01.05 当前正在处理的后置处理器集合
 			List<BeanDefinitionRegistryPostProcessor> currentRegistryProcessors = new ArrayList<>();
 
 			// 首先，调用实现PriorityOrdered的BeanDefinitionRegistryPostProcessors。
@@ -105,6 +108,7 @@ final class PostProcessorRegistrationDelegate {
 			// getBeanNamesForType 根据bean的类型获取bean的名字ConfigurationClassPostProcessor
 
 			// 在这里进行了第一次的bean定义的合并，为了获取完整的合并后的bean定义，然后再进行筛选
+			// C03.05.01.06 根据BeanDefinitionRegistryPostProcessor类型获取bean定义对应的名称列表集合
 			String[] postProcessorNames =
 					beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
 			/**
@@ -119,24 +123,26 @@ final class PostProcessorRegistrationDelegate {
 			 * ConfigurationClassPostProcessor那么这个类能干嘛呢？可以参考源码
 			 * 下面我们对这个牛逼哄哄的类（他能插手spring工厂的实例化过程还不牛逼吗？）重点解释
 			 */
+			// C03.05.01.07 遍历BeanDefinitionRegistryPostProcessor类型的后置处理器名称列表
 			for (String ppName : postProcessorNames) {
+				//C03.05.01.07_1 如果后置处理器实现了PriorityOrdered接口，则将该后置处理器添加到当前正在处理的后置处理器集合中，添加到已处理的bwan集合中
 				if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) {
 					currentRegistryProcessors.add(beanFactory.getBean(ppName, BeanDefinitionRegistryPostProcessor.class));
 					processedBeans.add(ppName);
 				}
 			}
-			//排序不重要，况且currentRegistryProcessors这里也只有一个数据
+			// C03.05.01.08 排序不重要，况且currentRegistryProcessors这里也只有一个数据
 			sortPostProcessors(currentRegistryProcessors, beanFactory);
-			//合并list，不重要(为什么要合并，因为还有自己的)
+			// C03.05.01.09 合并list，不重要(为什么要合并，因为还有自己的)
 			registryProcessors.addAll(currentRegistryProcessors);
-			//最重要。注意这里是方法调用
-			//执行所有BeanDefinitionRegistryPostProcessor
+			// 最重要。注意这里是方法调用
+			// C03.05.01.10 执行所有BeanDefinitionRegistryPostProcessor的postProcessBeanDefinitionRegistry方法
 			invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry);
-			//执行完成了所有BeanDefinitionRegistryPostProcessor
+			// C03.05.01.11 执行完成了所有BeanDefinitionRegistryPostProcessor，清除当前正在处理的后置处理器集合
 			//这个list只是一个临时变量，故而要清除
 			currentRegistryProcessors.clear();
 
-			// 接下来，调用实现Ordered的BeanDefinitionRegistryPostProcessor。
+			// C03.05.01.12 接下来，调用实现Ordered的BeanDefinitionRegistryPostProcessor。
 			//
 			// 每次调用getBeanNamesForType，都会进行一次合并，因为每次执行PostProcessor都有可能添加新的bd，
 			// 而新的bd还是需要进行合并然后再比较，尤其是ConfigurationPostProcessor中，会扫描现有所有的bd
@@ -152,7 +158,7 @@ final class PostProcessorRegistrationDelegate {
 			invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry);
 			currentRegistryProcessors.clear();
 
-			// 最后，调用所有其他BeanDefinitionRegistryPostProcessor，直到不再出现其他bean为止。
+			// C03.05.01.13 最后，循环调用所有其他BeanDefinitionRegistryPostProcessor，直到不再出现其他bean为止。为什么要循环，是为了
 			boolean reiterate = true;
 			while (reiterate) {
 				reiterate = false;

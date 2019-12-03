@@ -858,17 +858,14 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			logger.trace("Pre-instantiating singletons in " + this);
 		}
 
-		// 迭代一个副本以允许init方法，而init方法反过来注册新的bean定义。
+		// C03.11.06.01 迭代一个副本以允许init方法，而init方法反过来注册新的bean定义。
 		// 虽然这可能不是常规的工厂引导程序的一部分，但它在其他方面也可以正常工作。
 		// 从bean定义名称集合中获取所有bean名称
 		List<String> beanNames = new ArrayList<>(this.beanDefinitionNames);
 
-		// Trigger initialization of all non-lazy singleton beans...
-		// 触发所有非延迟加载单例beans的初始化，主要步骤为调用getBean
+		// C03.11.06.02 触发所有非延迟加载单例beans的初始化，主要步骤为调用getBean
 		for (String beanName : beanNames) {
-			// 合并父BeanDefinition，
-			// 因为后面就要实例化了
-			// 同时子类中的部分属性继承自父类，所以通过合并来获取完整的子类属性
+			// C03.11.06.02_01 合并父BeanDefinition，因为后面就要实例化了，同时子类中的部分属性继承自父类，所以通过合并来获取完整的子类属性
 			RootBeanDefinition bd = getMergedLocalBeanDefinition(beanName);
 			if (!bd.isAbstract() && bd.isSingleton() && !bd.isLazyInit()) {
 				// 判断是否是FactoryBean类型
@@ -933,7 +930,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 		Assert.hasText(beanName, "Bean name must not be empty");
 		Assert.notNull(beanDefinition, "BeanDefinition must not be null");
-
+		// C02.01.01_1.01.10.02.01_1.01 如果bean定义类型为实现了AbstractBeanDefinition，则需要进行bean定义校验
 		if (beanDefinition instanceof AbstractBeanDefinition) {
 			try {
 				((AbstractBeanDefinition) beanDefinition).validate();
@@ -945,7 +942,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		}
 
 		/**
-		 * 使用bean名称查询bean定义集合中，该bean定义是否已存在
+		 * C02.01.01_1.01.10.02.01_1.02 使用bean名称查询bean定义集合this.beanDefinitionMap中，该bean定义是否已存在
 		 */
 		BeanDefinition existingDefinition = this.beanDefinitionMap.get(beanName);
 		if (existingDefinition != null) {
@@ -977,7 +974,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			this.beanDefinitionMap.put(beanName, beanDefinition);
 		}
 		else {
-			// 是否有正在创建过程中的bean
+			// C02.01.01_1.01.10.02.01_1.02_2 如果bean定义不存在，则是否有正在创建过程中的bean
 			if (hasBeanCreationStarted()) {
 				// 对于稳定的迭代集合来说，不能在任何情况下修改启动时集合元素
 				synchronized (this.beanDefinitionMap) {
@@ -991,16 +988,16 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				}
 			}
 			else {
-				// 仍处于启动注册阶段
+				// C02.01.01_1.01.10.02.01_1.02_2_2 如果不存在正在创建中的bean，则仍处于启动注册阶段，直接添加bean定义
 				this.beanDefinitionMap.put(beanName, beanDefinition);
 				this.beanDefinitionNames.add(beanName);
 				removeManualSingletonName(beanName);
 			}
 			this.frozenBeanDefinitionNames = null;
 		}
-
+		// C02.01.01_1.01.10.02.01_1.03 如果bean定义已经存在或该bean名称的单例bean已经创建，则需要重置相关的缓存
 		if (existingDefinition != null || containsSingleton(beanName)) {
-			// 重置给定bean的所有bean定义缓存，包括派生自该bean的bean的缓存。
+			// C02.01.01_1.01.10.02.01_1.03_1 重置给定bean的所有bean定义缓存，包括派生自该bean的bean的缓存。
 			resetBeanDefinition(beanName);
 		}
 	}
@@ -1039,7 +1036,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	/**
-	 * 重置给定bean的所有bean定义缓存，包括派生自该bean的bean的缓存。
+	 * M02.01.01_1.01.10.02.01_1.03_1 重置给定bean的所有bean定义缓存，包括派生自该bean的bean的缓存。
 	 * <p>在替换或删除现有bean定义之后调用，在给定bean和所有具有给定bean父bean的bean定义上触发
 	 * {@link #clearMergedBeanDefinition}、{@link #destroySingleton}和
 	 * {@link MergedBeanDefinitionPostProcessor#resetBeanDefinition}。
@@ -1048,14 +1045,14 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 * @see #removeBeanDefinition
 	 */
 	protected void resetBeanDefinition(String beanName) {
-		// 删除已创建的给定bean的合并bean定义。
+		// C02.01.01_1.01.10.02.01_1.03_1.01 删除已创建的给定bean的合并bean定义。
 		clearMergedBeanDefinition(beanName);
 
-		// 从单例缓存中删除相应的bean(如果有的话)。
+		// C02.01.01_1.01.10.02.01_1.03_1.02 从单例缓存中删除相应的bean(如果有的话)。
 		// 通常不需要，而只是用于覆盖上下文的默认bean(例如，StaticApplicationContext中的默认StaticMessageSource)。
 		destroySingleton(beanName);
 
-		// 通知所有后处理程序指定的bean定义已经重置。
+		// C02.01.01_1.01.10.02.01_1.03_1.03 通知所有后处理程序指定的bean定义已经重置。
 		for (BeanPostProcessor processor : getBeanPostProcessors()) {
 			// 如果实现了合并bean定义后处理器，则需要重置bean后处理器的BeanDefinition
 			if (processor instanceof MergedBeanDefinitionPostProcessor) {
@@ -1063,7 +1060,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			}
 		}
 
-		// 重置所有将给定bean作为父bean的bean定义(递归地)。
+		// C02.01.01_1.01.10.02.01_1.03_1.04 重置所有将给定bean作为父bean的bean定义(递归地)。
 		for (String bdName : this.beanDefinitionNames) {
 			if (!beanName.equals(bdName)) {
 				// 遍历所有bean定义，判断给定bean定义是不是bean定义的父bean，如果是，重置bean说明
@@ -1394,6 +1391,14 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		}
 	}
 
+	/**
+	 * 解析多部分bean
+	 * @param descriptor
+	 * @param beanName
+	 * @param autowiredBeanNames
+	 * @param typeConverter
+	 * @return
+	 */
 	@Nullable
 	private Object resolveMultipleBeans(DependencyDescriptor descriptor, @Nullable String beanName,
 			@Nullable Set<String> autowiredBeanNames, @Nullable TypeConverter typeConverter) {

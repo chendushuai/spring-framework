@@ -219,7 +219,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 
 	/**
-	 * Create a new AbstractApplicationContext with no parent.
+	 * C01.02 Create a new AbstractApplicationContext with no parent.
 	 */
 	public AbstractApplicationContext() {
 		this.resourcePatternResolver = getResourcePatternResolver();
@@ -481,6 +481,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	@Override
 	public void addBeanFactoryPostProcessor(BeanFactoryPostProcessor postProcessor) {
 		Assert.notNull(postProcessor, "BeanFactoryPostProcessor must not be null");
+		// C02_1.01 添加Bean工厂后置处理器
 		this.beanFactoryPostProcessors.add(postProcessor);
 	}
 
@@ -510,51 +511,53 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	@Override
 	public void refresh() throws BeansException, IllegalStateException {
 		synchronized (this.startupShutdownMonitor) {
-			// 准备用于刷新的上下文
+			// C03.01 准备用于刷新的上下文
 			// 准备工作包括设置启动时间，是否激活标识位，
 			// 初始化属性源(property source)配置
 			prepareRefresh();
 
+			// C03.02 初始化bean工厂
 			// 告诉子类刷新内部bean工厂。
 			// 返回一个factory 为什么需要返回一个工厂
 			// 因为要对工厂进行初始化
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
-			// 准备bean工厂，以便在此上下文中使用。
+			// C03.03 准备bean工厂，以便在此上下文中使用。
 			prepareBeanFactory(beanFactory);
 
 			try {
+				// C03.04 执行bean工厂后置处理器，当前方法实现没有任何代码
 				// 允许在上下文子类中对bean工厂进行后处理。
 				// 这个方法在当前版本的spring是没用任何代码的
 				// 可能spring期待在后面的版本中去扩展吧
 				postProcessBeanFactory(beanFactory);
 
-				// 调用上下文中注册为bean的工厂处理器。
+				// C03.05 调用上下文中注册为bean的工厂后置处理器。
 				// 在spring的环境中去执行已经被注册的 factory processor 工厂后置处理器
 				// 设置执行自定义的ProcessBeanFactory 和spring内部自己定义的
 				// 这个时候还是只注册了了配置类对象，没有注册其他注解类的定义
 				invokeBeanFactoryPostProcessors(beanFactory);
 
-				// 注册 拦截bean创建 的bean处理器。
+				// C03.06 注册 拦截bean创建 的bean处理器。
 				// 注册beanPostProcessor
 				registerBeanPostProcessors(beanFactory);
 
-				// 初始化消息源
+				// C03.07 初始化消息源
 				initMessageSource();
 
-				// 初始化应用事件多播器
+				// C03.08 初始化应用事件多播器
 				initApplicationEventMulticaster();
 
-				// 在特定上下文的子类中初始化其他特定bean
+				// C03.09 在特定上下文的子类中初始化其他特定bean
 				onRefresh();
 
-				// 检查并注册监听器
+				// C03.10 检查并注册监听器
 				registerListeners();
 
-				// 实例化所有剩余的(非懒加载)单例。
+				// C03.11 实例化所有剩余的(非懒加载)单例。
 				finishBeanFactoryInitialization(beanFactory);
 
-				// 最后一个步骤：发布当前事件
+				// C03.12 最后一个步骤：发布当前事件
 				finishRefresh();
 			}
 
@@ -714,14 +717,14 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
-	 * 实例化并调用所有已注册的BeanFactoryPostProcessor bean，如果给定显式顺序，则遵循显式顺序。
+	 * M03.05 实例化并调用所有已注册的BeanFactoryPostProcessor bean，如果给定显式顺序，则遵循显式顺序。
 	 * <p>必须在单例实例化之前调用。
 	 */
 	protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
 		/**
+		 * C03.05.01 调用自己注册的bean工厂后置处理器
 		 * 这个地方需要注意getBeanFactoryPostProcessors()是获取手动给spring的BeanFactoryPostProcessor
-		 * 自定义并不仅仅是程序员自己写的
-		 * 自己写的可以加companent也可以不加
+		 * 自定义并不仅仅是程序员自己写的，自己写的可以加companent也可以不加
 		 * 如果加了getBeanFactoryPostProcessors()这个地方得不得，是spring自己扫描的
 		 * 为什么得不到getBeanFactoryPostProcessors()这个方法是直接获取一个list，
 		 * 这个list是在AnnotationConfigApplicationContext被定义
@@ -864,35 +867,35 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
-	 * 完成此上下文的bean工厂的初始化，初始化所有剩余的单例bean。
+	 * M03.11 完成此上下文的bean工厂的初始化，初始化所有剩余的单例bean。
 	 */
 	protected void finishBeanFactoryInitialization(ConfigurableListableBeanFactory beanFactory) {
-		// 初始化此上下文的转换服务
+		// C03.11.01 初始化此上下文的转换服务，如果没有提供，则提供默认的转换服务
 		if (beanFactory.containsBean(CONVERSION_SERVICE_BEAN_NAME) &&
 				beanFactory.isTypeMatch(CONVERSION_SERVICE_BEAN_NAME, ConversionService.class)) {
 			beanFactory.setConversionService(
 					beanFactory.getBean(CONVERSION_SERVICE_BEAN_NAME, ConversionService.class));
 		}
 
-		// 如果之前没有任何bean后处理器(例如PropertyPlaceholderConfigurer bean)注册，则注册一个默认的嵌入式值解析器：
+		// C03.11.02 如果之前没有任何bean后处理器(例如PropertyPlaceholderConfigurer bean)注册，则注册一个默认的嵌入式值解析器：
 		// 此时，主要用于在注解属性值解析。
 		if (!beanFactory.hasEmbeddedValueResolver()) {
 			beanFactory.addEmbeddedValueResolver(strVal -> getEnvironment().resolvePlaceholders(strVal));
 		}
 
-		// 提前初始化LoadTimeWeaverAware bean，以便尽早注册它们的转换器。
+		// C03.11.03 提前初始化LoadTimeWeaverAware bean，以便尽早注册它们的转换器。
 		String[] weaverAwareNames = beanFactory.getBeanNamesForType(LoadTimeWeaverAware.class, false, false);
 		for (String weaverAwareName : weaverAwareNames) {
 			getBean(weaverAwareName);
 		}
 
-		// 停止使用临时类加载器进行类型匹配。
+		// C03.11.04 停止使用临时类加载器进行类型匹配。
 		beanFactory.setTempClassLoader(null);
 
-		// 允许缓存所有bean定义元数据，不期望有进一步的更改。
+		// C03.11.05 允许缓存所有bean定义元数据，不期望有进一步的更改。
 		beanFactory.freezeConfiguration();
 
-		// 实例化所有的（非延迟加载）单例对象
+		// C03.11.06 实例化所有的（非延迟加载）单例对象
 		beanFactory.preInstantiateSingletons();
 	}
 

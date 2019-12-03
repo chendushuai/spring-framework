@@ -100,7 +100,7 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 
 
 	/**
-	 * 创建一个新的GenericApplicationContext.
+	 * C01.03 创建一个新的GenericApplicationContext.
 	 * @see #registerBeanDefinition
 	 * @see #refresh
 	 */
@@ -313,7 +313,7 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 	@Override
 	public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition)
 			throws BeanDefinitionStoreException {
-		// 在这里修改了beanFactory中的bd集合，注册了bean定义
+		// C02.01.01_1.01.10.02.01_1 在这里修改了beanFactory中的bd集合，注册了bean定义
 		this.beanFactory.registerBeanDefinition(beanName, beanDefinition);
 	}
 

@@ -147,7 +147,7 @@ public interface ConfigurableApplicationContext extends ApplicationContext, Life
 	void addProtocolResolver(ProtocolResolver resolver);
 
 	/**
-	 * 加载或刷新配置的持久表示，可能是XML文件、属性文件或关系数据库模式。
+	 * M03 加载或刷新配置的持久表示，可能是XML文件、属性文件或关系数据库模式。
 	 * <p>由于这是一种启动方法，如果失败，它应该销毁已经创建的单例，以避免挂起资源。
 	 * 换句话说，在调用该方法之后，应该实例化所有或根本不实例化单例。
 	 * @throws BeansException 如果不能初始化bean工厂

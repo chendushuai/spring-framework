@@ -66,22 +66,22 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 
 	@Override
 	public String generateBeanName(BeanDefinition definition, BeanDefinitionRegistry registry) {
-		// 判断bean定义是否是注解bean定义
+		// C02.01.01_1.01.05.01 判断bean定义是否是注解bean定义
 		if (definition instanceof AnnotatedBeanDefinition) {
-			// 从类的一个注解中生成bean的名称
+			// C02.01.01_1.01.05.02 从类的一个注解中生成bean的名称
 			String beanName = determineBeanNameFromAnnotation((AnnotatedBeanDefinition) definition);
-			// 如果在注解中已经明确支出bean的名称，则直接返回指定的名称
+			// C02.01.01_1.01.05.03 如果在注解中已经明确支出bean的名称，则直接返回指定的名称
 			if (StringUtils.hasText(beanName)) {
 				// 找到显式bean名称。
 				return beanName;
 			}
 		}
-		// 回退:生成唯一的缺省bean名称。
+		// C02.01.01_1.01.05.04 生成唯一的缺省bean名称。
 		return buildDefaultBeanName(definition, registry);
 	}
 
 	/**
-	 * 从类中的一个注解派生bean名称。
+	 * M02.01.01_1.01.05.02 从类中的一个注解派生bean名称。
 	 * @param annotatedDef 注释织入bean定义
 	 * @return bean 的名称，如果找不到，则返回{@code null}
 	 */
@@ -90,10 +90,10 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 		AnnotationMetadata amd = annotatedDef.getMetadata();
 		Set<String> types = amd.getAnnotationTypes();
 		String beanName = null;
-		// 遍历注解类型
+		// C02.01.01_1.01.05.02.01 遍历注解类型
 		for (String type : types) {
 			AnnotationAttributes attributes = AnnotationConfigUtils.attributesFor(amd, type);
-			// 判断是否有注解，且注解中通过value属性设置了bean的名称
+			// C02.01.01_1.01.05.02.01_1 判断是否有@Component注解或@Indexed注解，且注解中通过value属性设置了bean的名称
 			if (attributes != null && isStereotypeWithNameValue(type, amd.getMetaAnnotationTypes(type), attributes)) {
 				// 得到属性值
 				Object value = attributes.get("value");
@@ -133,7 +133,7 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 	}
 
 	/**
-	 * 从给定的bean定义派生一个默认bean名称。
+	 * M02.01.01_1.01.05.04 从给定的bean定义派生一个默认bean名称。
 	 * <p>默认的实现委托给{@link #buildDefaultBeanName(BeanDefinition)}。
 	 * @param definition 要为其构建bean名称的bean定义
 	 * @param registry 给定bean定义正在注册的注册表
@@ -144,7 +144,7 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 	}
 
 	/**
-	 * 从给定的bean定义派生一个默认bean名称。
+	 * M02.01.01_1.01.05.04.01 从给定的bean定义派生一个默认bean名称。
 	 * <p>默认实现只是简单地构建一个简短类名的非斜体版本：例如。“mypackage.MyJdbcDao”- >“myJdbcDao”。
 	 * <p>注意，内部类将因此具有表单“outerClassName.InnerClassName”的名称。
 	 * 由于名称中的句点，如果按名称进行自动装配，则可能会出现问题。

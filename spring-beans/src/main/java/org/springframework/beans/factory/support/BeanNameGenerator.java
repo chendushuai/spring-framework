@@ -27,7 +27,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 public interface BeanNameGenerator {
 
 	/**
-	 * 为给定的bean定义生成bean名称。
+	 * M02.01.01_1.01.05.01 为给定的bean定义生成bean名称。
 	 * @param definition 用于生成名称的bean定义
 	 * @param registry 应该定义给定定义的bean定义注册表
 	 * @return 生成的bean名称

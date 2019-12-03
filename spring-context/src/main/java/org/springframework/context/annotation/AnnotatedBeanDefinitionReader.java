@@ -75,7 +75,7 @@ public class AnnotatedBeanDefinitionReader {
 	 */
 	public AnnotatedBeanDefinitionReader(BeanDefinitionRegistry registry) {
 		/**
-		 * 生成一个Reader，添加后置处理器，解析bean定义，Config文件等
+		 * C01.04.01 生成一个Reader，添加后置处理器，解析bean定义，Config文件等
 		 */
 		this(registry, getOrCreateEnvironment(registry));
 	}
@@ -92,7 +92,7 @@ public class AnnotatedBeanDefinitionReader {
 		this.registry = registry;
 		// 创建用于计算{@link Conditional}注解类
 		this.conditionEvaluator = new ConditionEvaluator(registry, environment, null);
-		// 在给定注册表中注册所有相关的注释后处理器。
+		// C01.04.01_1.01 在给定注册表中注册所有相关的注释后处理器。
 		AnnotationConfigUtils.registerAnnotationConfigProcessors(this.registry);
 	}
 
@@ -139,9 +139,9 @@ public class AnnotatedBeanDefinitionReader {
 	 * @param annotatedClasses 一个或多个注解类，例如：{@link Configuration @Configuration}类
 	 */
 	public void register(Class<?>... annotatedClasses) {
-		// 遍历添加的注解类，执行注册
+		// C02.01.01 遍历添加的注解类，执行注册
 		for (Class<?> annotatedClass : annotatedClasses) {
-			// 执行注册
+			// C02.01.01_1 执行注册
 			registerBean(annotatedClass);
 		}
 	}
@@ -151,7 +151,7 @@ public class AnnotatedBeanDefinitionReader {
 	 * @param annotatedClass bean的Class
 	 */
 	public void registerBean(Class<?> annotatedClass) {
-		// 执行注册bean
+		// C02.01.01_1.01 执行注册bean
 		doRegisterBean(annotatedClass, null, null, null, null);
 	}
 
@@ -247,22 +247,23 @@ public class AnnotatedBeanDefinitionReader {
 			@Nullable Class<? extends Annotation>[] qualifiers, @Nullable Supplier<T> supplier,
 			@Nullable BeanDefinitionCustomizer[] customizers) {
 
-		// 生成注解bean定义，这时候Appconfig的bd还没有添加到BeanFactory中
+		// C02.01.01_1.01.01 生成注解bean定义AnnotatedGenericBeanDefinition，这时候Appconfig的bd还没有添加到BeanFactory中
 		// 这里很重要，配合后面对于配置类的判断，这里在注册配置类时，直接将配置类创建为AnnotatedGenericBeanDefinition
 		AnnotatedGenericBeanDefinition abd = new AnnotatedGenericBeanDefinition(annotatedClass);
 		if (this.conditionEvaluator.shouldSkip(abd.getMetadata())) {
 			return;
 		}
 
-		// 指定创建bean实例的回调函数
+		// C02.01.01_1.01.03 指定创建bean实例的回调函数
 		abd.setInstanceSupplier(supplier);
-		// 解析bean定义的注解范围
+		// C02.01.01_1.01.04 解析bean定义的注解范围
 		ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(abd);
 		abd.setScope(scopeMetadata.getScopeName());
-
+		// C02.01.01_1.01.05 生成bean名称
 		String beanName = (name != null ? name : this.beanNameGenerator.generateBeanName(abd, this.registry));
-
+		// C02.01.01_1.01.06 处理基本定义注解
 		AnnotationConfigUtils.processCommonDefinitionAnnotations(abd);
+		// C02.01.01_1.01.07 如果给定了需要特殊处理的限定符，还需要判断处理
 		if (qualifiers != null) {
 			for (Class<? extends Annotation> qualifier : qualifiers) {
 				if (Primary.class == qualifier) {
@@ -276,15 +277,16 @@ public class AnnotatedBeanDefinitionReader {
 				}
 			}
 		}
+		// C02.01.01_1.01.08 如果指定了bean定义的自定义回调函数，则调用该回调函数
 		if (customizers != null) {
 			for (BeanDefinitionCustomizer customizer : customizers) {
 				customizer.customize(abd);
 			}
 		}
-
+		// C02.01.01_1.01.09 创建bean定义的BeanDefinitionHolder
 		BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(abd, beanName);
 		definitionHolder = AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry);
-		// 进行Bean定义的注册，将AppConfig的配置添加到beanFactory的Bd中
+		// C02.01.01_1.01.10 进行Bean定义的注册，将AppConfig的配置添加到beanFactory的Bd中
 		BeanDefinitionReaderUtils.registerBeanDefinition(definitionHolder, this.registry);
 	}
 

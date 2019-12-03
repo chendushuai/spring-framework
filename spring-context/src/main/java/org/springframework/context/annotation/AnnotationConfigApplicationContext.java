@@ -93,13 +93,13 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	public AnnotationConfigApplicationContext() {
 		/**
 		 * 父类的构造方法
-		 * 创建一个读取注解的Bean定义读取器
+		 * C01.04 创建一个读取注解的Bean定义读取器
 		 * 什么是bean定义？BeanDefinition
 		 */
 		this.reader = new AnnotatedBeanDefinitionReader(this);
 
 		/**
-		 * 可以用来扫描包或者类，继而转换成bd
+		 * C01.05 可以用来扫描包或者类，继而转换成bd
 		 * 但是实际上我们扫描包工作并不是scanner这个对象来完成的
 		 * 是spring自己new的一个ClassPathBeanDefinitionScanner
 		 * 这里的scanner仅仅是为了程序员能够在外部调用AnnotationConfigApplicationContext对象的scan()方法
@@ -201,7 +201,7 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 */
 	public void register(Class<?>... annotatedClasses) {
 		Assert.notEmpty(annotatedClasses, "At least one annotated class must be specified");
-		// 使用bean定义读取器加载指定的类，可以是注解配置类，也可以是单独的bean
+		// C02.01 使用bean定义读取器加载指定的类，可以是注解配置类，也可以是单独的bean
 		this.reader.register(annotatedClasses);
 	}
 

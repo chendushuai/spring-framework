@@ -156,7 +156,7 @@ public abstract class AnnotationConfigUtils {
 	 * @param registry 要操作的注册表
 	 */
 	public static void registerAnnotationConfigProcessors(BeanDefinitionRegistry registry) {
-		// 在给定注册表中注册所有相关的注解后处理器。
+		// C01.04.01_1.01_1 在给定注册表中注册所有相关的注解后处理器。
 		registerAnnotationConfigProcessors(registry, null);
 		// TODO 补充说明后置处理器的用途
 	}
@@ -170,44 +170,44 @@ public abstract class AnnotationConfigUtils {
 	public static Set<BeanDefinitionHolder> registerAnnotationConfigProcessors(
 			BeanDefinitionRegistry registry, @Nullable Object source) {
 
-		// 从bean定义注册器中获取DefaultListableBeanFactory
+		// C01.04.01_1.01_1.01 从bean定义注册器中获取DefaultListableBeanFactory
 		DefaultListableBeanFactory beanFactory = unwrapDefaultListableBeanFactory(registry);
 		if (beanFactory != null) {
-			// 判断是否需要进行排序，如果没有指定排序方式，则使用默认排序方案
+			// C01.04.01_1.01_1.02 判断是否需要进行排序，如果没有指定排序方式，则使用默认排序方案
 			if (!(beanFactory.getDependencyComparator() instanceof AnnotationAwareOrderComparator)) {
 				beanFactory.setDependencyComparator(AnnotationAwareOrderComparator.INSTANCE);
 			}
-			// 判断自动装配候选解析器是否实现自上下文注解自动装配候选解析器，如果不是，则使用默认解析器
+			// C01.04.01_1.01_1.03 判断自动装配候选解析器是否实现自上下文注解自动装配候选解析器，如果不是，则使用默认解析器
 			if (!(beanFactory.getAutowireCandidateResolver() instanceof ContextAnnotationAutowireCandidateResolver)) {
 				beanFactory.setAutowireCandidateResolver(new ContextAnnotationAutowireCandidateResolver());
 			}
 		}
 
-		// 创建BeanDefinitionHolder集合，BeanDefinitionHolder可以认为是bean定义的包装，包含一个bean定义和bean名称，及一组bean别名
+		// C01.04.01_1.01_1.04 创建BeanDefinitionHolder集合，BeanDefinitionHolder可以认为是bean定义的包装，包含一个bean定义和bean名称，及一组bean别名
 		Set<BeanDefinitionHolder> beanDefs = new LinkedHashSet<>(8);
 
-		// 添加配置类后置处理器，该后置处理器，是一个BeanFactoryPostProcessor，针对工厂级别的后置处理器
+		// C01.04.01_1.01_1.05 添加配置类后置处理器，该后置处理器，是一个BeanFactoryPostProcessor，针对工厂级别的后置处理器
 		if (!registry.containsBeanDefinition(CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME)) {
 			RootBeanDefinition def = new RootBeanDefinition(ConfigurationClassPostProcessor.class);
 			def.setSource(source);
 			beanDefs.add(registerPostProcessor(registry, def, CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME));
 		}
 
-		// 添加自动装配注解bean后置处理器，针对的是bean级别的
+		// C01.04.01_1.01_1.06 添加自动装配注解bean后置处理器，针对的是bean级别的
 		if (!registry.containsBeanDefinition(AUTOWIRED_ANNOTATION_PROCESSOR_BEAN_NAME)) {
 			RootBeanDefinition def = new RootBeanDefinition(AutowiredAnnotationBeanPostProcessor.class);
 			def.setSource(source);
 			beanDefs.add(registerPostProcessor(registry, def, AUTOWIRED_ANNOTATION_PROCESSOR_BEAN_NAME));
 		}
 
-		// 检测是否支持JSR-250，如果支持，则添加CommonAnnotationBeanPostProcessor.
+		// C01.04.01_1.01_1.07 检测是否支持JSR-250，如果支持，则添加CommonAnnotationBeanPostProcessor.
 		if (jsr250Present && !registry.containsBeanDefinition(COMMON_ANNOTATION_PROCESSOR_BEAN_NAME)) {
 			RootBeanDefinition def = new RootBeanDefinition(CommonAnnotationBeanPostProcessor.class);
 			def.setSource(source);
 			beanDefs.add(registerPostProcessor(registry, def, COMMON_ANNOTATION_PROCESSOR_BEAN_NAME));
 		}
 
-		// 检查是否支持JPA，如果支持则添加PersistenceAnnotationBeanPostProcessor.
+		// C01.04.01_1.01_1.08 检查是否支持JPA，如果支持则添加PersistenceAnnotationBeanPostProcessor.
 		if (jpaPresent && !registry.containsBeanDefinition(PERSISTENCE_ANNOTATION_PROCESSOR_BEAN_NAME)) {
 			RootBeanDefinition def = new RootBeanDefinition();
 			try {
@@ -222,14 +222,14 @@ public abstract class AnnotationConfigUtils {
 			beanDefs.add(registerPostProcessor(registry, def, PERSISTENCE_ANNOTATION_PROCESSOR_BEAN_NAME));
 		}
 
-		// 添加@EventListener注解处理器的后置处理器
+		// C01.04.01_1.01_1.09 添加@EventListener注解处理器的后置处理器
 		if (!registry.containsBeanDefinition(EVENT_LISTENER_PROCESSOR_BEAN_NAME)) {
 			RootBeanDefinition def = new RootBeanDefinition(EventListenerMethodProcessor.class);
 			def.setSource(source);
 			beanDefs.add(registerPostProcessor(registry, def, EVENT_LISTENER_PROCESSOR_BEAN_NAME));
 		}
 
-		// 添加内部管理的EventListenerFactory的bean
+		// C01.04.01_1.01_1.10 添加内部管理的EventListenerFactory的bean
 		if (!registry.containsBeanDefinition(EVENT_LISTENER_FACTORY_BEAN_NAME)) {
 			RootBeanDefinition def = new RootBeanDefinition(DefaultEventListenerFactory.class);
 			def.setSource(source);
@@ -276,7 +276,7 @@ public abstract class AnnotationConfigUtils {
 	}
 
 	/**
-	 * 处理基本定义注解
+	 * M02.01.01_1.01.06 处理基本定义注解
 	 * @param abd 注解bean定义
 	 */
 	public static void processCommonDefinitionAnnotations(AnnotatedBeanDefinition abd) {
@@ -284,17 +284,17 @@ public abstract class AnnotationConfigUtils {
 	}
 
 	/**
-	 * 处理常用bean定义注解
+	 * M02.01.01_1.01.06.01 处理常用bean定义注解
 	 * @param abd 注解bean定义
 	 * @param metadata 注解bean定义的元数据
 	 */
 	static void processCommonDefinitionAnnotations(AnnotatedBeanDefinition abd, AnnotatedTypeMetadata metadata) {
-		// @Lazy注解，指定是否需要延迟初始化
+		// C02.01.01_1.01.06.01.01 @Lazy注解，指定是否需要延迟初始化
 		AnnotationAttributes lazy = attributesFor(metadata, Lazy.class);
 		if (lazy != null) {
 			abd.setLazyInit(lazy.getBoolean("value"));
 		}
-		// 如果bean定义中的元数据同给定的元数据不同，则需要在判断bean定义中的@Lazy注解内容
+		// C02.01.01_1.01.06.01.02 如果bean定义中的元数据同给定的元数据不同，则需要在判断bean定义中的@Lazy注解内容
 		else if (abd.getMetadata() != metadata) {
 			lazy = attributesFor(abd.getMetadata(), Lazy.class);
 			if (lazy != null) {
@@ -302,21 +302,21 @@ public abstract class AnnotationConfigUtils {
 			}
 		}
 
-		// @Primary表示，当多个bean是要自动生成单值依赖项的候选bean时，应该优先考虑特定的bean。如果在候选bean中只存在一个主bean，那么它就成为autowired值。
+		// C02.01.01_1.01.06.01.03 @Primary表示，当多个bean是要自动生成单值依赖项的候选bean时，应该优先考虑特定的bean。如果在候选bean中只存在一个主bean，那么它就成为autowired值。
 		if (metadata.isAnnotated(Primary.class.getName())) {
 			abd.setPrimary(true);
 		}
-		// 解析@DependsOn注解，获取参数值
+		// C02.01.01_1.01.06.01.04 解析@DependsOn注解，获取参数值
 		AnnotationAttributes dependsOn = attributesFor(metadata, DependsOn.class);
 		if (dependsOn != null) {
 			abd.setDependsOn(dependsOn.getStringArray("value"));
 		}
-
+		// C02.01.01_1.01.06.01.05 解析@Role注解，获取参数值
 		AnnotationAttributes role = attributesFor(metadata, Role.class);
 		if (role != null) {
 			abd.setRole(role.getNumber("value").intValue());
 		}
-		// 解析@Description注解内容
+		// C02.01.01_1.01.06.01.06 解析@Description注解内容
 		AnnotationAttributes description = attributesFor(metadata, Description.class);
 		if (description != null) {
 			abd.setDescription(description.getString("value"));

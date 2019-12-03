@@ -151,7 +151,7 @@ public abstract class BeanDefinitionReaderUtils {
 	}
 
 	/**
-	 * 向给定的bean工厂注册给定的bean定义。
+	 * M02.01.01_1.01.10 向给定的bean工厂注册给定的bean定义。
 	 * @param definitionHolder bean定义，包括名称和别名
 	 * @param registry 要注册的bean工厂
 	 * @throws BeanDefinitionStoreException 如果注册失败
@@ -160,12 +160,12 @@ public abstract class BeanDefinitionReaderUtils {
 			BeanDefinitionHolder definitionHolder, BeanDefinitionRegistry registry)
 			throws BeanDefinitionStoreException {
 
-		// 在主名称下注册bean定义。
+		// C02.01.01_1.01.10.01 在主名称下注册bean定义。获取bean名称
 		String beanName = definitionHolder.getBeanName();
-		// 注册一个新的bean定义
+		// C02.01.01_1.01.10.02 注册一个新的bean定义
 		registry.registerBeanDefinition(beanName, definitionHolder.getBeanDefinition());
 
-		// 为bean名称注册别名(如果有的话)。
+		// C02.01.01_1.01.10.03 如果有的话，为bean名称注册别名。
 		String[] aliases = definitionHolder.getAliases();
 		if (aliases != null) {
 			for (String alias : aliases) {
