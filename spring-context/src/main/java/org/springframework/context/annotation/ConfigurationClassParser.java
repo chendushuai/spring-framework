@@ -162,21 +162,23 @@ class ConfigurationClassParser {
 
 
 	/**
-	 * 遍历配置类集合，解析配置类
+	 * M03.05.01_1.09_01.01.05.09 遍历配置类集合，解析配置类
 	 * @param configCandidates
 	 */
 	public void parse(Set<BeanDefinitionHolder> configCandidates) {
+		// C03.05.01_1.09_01.01.05.09.01_01 遍历候选对象集合
 		for (BeanDefinitionHolder holder : configCandidates) {
 			BeanDefinition bd = holder.getBeanDefinition();
 			try {
-				// 注册的配置类走这个方法，进行配置类的处理
+				// C03.05.01_1.09_01.01.05.09.01_01.01_1 如果bean定义是AnnotatedBeanDefinition，则进行配置类的处理。注册的配置类走这个方法，进行配置类的处理
 				if (bd instanceof AnnotatedBeanDefinition) {
 					parse(((AnnotatedBeanDefinition) bd).getMetadata(), holder.getBeanName());
 				}
-				// 如果是AbstractBeanDefinition，且内部包含@Bean方法
+				// C03.05.01_1.09_01.01.05.09.01_01.01_2 如果bean定义是AbstractBeanDefinition，且内部包含@Bean方法
 				else if (bd instanceof AbstractBeanDefinition && ((AbstractBeanDefinition) bd).hasBeanClass()) {
 					parse(((AbstractBeanDefinition) bd).getBeanClass(), holder.getBeanName());
 				}
+				// C03.05.01_1.09_01.01.05.09.01_01.01_3 其他bean定义类型的配置类解析
 				else {
 					parse(bd.getBeanClassName(), holder.getBeanName());
 				}
@@ -190,7 +192,7 @@ class ConfigurationClassParser {
 			}
 		}
 
-		// 处理注册的演出导入选择器处理器
+		// C03.05.01_1.09_01.01.05.09.02 处理注册的延迟导入选择器处理器
 		this.deferredImportSelectorHandler.process();
 	}
 
@@ -211,7 +213,7 @@ class ConfigurationClassParser {
 	}
 
 	/**
-	 * 解析AnnotatedBeanDefinition定义类型的注册配置类
+	 * M03.05.01_1.09_01.01.05.09.01_01.01_1 解析AnnotatedBeanDefinition定义类型的注册配置类
 	 * @param metadata
 	 * @param beanName
 	 * @throws IOException
@@ -235,49 +237,53 @@ class ConfigurationClassParser {
 	}
 
 	/**
-	 * 处理配置类
+	 * M03.05.01_1.09_01.01.05.09.01_01.01_1.01 处理配置类
 	 * @param configClass
 	 * @throws IOException
 	 */
 	protected void processConfigurationClass(ConfigurationClass configClass) throws IOException {
+		// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.01 判断是否需要跳过处理
 		if (this.conditionEvaluator.shouldSkip(configClass.getMetadata(), ConfigurationPhase.PARSE_CONFIGURATION)) {
 			return;
 		}
 
-		// 判断给定的配置对象在配置类集合中是否存在，
+		// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.02 判断给定的配置对象在配置类集合中是否存在，
 		// 如果已经存在
 		//     判断给定的配置对象是否是被@Import进来的，如果不是，则需要从配置类对象中移除该对象，
 		//     如果是，则还需要判断已经存在的对象是否是@Import进来的，如果不是，直接返回，如果也是，则合并导入信息
 		ConfigurationClass existingClass = this.configurationClasses.get(configClass);
+		// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.03 如果配置类已经在配置类集合中存在
 		if (existingClass != null) {
+			// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.03_1 判断当前配置类是不是被@Import进来的，如果是
 			if (configClass.isImported()) {
+				// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.03_1_1.01 如果已存在的类是被@Import进来的，则需要将当前配置类合并到已存在的配置类中
 				if (existingClass.isImported()) {
 					existingClass.mergeImportedBy(configClass);
 				}
-				// 否则忽略新导入的配置类;现有的非导入类会覆盖它。
+				// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.03_1_1.02 直接跳过处理
 				return;
 			}
 			else {
-				// 找到显式bean定义，可能替换导入。我们把旧的拿掉，换上新的吧。
+				// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.03_2 找到显式bean定义，可能替换导入。我们把旧的拿掉，换上新的吧。
 				this.configurationClasses.remove(configClass);
 				this.knownSuperclasses.values().removeIf(configClass::equals);
 			}
 		}
 
-		// 递归地处理配置类及其超类层次结构。
+		// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.04 递归地处理配置类及其超类层次结构。
 		SourceClass sourceClass = asSourceClass(configClass);
 		do {
-			// 处理类，并返回超类进行递归处理
+			// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1 递归处理类，返回超类进行递归处理
 			sourceClass = doProcessConfigurationClass(configClass, sourceClass);
 		}
 		while (sourceClass != null);
 
-		// 将配置类添加到配置类集合中
+		// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.06 将配置类添加到配置类集合中
 		this.configurationClasses.put(configClass, configClass);
 	}
 
 	/**
-	 * 通过从源类中读取注释、成员和方法，应用处理并构建一个完整的{@link ConfigurationClass}。当发现相关源时，可以多次调用此方法。
+	 * M03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1 通过从源类中读取注释、成员和方法，应用处理并构建一个完整的{@link ConfigurationClass}。当发现相关源时，可以多次调用此方法。
 	 * @param configClass 正在构建的配置类
 	 * @param sourceClass 源类
 	 * @return 超类，或{@code null}(如果没有找到或以前处理过)
@@ -285,13 +291,13 @@ class ConfigurationClassParser {
 	@Nullable
 	protected final SourceClass doProcessConfigurationClass(ConfigurationClass configClass, SourceClass sourceClass)
 			throws IOException {
-
+		// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.01 判断配置类是否添加了@Component注解，如果添加了注解，则递归处理任何成员类
 		if (configClass.getMetadata().isAnnotated(Component.class.getName())) {
-			// 首先递归地处理任何成员(嵌套的)类
+			// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.01_1 首先递归地处理任何成员(嵌套的)类
 			processMemberClasses(configClass, sourceClass);
 		}
 
-		// 处理任何@PropertySource 注解，引入属性资源
+		// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.02 处理任何@PropertySource 注解，引入属性资源
 		for (AnnotationAttributes propertySource : AnnotationConfigUtils.attributesForRepeatable(
 				sourceClass.getMetadata(), PropertySources.class,
 				org.springframework.context.annotation.PropertySource.class)) {
@@ -305,21 +311,25 @@ class ConfigurationClassParser {
 			}
 		}
 
-		// 处理任何@ComponentScan注解，执行扫描
+		// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.03 处理任何@ComponentScan注解，执行扫描
 		Set<AnnotationAttributes> componentScans = AnnotationConfigUtils.attributesForRepeatable(
 				sourceClass.getMetadata(), ComponentScans.class, ComponentScan.class);
+		// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.04 如果存在@ComponentScan，且无需跳过处理该类
 		if (!componentScans.isEmpty() &&
 				!this.conditionEvaluator.shouldSkip(sourceClass.getMetadata(), ConfigurationPhase.REGISTER_BEAN)) {
+			// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.04_01 遍历配置的@ComponentScan注解，执行扫描
 			for (AnnotationAttributes componentScan : componentScans) {
-				// 配置类由@ComponentScan注解——>立即执行扫描
+				// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.04_01.01 配置类由@ComponentScan注解——>立即执行扫描
 				Set<BeanDefinitionHolder> scannedBeanDefinitions =
 						this.componentScanParser.parse(componentScan, sourceClass.getMetadata().getClassName());
-				// 检查已扫描的定义集以获得更多的配置类，并在需要时进行递归解析
+				// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.04_01.02 遍历检查已扫描的定义集以获得更多的配置类，并在需要时进行递归解析
 				for (BeanDefinitionHolder holder : scannedBeanDefinitions) {
+					// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.04_01.02_01.01 得到原始bean定义，如果原始bean定义为null，则使用当前bean定义
 					BeanDefinition bdCand = holder.getBeanDefinition().getOriginatingBeanDefinition();
 					if (bdCand == null) {
 						bdCand = holder.getBeanDefinition();
 					}
+					// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.04_01.02_01.02
 					if (ConfigurationClassUtils.checkConfigurationClassCandidate(bdCand, this.metadataReaderFactory)) {
 						parse(bdCand.getBeanClassName(), holder.getBeanName());
 					}
@@ -372,7 +382,7 @@ class ConfigurationClassParser {
 	}
 
 	/**
-	 * 注册碰巧是配置类本身的成员(嵌套的)类。
+	 * M03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.01_1 注册碰巧是配置类本身的成员(嵌套的)类。
 	 */
 	private void processMemberClasses(ConfigurationClass configClass, SourceClass sourceClass) throws IOException {
 		Collection<SourceClass> memberClasses = sourceClass.getMemberClasses();

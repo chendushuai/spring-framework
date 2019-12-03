@@ -229,22 +229,26 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 
 
 	/**
-	 * 从注册表中的配置类派生进一步的bean定义。
+	 * M03.05.01_1.09_01.01 从注册表中的配置类派生进一步的bean定义。
 	 * 在bean工厂创建完成之后就开始执行
 	 */
 	@Override
 	public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) {
+		// C03.05.01_1.09_01.01.01 生成ID
 		int registryId = System.identityHashCode(registry);
+		// C03.05.01_1.09_01.01.02 判断后置bean定义注册处理器是否已经处理过，如果已经处理，则抛出异常
 		if (this.registriesPostProcessed.contains(registryId)) {
 			throw new IllegalStateException(
 					"postProcessBeanDefinitionRegistry already called on this post-processor against " + registry);
 		}
+		// C03.05.01_1.09_01.01.03 判断后置bean工厂处理器是否已经处理过，如果已经处理，则抛出异常
 		if (this.factoriesPostProcessed.contains(registryId)) {
 			throw new IllegalStateException(
 					"postProcessBeanFactory already called on this post-processor against " + registry);
 		}
+		// C03.05.01_1.09_01.01.04 此处是执行后置bean定义注册处理器方法，所以，将其保存到已处理的后置bean定义注册处理器集合中
 		this.registriesPostProcessed.add(registryId);
-		// 基于{@link Configuration}类的注册表构建并验证配置模型。
+		// C03.05.01_1.09_01.01.05 基于{@link Configuration}类的注册表构建并验证配置模型。
 		processConfigBeanDefinitions(registry);
 	}
 
@@ -272,48 +276,48 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	}
 
 	/**
-	 * 基于{@link Configuration}类的注册表构建并验证配置模型。
+	 * M03.05.01_1.09_01.01.05 基于{@link Configuration}类的注册表构建并验证配置模型。
 	 */
 	public void processConfigBeanDefinitions(BeanDefinitionRegistry registry) {
 		List<BeanDefinitionHolder> configCandidates = new ArrayList<>();
-		// 返回此注册表中定义的所有bean定义的名称
+		// C03.05.01_1.09_01.01.05.01 得到此注册表中定义的所有bean定义的名称
 		String[] candidateNames = registry.getBeanDefinitionNames();
 
 		// 循环遍历处理
 		/**
-		 * 在这里，beanDefinitionNames中的数据仍然只有6个，其中五个为初始注入，一个AppConfig是我们自己注入的
+		 * C03.05.01_1.09_01.01.05.02 在这里，beanDefinitionNames中的数据仍然只有6个，其中五个为初始注入，一个AppConfig是我们自己注入的，循环遍历处理
 		 */
 		for (String beanName : candidateNames) {
-			// 获取该bean名称对应的bean定义
+			// C03.05.01_1.09_01.01.05.02_01.01 获取该bean名称对应的bean定义
 			BeanDefinition beanDef = registry.getBeanDefinition(beanName);
-			// 如果bean定义是一个配置类
-			// 这里的getAttribute获取的是对象的this.attributes属性值，该属性值在初次处理时是空的，包括appConfig
+
+			// C03.05.01_1.09_01.01.05.02_01.02_1 如果bean定义是一个配置类，这里的getAttribute获取的是对象的this.attributes属性值，该属性值在初次处理时是空的，包括appConfig
 			if (beanDef.getAttribute(ConfigurationClassUtils.CONFIGURATION_CLASS_ATTRIBUTE) != null) {
 				if (logger.isDebugEnabled()) {
 					// Bean定义已经作为配置类处理
 					logger.debug("Bean definition has already been processed as a configuration class: " + beanDef);
 				}
 			}
-			// 注册的AppConfig类在这位置被判断为配置类，添加到configCandidates中，
-			// 认为他是配置类的依据是因为他在注册时候，生成的bean定义是AnnotatedBeanDefinition的
+
+			// C03.05.01_1.09_01.01.05.02_01.02_2 注册的AppConfig类在这位置被判断为配置类，添加到configCandidates中，认为他是配置类的依据是因为他在注册时候，生成的bean定义是AnnotatedBeanDefinition的
 			else if (ConfigurationClassUtils.checkConfigurationClassCandidate(beanDef, this.metadataReaderFactory)) {
 				configCandidates.add(new BeanDefinitionHolder(beanDef, beanName));
 			}
 		}
 
-		// 如果没有找到@Configuration类，则立即返回
+		// C03.05.01_1.09_01.01.05.03 如果没有找到@Configuration类，则立即返回
 		if (configCandidates.isEmpty()) {
 			return;
 		}
 
-		// 如果适用，请按之前确定的@Order值排序
+		// C03.05.01_1.09_01.01.05.04 如果适用，请按之前确定的@Order值排序
 		configCandidates.sort((bd1, bd2) -> {
 			int i1 = ConfigurationClassUtils.getOrder(bd1.getBeanDefinition());
 			int i2 = ConfigurationClassUtils.getOrder(bd2.getBeanDefinition());
 			return Integer.compare(i1, i2);
 		});
 
-		// 检测通过封装的应用程序上下文提供的任何自定义bean名称生成策略
+		// C03.05.01_1.09_01.01.05.05 检测通过封装的应用程序上下文提供的任何自定义bean名称生成策略
 		SingletonBeanRegistry sbr = null;
 		if (registry instanceof SingletonBeanRegistry) {
 			sbr = (SingletonBeanRegistry) registry;
@@ -327,22 +331,22 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 			}
 		}
 
-		// 如果未配置环境，则使用标准环境
+		// C03.05.01_1.09_01.01.05.06 如果未配置环境，则使用标准环境
 		if (this.environment == null) {
 			this.environment = new StandardEnvironment();
 		}
 
-		// 解析每个@Configuration类
+		// C03.05.01_1.09_01.01.05.07 创建解析器，解析每个@Configuration类
 		ConfigurationClassParser parser = new ConfigurationClassParser(
 				this.metadataReaderFactory, this.problemReporter, this.environment,
 				this.resourceLoader, this.componentScanBeanNameGenerator, registry);
-
+		// C03.05.01_1.09_01.01.05.08 创建bean定义候选对象集合，已解析的配置对象集合
 		Set<BeanDefinitionHolder> candidates = new LinkedHashSet<>(configCandidates);
 		Set<ConfigurationClass> alreadyParsed = new HashSet<>(configCandidates.size());
 		do {
-			// 解析配置类
+			// C03.05.01_1.09_01.01.05.09 实际执行解析配置类
 			parser.parse(candidates);
-			// 校验解析完成的配置类
+			// C03.05.01_1.09_01.01.05.10 校验解析完成的配置类
 			parser.validate();
 
 			// 从配置类集合中移除已经解析完毕的配置类

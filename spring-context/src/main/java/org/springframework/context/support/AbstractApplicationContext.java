@@ -586,11 +586,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
-	 * Prepare this context for refreshing, setting its startup date and
+	 * M03.01 Prepare this context for refreshing, setting its startup date and
 	 * active flag as well as performing any initialization of property sources.
 	 */
 	protected void prepareRefresh() {
-		// Switch to active.
+		// C03.01.01 Switch to active.
 		this.startupDate = System.currentTimeMillis();
 		this.closed.set(false);
 		this.active.set(true);
@@ -604,26 +604,26 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			}
 		}
 
-		// 在上下文环境中初始化任何占位符属性源。
+		// C03.01.02 在上下文环境中初始化任何占位符属性源。
 		// 这个方法目前没有子类去实现
 		// 估计spring是期待后面的版本有子类去实现吧
 		initPropertySources();
 
-		// Validate that all properties marked as required are resolvable:
+		// C03.01.03 Validate that all properties marked as required are resolvable:
 		// see ConfigurablePropertyResolver#setRequiredProperties
 		getEnvironment().validateRequiredProperties();
 
-		// Store pre-refresh ApplicationListeners...
+		// C03.01.04_1 Store pre-refresh ApplicationListeners...
 		if (this.earlyApplicationListeners == null) {
 			this.earlyApplicationListeners = new LinkedHashSet<>(this.applicationListeners);
 		}
 		else {
-			// Reset local application listeners to pre-refresh state.
+			// C03.01.04_2 Reset local application listeners to pre-refresh state.
 			this.applicationListeners.clear();
 			this.applicationListeners.addAll(this.earlyApplicationListeners);
 		}
 
-		// Allow for the collection of early ApplicationEvents,
+		// C03.01.05 Allow for the collection of early ApplicationEvents,
 		// to be published once the multicaster is available...
 		this.earlyApplicationEvents = new LinkedHashSet<>();
 	}
@@ -638,35 +638,37 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
-	 * Tell the subclass to refresh the internal bean factory.
+	 * M03.02 Tell the subclass to refresh the internal bean factory.
 	 * @return the fresh BeanFactory instance
 	 * @see #refreshBeanFactory()
 	 * @see #getBeanFactory()
 	 */
 	protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
+		// C03.02.01 刷新Bean工厂，设置 SerializationId
 		refreshBeanFactory();
+		// C03.02.02 得到bean工厂
 		return getBeanFactory();
 	}
 
 	/**
-	 * 配置其标准的特征，比如上下文的加载器ClassLoader和post-processors回调
+	 * M03.03 配置其标准的特征，比如上下文的加载器ClassLoader和post-processors回调
 	 * @param beanFactory 要配置的bean工厂
 	 * 此处的beanFactory参数等于DefaultListableFactory
 	 */
 	protected void prepareBeanFactory(ConfigurableListableBeanFactory beanFactory) {
-		// 告诉内部bean工厂使用上下文的类加载器等等。
+		// C03.03.01 告诉内部bean工厂使用上下文的类加载器等等。
 		beanFactory.setBeanClassLoader(getClassLoader());
-		// bean表达式解释器，后面说  能够获取bean当中的属性在前台页面
+		// C03.03.02 bean表达式解释器，后面说  能够获取bean当中的属性在前台页面
 		beanFactory.setBeanExpressionResolver(new StandardBeanExpressionResolver(beanFactory.getBeanClassLoader()));
-		// 对象与string类型的转换   <property red="dao">
+		// C03.03.03 对象与string类型的转换   <property red="dao">
 		beanFactory.addPropertyEditorRegistrar(new ResourceEditorRegistrar(this, getEnvironment()));
 
 		// 使用上下文回调配置bean工厂。
-		// 添加一个后置管理器
+		// C03.03.04 添加一个后置管理器ApplicationContextAwareProcessor，用于在bean中得到各种*Aware
 		// ApplicationContextAwareProcessor
 		// 能够在bean中获得到各种*Aware（*Aware都有其作用）
 		beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
-
+		// C03.03.05 添加自动装配时忽略的依赖接口
 		beanFactory.ignoreDependencyInterface(EnvironmentAware.class);
 		beanFactory.ignoreDependencyInterface(EmbeddedValueResolverAware.class);
 		beanFactory.ignoreDependencyInterface(ResourceLoaderAware.class);
@@ -674,26 +676,24 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		beanFactory.ignoreDependencyInterface(MessageSourceAware.class);
 		beanFactory.ignoreDependencyInterface(ApplicationContextAware.class);
 
-		// 在普通工厂中未注册为可解析类型的BeanFactory接口。
-		// MessageSource注册(并为自动装配找到)为bean。
+		// C03.03.06 用相应的自动获取值注册一个特殊的依赖类型。
+		// 在普通工厂中未注册为可解析类型的BeanFactory接口。MessageSource注册(并为自动装配找到)为bean。
 		beanFactory.registerResolvableDependency(BeanFactory.class, beanFactory);
 		beanFactory.registerResolvableDependency(ResourceLoader.class, this);
 		beanFactory.registerResolvableDependency(ApplicationEventPublisher.class, this);
 		beanFactory.registerResolvableDependency(ApplicationContext.class, this);
 
-		// 将早期后处理器注册为application监听器，用于检测内部bean。
+		// C03.03.07 将早期bean后处理器ApplicationListenerDetector注册为application监听器，用于检测内部bean。
 		beanFactory.addBeanPostProcessor(new ApplicationListenerDetector(this));
 
-		// 检测LoadTimeWeaver并准备编织(如果找到)。
+		// C03.03.08 检测LoadTimeWeaver并准备编织(如果找到)。
 		if (beanFactory.containsBean(LOAD_TIME_WEAVER_BEAN_NAME)) {
 			beanFactory.addBeanPostProcessor(new LoadTimeWeaverAwareProcessor(beanFactory));
 			// 为类型匹配设置一个临时类加载器。
 			beanFactory.setTempClassLoader(new ContextTypeMatchClassLoader(beanFactory.getBeanClassLoader()));
 		}
 
-		// 注册默认环境bean
-		// 意思是如果自定义的Bean中没有名为"systemProperties"和"systemEnvironment"的Bean，
-		// 则注册两个Bean，Key为"systemProperties"和"systemEnvironment"，Value为Map，
+		// C03.03.09 注册默认单例环境bean。意思是如果自定义的Bean中没有名为"systemProperties"和"systemEnvironment"的Bean，则注册两个Bean，Key为"systemProperties"和"systemEnvironment"，Value为Map，
 		// 这两个Bean就是一些系统配置和系统环境信息
 		if (!beanFactory.containsLocalBean(ENVIRONMENT_BEAN_NAME)) {
 			beanFactory.registerSingleton(ENVIRONMENT_BEAN_NAME, getEnvironment());
@@ -707,7 +707,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
-	 * Modify the application context's internal bean factory after its standard
+	 * M03.04 Modify the application context's internal bean factory after its standard
 	 * initialization. All bean definitions will have been loaded, but no beans
 	 * will have been instantiated yet. This allows for registering special
 	 * BeanPostProcessors etc in certain ApplicationContext implementations.

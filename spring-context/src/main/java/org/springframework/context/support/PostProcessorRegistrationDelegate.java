@@ -108,7 +108,7 @@ final class PostProcessorRegistrationDelegate {
 			// getBeanNamesForType 根据bean的类型获取bean的名字ConfigurationClassPostProcessor
 
 			// 在这里进行了第一次的bean定义的合并，为了获取完整的合并后的bean定义，然后再进行筛选
-			// C03.05.01_1.05 根据BeanDefinitionRegistryPostProcessor类型获取bean定义对应的名称列表集合
+			// C03.05.01_1.05 根据BeanDefinitionRegistryPostProcessor类型获取bean定义对应的名称列表集合，这里只有一个internalConfigurationAnnotationProcessor
 			String[] postProcessorNames =
 					beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
 			/**
@@ -325,7 +325,7 @@ final class PostProcessorRegistrationDelegate {
 	}
 
 	/**
-	 * 调用给定的BeanDefinitionRegistryPostProcessor beans.
+	 * M03.05.01_1.09 调用给定的BeanDefinitionRegistryPostProcessor beans.
 	 * 注意对比下面这个方法
 	 * BeanDefinitionRegistryPostProcessor和BeanFactoryPostProcessor
 	 *
@@ -334,10 +334,9 @@ final class PostProcessorRegistrationDelegate {
 	private static void invokeBeanDefinitionRegistryPostProcessors(
 			Collection<? extends BeanDefinitionRegistryPostProcessor> postProcessors, BeanDefinitionRegistry registry) {
 
-		/**
-		 * 遍历调用Bean定义注册后置处理器的相应逻辑
-		 */
+		// C03.05.01_1.09_01 遍历调用Bean定义注册后置处理器的相应逻辑
 		for (BeanDefinitionRegistryPostProcessor postProcessor : postProcessors) {
+			// C03.05.01_1.09_01.01 调用后置处理器的postProcessBeanDefinitionRegistry方法
 			postProcessor.postProcessBeanDefinitionRegistry(registry);
 		}
 	}

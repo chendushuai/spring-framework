@@ -251,7 +251,7 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 	//---------------------------------------------------------------------
 
 	/**
-	 * Do nothing: We hold a single internal BeanFactory and rely on callers
+	 * M03.02.01 Do nothing: We hold a single internal BeanFactory and rely on callers
 	 * to register beans through our public methods (or the BeanFactory's).
 	 * @see #registerBeanDefinition
 	 */
@@ -280,7 +280,7 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 	}
 
 	/**
-	 * Return the single internal BeanFactory held by this context
+	 * M03.02.02 Return the single internal BeanFactory held by this context
 	 * (as ConfigurableListableBeanFactory).
 	 */
 	@Override

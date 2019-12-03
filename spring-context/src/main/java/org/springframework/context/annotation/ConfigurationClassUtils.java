@@ -77,29 +77,29 @@ abstract class ConfigurationClassUtils {
 
 
 	/**
-	 * 检查给定的bean定义是否是配置类(或者在配置/组件类中声明的嵌套组件类，也可以自动注册)的候选对象，并相应地标记它。
+	 * M03.05.01_1.09_01.01.05.02_01.02_2 检查给定的bean定义是否是配置类(或者在配置/组件类中声明的嵌套组件类，也可以自动注册)的候选对象，并相应地标记它。
 	 * @param beanDef 要检查的bean定义
 	 * @param metadataReaderFactory 调用方正在使用的当前工厂
 	 * @return 候选人是否符合(任何类型的)配置类
 	 */
 	public static boolean checkConfigurationClassCandidate(
 			BeanDefinition beanDef, MetadataReaderFactory metadataReaderFactory) {
-		// 得到bean定义中的bean名称
+		// C03.05.01_1.09_01.01.05.02_01.02_2.01 得到bean定义中的bean名称
 		String className = beanDef.getBeanClassName();
 		if (className == null || beanDef.getFactoryMethodName() != null) {
 			return false;
 		}
-
+		// C03.05.01_1.09_01.01.05.02_01.02_2.02 创建用于保存注解元数据的对象
 		AnnotationMetadata metadata;
 		if (beanDef instanceof AnnotatedBeanDefinition &&
 				className.equals(((AnnotatedBeanDefinition) beanDef).getMetadata().getClassName())) {
-			// 如果bean定义类型实现为注解bean定义实现，且bean名称与元数据bean名称一致
-			// 可以重用来自给定bean定义的预解析元数据…
+
+			// C03.05.01_1.09_01.01.05.02_01.02_2.01_1 如果bean定义类型实现为注解bean定义实现，且bean名称与元数据bean名称一致，可以重用来自给定bean定义的预解析元数据…
 			metadata = ((AnnotatedBeanDefinition) beanDef).getMetadata();
 		}
 		else if (beanDef instanceof AbstractBeanDefinition && ((AbstractBeanDefinition) beanDef).hasBeanClass()) {
-			// 检查已加载的类是否存在…
-			// 因为我们甚至可能无法加载该类的类文件。
+
+			// C03.05.01_1.09_01.01.05.02_01.02_2.01_2 如果bean是抽象bean定义，检查已加载的类是否存在…因为我们甚至可能无法加载该类的类文件。
 			Class<?> beanClass = ((AbstractBeanDefinition) beanDef).getBeanClass();
 			if (BeanFactoryPostProcessor.class.isAssignableFrom(beanClass) ||
 					BeanPostProcessor.class.isAssignableFrom(beanClass) ||
@@ -112,7 +112,7 @@ abstract class ConfigurationClassUtils {
 		}
 		else {
 			try {
-				// 得到注解元数据
+				// C03.05.01_1.09_01.01.05.02_01.02_2.01_3 得到注解元数据
 				MetadataReader metadataReader = metadataReaderFactory.getMetadataReader(className);
 				metadata = metadataReader.getAnnotationMetadata();
 			}
@@ -124,13 +124,13 @@ abstract class ConfigurationClassUtils {
 				return false;
 			}
 		}
-
+		// C03.05.01_1.09_01.01.05.02_01.02_2.03 得到bean中的@Configuration注解
 		Map<String, Object> config = metadata.getAnnotationAttributes(Configuration.class.getName());
-		// 如果设置了@Configuration注解，并且proxyBeanMethods属性值指定为非FALSE，则设置CONFIGURATION_CLASS_ATTRIBUTE为full
+		// C03.05.01_1.09_01.01.05.02_01.02_2.04_1 如果设置了@Configuration注解，并且proxyBeanMethods属性值指定为非FALSE，则设置CONFIGURATION_CLASS_ATTRIBUTE为full
 		if (config != null && !Boolean.FALSE.equals(config.get("proxyBeanMethods"))) {
 			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_FULL);
 		}
-		// 只要设置了@Configuration注解，或者设置了@Component、@ComponentScan、@Import、@ImportResource注解，或在其中指定了@bean的方法，都会设置CONFIGURATION_CLASS_ATTRIBUTE为lite
+		// C03.05.01_1.09_01.01.05.02_01.02_2.04_2 只要设置了@Configuration注解，或者设置了@Component、@ComponentScan、@Import、@ImportResource注解，或在其中指定了@bean的方法，都会设置CONFIGURATION_CLASS_ATTRIBUTE为lite
 		else if (config != null || isConfigurationCandidate(metadata)) {
 			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_LITE);
 		}
@@ -138,12 +138,12 @@ abstract class ConfigurationClassUtils {
 			return false;
 		}
 
-		// 运行到这里的时候，配置对象一定是full或lite的配置候选... 那如果类指定了@Order的属性值，将该值保存到ORDER_ATTRIBUTE属性中
+		// C03.05.01_1.09_01.01.05.02_01.02_2.05 运行到这里的时候，配置对象一定是full或lite的配置候选... 那如果类指定了@Order的属性值，将该值保存到ORDER_ATTRIBUTE属性中
 		Integer order = getOrder(metadata);
 		if (order != null) {
 			beanDef.setAttribute(ORDER_ATTRIBUTE, order);
 		}
-
+		// C03.05.01_1.09_01.01.05.02_01.02_2.06 返回判断结果，为true
 		return true;
 	}
 
