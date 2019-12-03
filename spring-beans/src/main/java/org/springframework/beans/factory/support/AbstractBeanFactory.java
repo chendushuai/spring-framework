@@ -267,10 +267,11 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				throw new BeanCurrentlyInCreationException(beanName);
 			}
 
-			// 检查这个工厂中是否存在bean定义。
+			// C03.11.06.02_01.02_1.01_2.01.04_2.02 得到父bean工厂
 			BeanFactory parentBeanFactory = getParentBeanFactory();
+			// C03.11.06.02_01.02_1.01_2.01.04_2.03 判断bean工厂是否存在，且bean名称在当前bean工厂中不存在bean定义
 			if (parentBeanFactory != null && !containsBeanDefinition(beanName)) {
-				// 找不到 -> 检查父级
+				// C03.11.06.02_01.02_1.01_2.01.04_2.03_1.01 找不到 -> 检查父级。确定原始bean名称
 				String nameToLookup = originalBeanName(name);
 				if (parentBeanFactory instanceof AbstractBeanFactory) {
 					return ((AbstractBeanFactory) parentBeanFactory).doGetBean(
@@ -289,19 +290,21 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				}
 			}
 
-			// 如果bean用于类型检查，则直接标记为已创建
+			// C03.11.06.02_01.02_1.01_2.01.04_2.04 如果bean用于类型检查，则直接标记为已创建
 			if (!typeCheckOnly) {
+				// C03.11.06.02_01.02_1.01_2.01.04_2.04_1 标记bean为已创建
 				markBeanAsCreated(beanName);
 			}
 
 			try {
-				// 重新获取合并bean定义
+				// C03.11.06.02_01.02_1.01_2.01.04_2.05 重新获取合并bean定义
 				final RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
-				// 检查合并bean定义是否是抽象的，如果是抽象的，则抛出异常
+				// C03.11.06.02_01.02_1.01_2.01.04_2.06 检查合并bean定义是否是抽象的，如果是抽象的，则抛出异常
 				checkMergedBeanDefinition(mbd, beanName, args);
 
-				// 保证当前bean所依赖的bean的初始化。获取当前bean的依赖bean名称
+				// C03.11.06.02_01.02_1.01_2.01.04_2.07 保证当前bean所依赖的bean的初始化。获取当前bean的依赖bean名称
 				String[] dependsOn = mbd.getDependsOn();
+				// C03.11.06.02_01.02_1.01_2.01.04_2.08 如果存在依赖bean
 				if (dependsOn != null) {
 					for (String dep : dependsOn) {
 						// 判断是否存在依赖关系，如果无依赖关系，返回false
@@ -322,8 +325,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					}
 				}
 
-				// 创建bean的实例
+				// C03.11.06.02_01.02_1.01_2.01.04_2.09 创建bean的实例
 				if (mbd.isSingleton()) {
+					// C03.11.06.02_01.02_1.01_2.01.04_2.09_1.01 调用方法创建单例bean
 					sharedInstance = getSingleton(beanName, () -> {
 						try {
 							// 实际创建单例bean
@@ -1606,7 +1610,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	}
 
 	/**
-	 * 将指定的bean标记为已经创建(或即将创建)。
+	 * M03.11.06.02_01.02_1.01_2.01.04_2.04_1 将指定的bean标记为已经创建(或即将创建)。
 	 * <p>这允许bean工厂为重复创建指定的bean优化缓存。
 	 * @param beanName bean名称
 	 */
@@ -1684,7 +1688,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	protected Object getObjectForBeanInstance(
 			Object beanInstance, String name, String beanName, @Nullable RootBeanDefinition mbd) {
 
-		// 如果bean不是工厂，不要让调用代码尝试取消对工厂的引用。
+		// C03.11.06.02_01.02_1.01_2.01.04_1.01.01 如果bean不是工厂，不要让调用代码尝试取消对工厂的引用。
 		if (BeanFactoryUtils.isFactoryDereference(name)) {
 			if (beanInstance instanceof NullBean) {
 				return beanInstance;
@@ -1696,24 +1700,33 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 		// 现在我们有了bean实例，它可以是一个普通的bean，也可以是一个FactoryBean。
 		// 如果它是一个FactoryBean，我们将使用它来创建一个bean实例，除非调用者确实需要对工厂的引用。
+		// C03.11.06.02_01.02_1.01_2.01.04_1.01.02 如果bean实例不是一个FactoryBean，或名称不是使用&前缀
 		if (!(beanInstance instanceof FactoryBean) || BeanFactoryUtils.isFactoryDereference(name)) {
 			return beanInstance;
 		}
 
+		// C03.11.06.02_01.02_1.01_2.01.04_1.01.03 声明一个对象，用于接收创建的bean
 		Object object = null;
+		// C03.11.06.02_01.02_1.01_2.01.04_1.01.04 如果给定的bean定义为空
 		if (mbd == null) {
+			// C03.11.06.02_01.02_1.01_2.01.04_1.01.04_1 从FactoryBean中得到缓存对象
 			object = getCachedObjectForFactoryBean(beanName);
 		}
+		// C03.11.06.02_01.02_1.01_2.01.04_1.01.05 如果对象仍然为空
 		if (object == null) {
-			// 从工厂返回bean实例。
+			// C03.11.06.02_01.02_1.01_2.01.04_1.01.05_1.01 将给定实例转换为FactoryBean
 			FactoryBean<?> factory = (FactoryBean<?>) beanInstance;
 			// 缓存从FactoryBean获得的对象(如果它是单例的话)。
+			// C03.11.06.02_01.02_1.01_2.01.04_1.01.05_1.02 如果给定的bean定义为空，且在bean定义集合中存在指定名称的bean定义，则获取该bean的合并bean定义
 			if (mbd == null && containsBeanDefinition(beanName)) {
 				mbd = getMergedLocalBeanDefinition(beanName);
 			}
+			// C03.11.06.02_01.02_1.01_2.01.04_1.01.05_1.03 得到这个合并bean定义是否是合成的
 			boolean synthetic = (mbd != null && mbd.isSynthetic());
+			// C03.11.06.02_01.02_1.01_2.01.04_1.01.05_1.04 从FactoryBean中获取对象
 			object = getObjectFromFactoryBean(factory, beanName, !synthetic);
 		}
+		// C03.11.06.02_01.02_1.01_2.01.04_1.01.05 返回获取到的对象
 		return object;
 	}
 

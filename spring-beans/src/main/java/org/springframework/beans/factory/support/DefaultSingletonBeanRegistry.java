@@ -206,7 +206,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	}
 
 	/**
-	 * 返回在给定名称下注册的(原始)单例对象，如果还没有注册，则创建并注册一个新的单例对象。
+	 * M03.11.06.02_01.02_1.01_2.01.04_2.09_1.01 返回在给定名称下注册的(原始)单例对象，如果还没有注册，则创建并注册一个新的单例对象。
 	 * @param beanName bean名称
 	 * @param singletonFactory 如果需要，ObjectFactory可以延迟创建单例
 	 * @return 注册的单例对象
@@ -214,9 +214,11 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	public Object getSingleton(String beanName, ObjectFactory<?> singletonFactory) {
 		Assert.notNull(beanName, "Bean name must not be null");
 		synchronized (this.singletonObjects) {
-			// 获取已经创建的单例bean对象
+			// C03.11.06.02_01.02_1.01_2.01.04_2.09_1.01.01 获取已经创建的单例bean对象
 			Object singletonObject = this.singletonObjects.get(beanName);
+			// C03.11.06.02_01.02_1.01_2.01.04_2.09_1.01.01 如果单例对象为空
 			if (singletonObject == null) {
+				// C03.11.06.02_01.02_1.01_2.01.04_2.09_1.01.01_1.01 如果当前处于销毁单例对象环节，则不允许创建bean
 				if (this.singletonsCurrentlyInDestruction) {
 					// 当这个工厂的单例对象被销毁时，不允许创建单例bean(不要在销毁方法实现中向BeanFactory请求bean!)
 					throw new BeanCreationNotAllowedException(beanName,
@@ -230,19 +232,24 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 				 * 将beanName添加到singletonsCurrentlyInCreation这样一个set集合中
 				 * 表示beanName对应的bean正在创建中
 				 */
+				// C03.11.06.02_01.02_1.01_2.01.04_2.09_1.01.01_1.02 判断当前bean是否正在创建中，或在创建环节被排除，如果是，则抛出异常
 				beforeSingletonCreation(beanName);
+				// C03.11.06.02_01.02_1.01_2.01.04_2.09_1.01.01_1.03 标志当前单例对象是不是新创建的
 				boolean newSingleton = false;
+				// C03.11.06.02_01.02_1.01_2.01.04_2.09_1.01.01_1.04 判断需要抑制的异常列表是否为null
 				boolean recordSuppressedExceptions = (this.suppressedExceptions == null);
+				// C03.11.06.02_01.02_1.01_2.01.04_2.09_1.01.01_1.05 如果异常列表为null，则初始化为LinkedHashSet集合
 				if (recordSuppressedExceptions) {
 					this.suppressedExceptions = new LinkedHashSet<>();
 				}
 				try {
+					// C03.11.06.02_01.02_1.01_2.01.04_2.09_1.01.01_1.06 调用单例工厂创建单例对象，并标志新单例对象为true
 					singletonObject = singletonFactory.getObject();
 					newSingleton = true;
 				}
 				catch (IllegalStateException ex) {
-					// Has the singleton object implicitly appeared in the meantime ->
-					// if yes, proceed with it since the exception indicates that state.
+					// 与此同时，是否隐式地出现了单例对象 -> 如果是，则使用它，因为异常指示该状态。
+					// C03.11.06.02_01.02_1.01_2.01.04_2.09_1.01.01_1.06_001 如果无法从单例工厂中创建对象，则从bean工厂的单例对象集合中获取对应单例对象。如果为空，则抛出异常
 					singletonObject = this.singletonObjects.get(beanName);
 					if (singletonObject == null) {
 						throw ex;

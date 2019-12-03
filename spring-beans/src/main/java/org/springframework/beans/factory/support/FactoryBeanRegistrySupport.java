@@ -72,7 +72,7 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 	}
 
 	/**
-	 * 获取要从给定FactoryBean公开的对象(如果以缓存形式可用)。快速检查最小同步。
+	 * M03.11.06.02_01.02_1.01_2.01.04_1.01.04_1 获取要从给定FactoryBean公开的对象(如果以缓存形式可用)。快速检查最小同步。
 	 * @param beanName bean名称
 	 * @return 从FactoryBean获得的对象，或者{@code null}(如果不可用)
 	 */
@@ -82,7 +82,7 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 	}
 
 	/**
-	 * 获取要从给定的FactoryBean公开的对象。
+	 * M03.11.06.02_01.02_1.01_2.01.04_1.01.05_1.04 获取要从给定的FactoryBean公开的对象。
 	 * @param factory FactoryBean实例
 	 * @param beanName bean的名称
 	 * @param shouldPostProcess 是否对bean进行后处理
