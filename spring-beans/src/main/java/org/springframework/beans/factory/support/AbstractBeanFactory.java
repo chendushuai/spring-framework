@@ -197,6 +197,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 */
 	@Override
 	public Object getBean(String name) throws BeansException {
+		// C03.11.06.02_01.02_1.01_2.01 实际执行bean创建
 		return doGetBean(name, null, null, false);
 	}
 
@@ -225,7 +226,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	}
 
 	/**
-	 * 返回指定bean的一个实例，该实例可以是共享的，也可以是独立的。
+	 * M03.11.06.02_01.02_1.01_2.01 返回指定bean的一个实例，该实例可以是共享的，也可以是独立的。
 	 * @param name 要检索的bean的名称
 	 * @param requiredType 要检索的bean的所需类型
 	 * @param args 使用显式参数创建bean实例时要使用的参数(仅在创建新实例时应用，而不是检索现有实例时使用)
@@ -237,14 +238,15 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	protected <T> T doGetBean(final String name, @Nullable final Class<T> requiredType,
 			@Nullable final Object[] args, boolean typeCheckOnly) throws BeansException {
 
-		// bean名称校验
+		// C03.11.06.02_01.02_1.01_2.01.01 bean名称校验，规范化Bean名称
 		final String beanName = transformedBeanName(name);
 
-		// 定义一个对象，用于存储将来返回的bean
+		// C03.11.06.02_01.02_1.01_2.01.02 定义一个对象，用于存储将来返回的bean
 		Object bean;
 
-		// 首先地检查单例缓存中手动注册的单例。
+		// C03.11.06.02_01.02_1.01_2.01.03 首先地检查单例缓存中已有的单例对象，可以手动注册单例对象。
 		Object sharedInstance = getSingleton(beanName);
+		// C03.11.06.02_01.02_1.01_2.01.04_1 如果单例对象不为空，且创建bean时候的参数为空
 		if (sharedInstance != null && args == null) {
 			if (logger.isTraceEnabled()) {
 				if (isSingletonCurrentlyInCreation(beanName)) {
@@ -255,12 +257,12 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					logger.trace("Returning cached instance of singleton bean '" + beanName + "'");
 				}
 			}
-			// 获取给定bean的实例
+			// C03.11.06.02_01.02_1.01_2.01.04_1.01 获取给定bean的实例
 			bean = getObjectForBeanInstance(sharedInstance, name, beanName, null);
 		}
 
 		else {
-			// 如果我们已经创建了这个bean实例，则会失败:假设我们是在一个循环引用中。
+			// C03.11.06.02_01.02_1.01_2.01.04_2.01 如果我们已经正在创建这个bean实例，则会失败:假设我们是在一个循环引用中。
 			if (isPrototypeCurrentlyInCreation(beanName)) {
 				throw new BeanCurrentlyInCreationException(beanName);
 			}
@@ -1672,7 +1674,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	}
 
 	/**
-	 * 获取给定bean实例的对象，对于FactoryBean，要么是bean实例本身，要么是它创建的对象。
+	 * M03.11.06.02_01.02_1.01_2.01.04_1.01 获取给定bean实例的对象，对于FactoryBean，要么是bean实例本身，要么是它创建的对象。
 	 * @param beanInstance 共享bean实例
 	 * @param name 可能包含工厂引用前缀的名称
 	 * @param beanName 规范bean名称

@@ -734,8 +734,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 		// 如果同时发现，检测LoadTimeWeaver并准备织入
 		// (例如，通过ConfigurationClassPostProcessor注册的@Bean方法)
+		// C03.05.02 如果没有临时类加载器，且存在loadTimeWeaver的单例bean或bean定义，则，并
 		if (beanFactory.getTempClassLoader() == null && beanFactory.containsBean(LOAD_TIME_WEAVER_BEAN_NAME)) {
+			// C03.05.02_1.01 需要添加加载时织入后置处理器LoadTimeWeaverAwareProcessor
 			beanFactory.addBeanPostProcessor(new LoadTimeWeaverAwareProcessor(beanFactory));
+			// C03.05.02_1.02 设置临时类加载器为ContextTypeMatchClassLoader
 			beanFactory.setTempClassLoader(new ContextTypeMatchClassLoader(beanFactory.getBeanClassLoader()));
 		}
 	}

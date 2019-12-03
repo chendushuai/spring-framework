@@ -865,16 +865,20 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 		// C03.11.06.02 触发所有非延迟加载单例beans的初始化，主要步骤为调用getBean
 		for (String beanName : beanNames) {
-			// C03.11.06.02_01 合并父BeanDefinition，因为后面就要实例化了，同时子类中的部分属性继承自父类，所以通过合并来获取完整的子类属性
+			// C03.11.06.02_01.01 合并父BeanDefinition，因为后面就要实例化了，同时子类中的部分属性继承自父类，所以通过合并来获取完整的子类属性
 			RootBeanDefinition bd = getMergedLocalBeanDefinition(beanName);
+			// C03.11.06.02_01.02 如果合并后的bean定义不是abstract，不是延迟初始化的，但是是单例的
 			if (!bd.isAbstract() && bd.isSingleton() && !bd.isLazyInit()) {
-				// 判断是否是FactoryBean类型
+				// C03.11.06.02_01.02_1.01 判断是否是FactoryBean类型
 				if (isFactoryBean(beanName)) {
-					// 添加FactoryBean名称前缀&获取FactoryBean自身
+					// C03.11.06.02_01.02_1.01_1.01 添加FactoryBean名称前缀&获取FactoryBean自身
 					Object bean = getBean(FACTORY_BEAN_PREFIX + beanName);
+					// C03.11.06.02_01.02_1.01_1.02 如果bean实现了FactoryBean接口，则是一个FactoryBean
 					if (bean instanceof FactoryBean) {
+						// C03.11.06.02_01.02_1.01_1.02_1.01 将bean转换成一个FactoryBean
 						final FactoryBean<?> factory = (FactoryBean<?>) bean;
 						boolean isEagerInit;
+						// C03.11.06.02_01.02_1.01_1.02_1.02 如果FactoryBean实现了SmartFactoryBean接口，则调用其isEagerInit()方法判断是否需要提前初始化
 						if (System.getSecurityManager() != null && factory instanceof SmartFactoryBean) {
 							isEagerInit = AccessController.doPrivileged((PrivilegedAction<Boolean>)
 											((SmartFactoryBean<?>) factory)::isEagerInit,
@@ -884,22 +888,29 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 							isEagerInit = (factory instanceof SmartFactoryBean &&
 									((SmartFactoryBean<?>) factory).isEagerInit());
 						}
+						// C03.11.06.02_01.02_1.01_1.02_1.03 如果是需要提前初始化，则调用初始化bean
 						if (isEagerInit) {
+							// C03.11.06.02_01.02_1.01_1.02_1.03_1 等同于 C03.11.06.02_01.02_1.01_2
 							getBean(beanName);
 						}
 					}
 				}
 				else {
+					// C03.11.06.02_01.02_1.01_2 初始化bean
 					getBean(beanName);
 				}
 			}
 		}
 
-		// 为所有适用的bean触发初始化后回调…
+		// C03.11.06.03 为所有适用的bean触发初始化后回调…
 		for (String beanName : beanNames) {
+			// C03.11.06.03_01.01 遍历bean名称列表，得到bean名称对应的单例实例
 			Object singletonInstance = getSingleton(beanName);
+			// C03.11.06.03_01.02 如果单例实例实现了SmartInitializingSingleton接口
 			if (singletonInstance instanceof SmartInitializingSingleton) {
+				// C03.11.06.03_01.02_1.01 强制将单例转换为SmartInitializingSingleton对象
 				final SmartInitializingSingleton smartSingleton = (SmartInitializingSingleton) singletonInstance;
+				// C03.11.06.03_01.02_1.02 调用对象的afterSingletonsInstantiated方法
 				if (System.getSecurityManager() != null) {
 					AccessController.doPrivileged((PrivilegedAction<Object>) () -> {
 						smartSingleton.afterSingletonsInstantiated();

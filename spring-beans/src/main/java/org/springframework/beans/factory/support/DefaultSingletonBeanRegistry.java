@@ -159,19 +159,19 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	}
 
 	/**
-	 * 返回给定名称的bean的单例对象
+	 * M03.11.06.02_01.02_1.01_2.01.03 返回给定名称的bean的单例对象
 	 * @param beanName 要查找的bean的名称
 	 * @return
 	 */
 	@Override
 	@Nullable
 	public Object getSingleton(String beanName) {
-		// 默认开启循环依赖的另一个表现
+		// C03.11.06.02_01.02_1.01_2.01.03.01 实际执行获取单例，默认允许循环引用，也就是提前创建引用，标志为true
 		return getSingleton(beanName, true);
 	}
 
 	/**
-	 * 返回在给定名称下注册的(原始)单例对象。
+	 * M03.11.06.02_01.02_1.01_2.01.03.01 返回在给定名称下注册的(原始)单例对象。
 	 * <p>检查已实例化的单例，并允许对当前创建的单例的早期引用(解析循环引用)。
 	 * @param beanName 要查找的bean的名称
 	 * @param allowEarlyReference 是否应该创建早期引用
@@ -179,29 +179,29 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 */
 	@Nullable
 	protected Object getSingleton(String beanName, boolean allowEarlyReference) {
-		// 从已创建的单例对象找到对应名称的bean
+		// C03.11.06.02_01.02_1.01_2.01.03.01.01 从已创建的单例对象集合this.singletonObjects查找对应名称的bean
 		Object singletonObject = this.singletonObjects.get(beanName);
-		// 如果当前bean为未创建，并且是当前正在创建的单例对象
+		// C03.11.06.02_01.02_1.01_2.01.03.01.02 如果当前bean为未创建，并且是当前正在创建的单例对象（用于处理循环引用）
 		if (singletonObject == null && isSingletonCurrentlyInCreation(beanName)) {
 			synchronized (this.singletonObjects) {
-				// 获取该名称对应的早期单例对象缓存，不包含属性
+				// C03.11.06.02_01.02_1.01_2.01.03.01.02_1.01 获取该名称对应的早期单例对象缓存，这时候的单例对象不包含属性值
 				singletonObject = this.earlySingletonObjects.get(beanName);
-				// 如果早期单例对象缓存为空，且允许创建早期引用对象
+				// C03.11.06.02_01.02_1.01_2.01.03.01.02_1.02 如果早期单例对象缓存为空，且允许创建早期引用对象allowEarlyReference为true
 				if (singletonObject == null && allowEarlyReference) {
-					// 从单例工厂中获取创建对应Bean
+					// C03.11.06.02_01.02_1.01_2.01.03.01.02_1.02_1.01 从单例工厂中获取创建对应Bean，这个bean工厂存储提前初始化的对象的创建实例的工厂方法，用于解决循环依赖
 					ObjectFactory<?> singletonFactory = this.singletonFactories.get(beanName);
 					if (singletonFactory != null) {
+						// C03.11.06.02_01.02_1.01_2.01.03.01.02_1.02_1.01_1.01 得到单例工厂中的对象
 						singletonObject = singletonFactory.getObject();
-						// 保存创建的早期引用对象 保存到三级缓存
-						// 主要是为了提高效率
+						// C03.11.06.02_01.02_1.01_2.01.03.01.02_1.02_1.01_1.02 保存创建的早期引用对象 保存到三级缓存，主要是为了提高效率
 						this.earlySingletonObjects.put(beanName, singletonObject);
-						// 移除单例工厂中的该对象 从二级缓存中移除
-						// 从工厂缓存中获取对象比较麻烦，且需要生产才能得到
+						// C03.11.06.02_01.02_1.01_2.01.03.01.02_1.02_1.01_1.03 移除单例工厂中的该对象 从二级缓存中移除，从工厂缓存中获取对象比较麻烦，且需要生产才能得到
 						this.singletonFactories.remove(beanName);
 					}
 				}
 			}
 		}
+		// C03.11.06.02_01.02_1.01_2.01.03.01.03 返回最终得到的单例对象
 		return singletonObject;
 	}
 

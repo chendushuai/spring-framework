@@ -99,8 +99,7 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
 	void setTempClassLoader(@Nullable ClassLoader tempClassLoader);
 
 	/**
-	 * Return the temporary ClassLoader to use for type matching purposes,
-	 * if any.
+	 * 如果有的话，返回用于类型匹配目的的临时类加载器。
 	 * @since 2.5
 	 */
 	@Nullable
