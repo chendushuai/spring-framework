@@ -337,34 +337,35 @@ class ConfigurationClassParser {
 			}
 		}
 
-		// 处理任何@Import注解
+		// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.05 处理任何@Import注解
 		processImports(configClass, sourceClass, getImports(sourceClass), true);
 
-		// 处理任何@ImportResource注解
+		// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.06 读取@ImportResource注解内容
 		AnnotationAttributes importResource =
 				AnnotationConfigUtils.attributesFor(sourceClass.getMetadata(), ImportResource.class);
-		// 如果添加了@ImportResource注解
+		// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.07 如果添加了@ImportResource注解，则获取参数值遍历处理
 		if (importResource != null) {
+			// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.07_1.01 读取 locations 和 reader参数值
 			String[] resources = importResource.getStringArray("locations");
 			Class<? extends BeanDefinitionReader> readerClass = importResource.getClass("reader");
-			// 获取属性值，添加导入资源
+			// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.07_1.02 遍历locations属性值，导入资源
 			for (String resource : resources) {
 				String resolvedResource = this.environment.resolveRequiredPlaceholders(resource);
 				configClass.addImportedResource(resolvedResource, readerClass);
 			}
 		}
 
-		// 处理单个@Bean方法
-		// 获取使用了@Bean注解的方法元数据
+		// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.08 获取使用了@Bean注解的方法元数据，处理单个@Bean方法
 		Set<MethodMetadata> beanMethods = retrieveBeanMethodMetadata(sourceClass);
+		// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.09 将读取到的@Bean方法保存到配置类的Bean方法中
 		for (MethodMetadata methodMetadata : beanMethods) {
 			configClass.addBeanMethod(new BeanMethod(methodMetadata, configClass));
 		}
 
-		// 处理接口上的默认方法
+		// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.10 处理接口上的默认方法
 		processInterfaces(configClass, sourceClass);
 
-		// 如果有的话，处理超类
+		// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.11 如果有的话，处理超类
 		if (sourceClass.getMetadata().hasSuperClass()) {
 			// 得到超类名称
 			String superclass = sourceClass.getMetadata().getSuperClassName();
@@ -377,7 +378,7 @@ class ConfigurationClassParser {
 			}
 		}
 
-		// 没有超类 -> 处理完成
+		// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.12 没有超类 -> 处理完成
 		return null;
 	}
 
@@ -434,23 +435,25 @@ class ConfigurationClassParser {
 	}
 
 	/**
-	 * 检索所有<code>@Bean</code>方法的元数据。
+	 * M03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.08 检索所有<code>@Bean</code>方法的元数据。
 	 */
 	private Set<MethodMetadata> retrieveBeanMethodMetadata(SourceClass sourceClass) {
+		// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.08.01 得到配置类的元数据
 		AnnotationMetadata original = sourceClass.getMetadata();
-		// 获取添加了@Bean注解的方法元数据集合
+		// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.08.02 获取添加了@Bean注解的方法元数据集合
 		Set<MethodMetadata> beanMethods = original.getAnnotatedMethods(Bean.class.getName());
+		// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.08.03 如果存在@Bean注解的方法
 		if (beanMethods.size() > 1 && original instanceof StandardAnnotationMetadata) {
-			// 尝试通过ASM读取类文件以确定声明顺序…
-			// 不幸的是，JVM的标准反射以任意顺序返回方法，甚至在相同JVM上运行相同应用程序的不同时间之间也是如此。
 			try {
+				// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.08.03_1.01 尝试通过ASM读取类文件以确定声明顺序…
+				// 不幸的是，JVM的标准反射以任意顺序返回方法，甚至在相同JVM上运行相同应用程序的不同时间之间也是如此。
 				AnnotationMetadata asm =
 						this.metadataReaderFactory.getMetadataReader(original.getClassName()).getAnnotationMetadata();
-				// 使用ASM方式获取@Bean主机的方法元数据
+				// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.08.03_1.02 使用ASM方式获取@Bean注解的方法元数据
 				Set<MethodMetadata> asmMethods = asm.getAnnotatedMethods(Bean.class.getName());
-				// 如果使用ASM方式获取到的注解方法数量大于直接获取的注解方法主梁
+				// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.08.03_1.03_1 如果使用ASM方式获取到的注解方法数量大于直接获取的注解方法数量
 				if (asmMethods.size() >= beanMethods.size()) {
-					// 则通过循环比较，添加使用注解方法直接获取到的方法
+					// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.08.03_1.03_1.01 则通过循环比较，添加使用注解方法直接获取到的方法
 					Set<MethodMetadata> selectedMethods = new LinkedHashSet<>(asmMethods.size());
 					for (MethodMetadata asmMethod : asmMethods) {
 						for (MethodMetadata beanMethod : beanMethods) {
@@ -460,9 +463,9 @@ class ConfigurationClassParser {
 							}
 						}
 					}
-					// 如果ASM方法获取的方法数量包含所有使用注解直接获取的方法数量
+					// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.08.03_1.03_1.02 如果ASM方法获取的方法数量包含所有使用注解直接获取的方法数量
 					if (selectedMethods.size() == beanMethods.size()) {
-						// 在ASM方法集中找到的所有反射检测方法 -> 继续执行
+						// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.08.03_1.03_1.02_1 在ASM方法集中找到的所有反射检测方法 -> 继续执行
 						beanMethods = selectedMethods;
 					}
 				}
@@ -472,6 +475,7 @@ class ConfigurationClassParser {
 				// No worries, let's continue with the reflection metadata we started with...
 			}
 		}
+		// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.08.04 返回获取到的类中的@Bean注解的方法
 		return beanMethods;
 	}
 
@@ -600,7 +604,7 @@ class ConfigurationClassParser {
 	}
 
 	/**
-	 * 处理任何@Import注解
+	 * M03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.05 处理任何@Import注解
 	 * @param configClass 正在构建的配置类
 	 * @param currentSourceClass 源类
 	 * @param importCandidates 递归获取到的所有@Import注解值
@@ -608,30 +612,30 @@ class ConfigurationClassParser {
 	 */
 	private void processImports(ConfigurationClass configClass, SourceClass currentSourceClass,
 			Collection<SourceClass> importCandidates, boolean checkForCircularImports) {
-		// 如果没有指定任何的@Import，则直接返回
+		// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.05.01 如果没有指定任何的@Import，则直接返回
 		if (importCandidates.isEmpty()) {
 			return;
 		}
 
-		// 如果检查循环导入，且使用了栈的链式导入，则记录循环导入错误
+		// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.05.02_1 如果检查循环导入，且使用了栈的链式导入，则记录循环导入错误
 		if (checkForCircularImports && isChainedImportOnStack(configClass)) {
 			this.problemReporter.error(new CircularImportProblem(configClass, this.importStack));
 		}
 		else {
-			// 将配置类放入栈顶
+			// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.05.02_2.01 将配置类放入栈顶
 			this.importStack.push(configClass);
 			try {
-				// 遍历@Import导入的属性值
+				// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.05.02_2.02 遍历@Import导入的属性值
 				for (SourceClass candidate : importCandidates) {
-					// 判断属性值中的类是否是ImportSelector接口的实现类
+					// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.05.02_2.02_01.01 判断属性值中的类是否是ImportSelector接口的实现类
 					if (candidate.isAssignable(ImportSelector.class)) {
-						// 候选类是一个ImportSelector ->委托给它来决定导入
+						// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.05.02_2.02_01.01_1.01 候选类是一个ImportSelector ->委托给它来决定导入
 						Class<?> candidateClass = candidate.loadClass();
-						// 使用候选类的对象来构建一个ImportSelector
+						// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.05.02_2.02_01.01_1.02 使用候选类的对象来构建一个ImportSelector
 						ImportSelector selector = BeanUtils.instantiateClass(candidateClass, ImportSelector.class);
 						ParserStrategyUtils.invokeAwareMethods(
 								selector, this.environment, this.resourceLoader, this.registry);
-						// 如果导入选择器实现了DeferredImportSelector接口
+						// C03.05.01_1.09_01.01.05.09.01_01.01_1.01.05-1.05.02_2.02_01.01_1.03_1 如果导入选择器实现了DeferredImportSelector接口
 						if (selector instanceof DeferredImportSelector) {
 							this.deferredImportSelectorHandler.handle(configClass, (DeferredImportSelector) selector);
 						}
