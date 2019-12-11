@@ -5,10 +5,17 @@ import com.chenss.dao.AopAspectJDao;
 import com.chenss.dao.AopPrototypeAspectJDao;
 import com.chenss.dao.ChenssFactoryBean;
 import com.chenss.dao.UserDao;
+import com.chenss.event.MyEvent;
 import com.chenss.processor.ChenssRegisterBeanFactoryPostProcessor;
+import com.chenss.utils.FileUtils;
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 
 public class Test {
 	public static void main(String[] args) {
@@ -41,5 +48,17 @@ public class Test {
 		aopPrototypeAspectJDao.print("aopTest1");
 		aopPrototypeAspectJDao = (AopPrototypeAspectJDao) annotationConfigApplicationContext.getBean("aopPrototypeAspectJDao");
 		aopPrototypeAspectJDao.print("aopTest2");
+
+
+		try {
+			File fileIn = new File("e://user.txt");
+			File fileOut = new File("e://userOut.txt");
+			if (!fileOut.exists()) {
+				fileOut.createNewFile();
+			}
+			FileUtils.fileUploadWrite(new FileInputStream(fileIn), new FileOutputStream(fileOut), annotationConfigApplicationContext);
+		}catch (Exception ex) {
+
+		}
 	}
 }
