@@ -50,7 +50,7 @@ public class Test {
 		aopPrototypeAspectJDao.print("aopTest2");
 
 
-		try {
+		/*try {
 			File fileIn = new File("e://user.txt");
 			File fileOut = new File("e://userOut.txt");
 			if (!fileOut.exists()) {
@@ -59,6 +59,6 @@ public class Test {
 			FileUtils.fileUploadWrite(new FileInputStream(fileIn), new FileOutputStream(fileOut), annotationConfigApplicationContext);
 		}catch (Exception ex) {
 
-		}
+		}*/
 	}
 }
