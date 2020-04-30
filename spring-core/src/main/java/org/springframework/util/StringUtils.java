@@ -1109,9 +1109,8 @@ public abstract class StringUtils {
 	}
 
 	/**
-	 * Tokenize the given {@code String} into a {@code String} array via a
-	 * {@link StringTokenizer}.
-	 * <p>Trims tokens and omits empty tokens.
+	 * 通过{@link StringTokenizer}将给定的{@code String}标记为{@code String}数组。
+	 * <p>修剪令牌并删除空令牌。
 	 * <p>The given {@code delimiters} string can consist of any number of
 	 * delimiter characters. Each of those characters can be used to separate
 	 * tokens. A delimiter is always a single character; for multi-character

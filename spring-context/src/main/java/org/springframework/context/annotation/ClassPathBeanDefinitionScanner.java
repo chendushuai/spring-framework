@@ -189,7 +189,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	}
 
 	/**
-	 * Return the defaults to use for detected beans (never {@code null}).
+	 * 返回检测到的bean使用的默认值(绝不是{@code null})。
 	 * @since 4.1
 	 */
 	public BeanDefinitionDefaults getBeanDefinitionDefaults() {

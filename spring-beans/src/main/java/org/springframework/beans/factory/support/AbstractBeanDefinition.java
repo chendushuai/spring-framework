@@ -655,11 +655,10 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	}
 
 	/**
-	 * Set whether this bean is a candidate for getting autowired into some other bean.
-	 * <p>Note that this flag is designed to only affect type-based autowiring.
-	 * It does not affect explicit references by name, which will get resolved even
-	 * if the specified bean is not marked as an autowire candidate. As a consequence,
-	 * autowiring by name will nevertheless inject a bean if the name matches.
+	 * 设置这个bean是否可以被自动装配到其他bean中。
+	 * <p>请注意，此标志仅用于影响基于类型的自动装配。
+	 * 它不影响通过名称显式引用，即使指定的bean没有标记为autowire候选bean，也会解析该引用。
+	 * 因此，如果名字匹配，自动装配仍然会注入一个bean。
 	 * @see #AUTOWIRE_BY_TYPE
 	 * @see #AUTOWIRE_BY_NAME
 	 */
@@ -932,7 +931,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	}
 
 	/**
-	 * Specify whether or not the configured init method is the default.
+	 * 指定所配置的init方法是否是默认方法。
 	 * <p>The default value is {@code false}.
 	 * @see #setInitMethodName
 	 */
