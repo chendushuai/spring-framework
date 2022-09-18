@@ -18,6 +18,7 @@ package org.springframework.context.annotation;
 
 import java.util.function.Supplier;
 
+import groovy.util.logging.Slf4j;
 import org.springframework.beans.factory.config.BeanDefinitionCustomizer;
 import org.springframework.beans.factory.support.BeanNameGenerator;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
@@ -64,6 +65,7 @@ import org.springframework.util.Assert;
  * @see ClassPathBeanDefinitionScanner
  * @see org.springframework.context.support.GenericXmlApplicationContext
  */
+@Slf4j
 public class AnnotationConfigApplicationContext extends GenericApplicationContext implements AnnotationConfigRegistry {
 
 	/**
@@ -83,7 +85,7 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 
 
 	/**
-	 * 初始化一个bean的读取和扫描器
+	 * M01 初始化一个bean的读取和扫描器
 	 * 何谓读取器和扫描器参考上面的属性注释
 	 * 默认构造函数，如果直接调用这个默认构造方法，需要在稍后通过调用其register()
 	 * 去注册配置类（javaconfig），并调用refresh()方法刷新容器，
@@ -93,9 +95,10 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	public AnnotationConfigApplicationContext() {
 		/**
 		 * 父类的构造方法
-		 * C01.04 创建一个读取注解的Bean定义读取器
+		 * C01.04 创建一个读取注解的Bean定义(BeanDefinition)读取器
 		 * 什么是bean定义？BeanDefinition
 		 */
+		System.out.println("C01.04 创建一个读取注解的Bean定义(BeanDefinition)读取器");
 		this.reader = new AnnotatedBeanDefinitionReader(this);
 
 		/**

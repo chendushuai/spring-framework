@@ -64,6 +64,7 @@ public class AnnotatedBeanDefinitionReader {
 
 
 	/**
+	 * M01.04 使用构造方法创建一个注解bean定义读取器
 	 * 这里的BeanDefinitionRegistry registry是通过在AnnotationConfigApplicationContext
 	 * 的构造方法中传进来的this
 	 * 由此说明AnnotationConfigApplicationContext是一个BeanDefinitionRegistry类型的类
@@ -81,7 +82,7 @@ public class AnnotatedBeanDefinitionReader {
 	}
 
 	/**
-	 * 为给定注册表创建一个新的{@code AnnotatedBeanDefinitionReader}，并使用给定的{@link Environment}。
+	 * M01.04.01 为给定注册表创建一个新的{@code AnnotatedBeanDefinitionReader}，并使用给定的{@link Environment}。
 	 * @param registry 以{@code BeanDefinitionRegistry}的形式将bean定义加载到{@code BeanFactory}中
 	 * @param environment 在评估bean定义概要文件时要使用的{@code Environment}。
 	 * @since 3.1
@@ -92,7 +93,7 @@ public class AnnotatedBeanDefinitionReader {
 		this.registry = registry;
 		// 创建用于计算{@link Conditional}注解类
 		this.conditionEvaluator = new ConditionEvaluator(registry, environment, null);
-		// C01.04.01_1.01 在给定注册表中注册所有相关的注释后处理器。
+		// C01.04.01_1.01 在给定注册表中注册所有相关的注解配置处理器。
 		AnnotationConfigUtils.registerAnnotationConfigProcessors(this.registry);
 	}
 

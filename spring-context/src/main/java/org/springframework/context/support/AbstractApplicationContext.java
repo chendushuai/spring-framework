@@ -219,9 +219,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 
 	/**
-	 * C01.02 Create a new AbstractApplicationContext with no parent.
+	 * M01.02 创建一个新的没有父级的AbstractApplicationContext
 	 */
 	public AbstractApplicationContext() {
+		// C01.02 创建一个新的没有父级的AbstractApplicationContext
+		System.out.println("C01.02 创建一个新的没有父级的AbstractApplicationContext");
 		this.resourcePatternResolver = getResourcePatternResolver();
 	}
 

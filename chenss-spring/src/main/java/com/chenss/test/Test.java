@@ -23,6 +23,7 @@ public class Test {
 
 		//bean标签、@Service等标签、JavaConfig的@bean标签
 		// C01 初始化注解配置上下文对象
+		System.out.println("C01 初始化注解配置上下文对象");
 		AnnotationConfigApplicationContext annotationConfigApplicationContext = new AnnotationConfigApplicationContext();
 		// C02 注册配置类
 		annotationConfigApplicationContext.register(Appconfig.class);

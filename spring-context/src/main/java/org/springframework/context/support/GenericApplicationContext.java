@@ -100,11 +100,13 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 
 
 	/**
-	 * C01.03 创建一个新的GenericApplicationContext.
+	 * M01.03 创建一个新的GenericApplicationContext.
 	 * @see #registerBeanDefinition
 	 * @see #refresh
 	 */
 	public GenericApplicationContext() {
+		// C01.03 创建一个新的GenericApplicationContext.
+		System.out.println("C01.03 创建一个新的GenericApplicationContext");
 		this.beanFactory = new DefaultListableBeanFactory();
 	}
 

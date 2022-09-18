@@ -166,6 +166,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 */
 	public AbstractAutowireCapableBeanFactory() {
 		super();
+		System.out.println("C01.03.01 添加忽略的依赖接口：BeanNameAware、BeanFactoryAware、BeanClassLoaderAware");
 		ignoreDependencyInterface(BeanNameAware.class);
 		ignoreDependencyInterface(BeanFactoryAware.class);
 		ignoreDependencyInterface(BeanClassLoaderAware.class);

@@ -1,9 +1,12 @@
 package com.chenss.event;
 
 import org.springframework.context.ApplicationEvent;
-import org.springframework.stereotype.Component;
 
+/**
+ * @author User
+ */
 public class MyEvent extends ApplicationEvent {
+	private static final long serialVersionUID = 5516075349620653480L;
 	/**
 	 * Create a new {@code ApplicationEvent}.
 	 *

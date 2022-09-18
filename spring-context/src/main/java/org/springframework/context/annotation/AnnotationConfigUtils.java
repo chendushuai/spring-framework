@@ -170,7 +170,7 @@ public abstract class AnnotationConfigUtils {
 	public static Set<BeanDefinitionHolder> registerAnnotationConfigProcessors(
 			BeanDefinitionRegistry registry, @Nullable Object source) {
 
-		// C01.04.01_1.01_1.01 从bean定义注册器中获取DefaultListableBeanFactory
+		// C01.04.01_1.01_1.01 从bean定义注册器中获取DefaultListableBeanFactory，此处的registry为上下文对象AnnotationConfigApplicationContext
 		DefaultListableBeanFactory beanFactory = unwrapDefaultListableBeanFactory(registry);
 		if (beanFactory != null) {
 			// C01.04.01_1.01_1.02 判断是否需要进行排序，如果没有指定排序方式，则使用默认排序方案
@@ -258,7 +258,9 @@ public abstract class AnnotationConfigUtils {
 	}
 
 	/**
-	 * 打开获取DefaultListableBeanFactory
+	 * 打开获取DefaultListableBeanFactory，
+	 * 如果对象实现自DefaultListableBeanFactory，则直接返回自身；
+	 * 如果对象实现自GenericApplicationContext，则返回对象的DefaultListableBeanFactory属性
 	 * @param registry bean定义注册器
 	 * @return 返回DefaultListableBeanFactory
 	 */
